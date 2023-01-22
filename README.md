@@ -1,5 +1,5 @@
 # PesterchumOnlineButSilly
-JavaScript-only Pesterchum Client (it's a bit too goofy and silly)
+Static JavaScript Pesterchum client (it's a bit too goofy and silly)
 
 Pretty much the only thing I've ever made using JavaScript, so it's really not very good. Hopefully at least passably secure though; all content from the server is escaped and the live server has a fairly strict content security header. ([observatory](https://observatory.mozilla.org/analyze/pesterchum.online))
 
@@ -23,7 +23,7 @@ Afterwards you have to put the resulting hash of the script into the integrity f
 ## Setup for web server (with babel)
 Install dependenies.
 ```sh
-npm install @babel/core @babel/cli @babel/preset-env browserify core-js
+npm install @babel/core @babel/cli @babel/preset-env browserify core-js babelify
 ```
 Run source through browserify + babel, equivalent to running bundle.sh:
 ```sh
