@@ -1,13 +1,15 @@
 # PesterchumOnlineButSilly
 A static pure-JavaScript Pesterchum client; not to be confused with the 2014 NodeIRC/Heroku 'Pesterchum Online'!!
 
-Pretty much the only thing I've ever made using JavaScript, so it's really not very good. Hopefully at least passably secure though; all content from the server is escaped and the live server has a fairly strict content security header. ([observatory](https://observatory.mozilla.org/analyze/pesterchum.online))
+Pretty much the only thing I've ever made using JavaScript, so it's really not very good. Hopefully at least passably secure though; all content from the server is escaped and the live server has a fairly strict content security policy. ([CSP Evaluator](https://csp-evaluator.withgoogle.com/?csp=https://pesterchum.online))
 
 An important difference between this and previous PCO clients is that this client is fully client side and connects over a WebSocket connection, this means that:
  - The hosting server only needs to serve static content.
  - The hosting server won't act as a proxy, so banning a PCO user will actually ban the user instead of the PCO server like with the previous clients.
 
 Even if this client is kinda bad; it's probably best if future online clients also use a WebSocket connection now that IRC is gaining support for it, it's better than the PCO server having to proxy all messages.
+
+To connect to a server other than irc.pesterchum.xyz just swap out the address in ``src/pesterchum.js``.
 
 ## Local setup
 Just download and open index-src.html, the site is fully static so there's no further setup :3
