@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <!--
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+    Pesterchum.online / PesterchumOnlineButSilly, a static pure-JavaScript Pesterchum client.
+    Copyright (C) 2023  Shou/Dpeta
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -15,7 +16,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -24,6 +24,7 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.75">
 <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; style-src 'unsafe-inline' 'self'; style-src-attr 'unsafe-inline'; style-src-elem 'self'; img-src 'self'; object-src 'none'; media-src 'self'; script-src 'self'; connect-src *; frame-src 'none'; form-action 'none'; base-uri 'none'">
+        <!-- When hosting on an actual web server the CSP should be more restrictive. (hash for script-src) -->
 
 <link rel="preload" href="style.css" as="style">
 <link rel="preload" href="src/pesterchum.js" as="script">
@@ -39,10 +40,12 @@
 <div class="centered">
 <div id='openingtext'>
 <h1 class='centertxt'><img src="smilies/perky.gif"> Pesterchum Online <img src="smilies/perky.gif"></h1>
-<p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be a convenient alternate way to still chat with people on it :3</p>
+<p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
+<p>Now up on <a href="https://github.com/Dpeta/PesterchumOnlineButSilly">GitHub</a> and under the <a href="agpl-3.0-standalone.html">AGPL</a>, woo yeah woo yeah <img src="smilies/3.gif"> </p>
 <p>This is a WIP!!! It only has pretty basic features rn :"3</p>
 </div>
-<footer class='centertxt'>Last update: 2022-09-04</footer>
+<footer class='centertxt'>Last update: 2023-01-22</footer>
+<div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-88x31.png"></div>
 </div>
 <div class='centeredGo'>
 <div id='entry'>

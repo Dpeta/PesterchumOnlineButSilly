@@ -103,6 +103,9 @@ body {
   font-weight: bold; 
   padding: 1%;
 }
+#notice {
+  text-align: right;
+}
 .userlistButton {
   background: transparent;
   border: none;
