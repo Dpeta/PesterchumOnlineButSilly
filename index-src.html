@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Alternative web version of Pesterchum">
+<meta name="keywords" content="Pesterchum, Pesterchum Online, Homestuck">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.75">
+<meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; style-src 'unsafe-inline' 'self'; style-src-attr 'unsafe-inline'; style-src-elem 'self'; img-src 'self'; object-src 'none'; media-src 'self'; script-src 'self'; connect-src *; frame-src 'none'; form-action 'none'; base-uri 'none'">
+
+<link rel="preload" href="style.css" as="style">
+<link rel="preload" href="src/pesterchum.js" as="script">
+
+<link rel="icon" href="favicon.ico">
+<link rel="canonical" href="https://pesterchum.online">
+<link rel="stylesheet" href="style.css">
+<script src="src/pesterchum.js"></script>
+
+<title>Pesterchum Online</title>
+</head>
+<body>
+<div class="centered">
+<div id='openingtext'>
+<h1 class='centertxt'><img src="smilies/perky.gif"> Pesterchum Online <img src="smilies/perky.gif"></h1>
+<p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be a convenient alternate way to still chat with people on it :3</p>
+<p>This is a WIP!!! It only has pretty basic features rn :"3</p>
+</div>
+<footer class='centertxt'>Last update: 2022-09-04</footer>
+</div>
+<div class='centeredGo'>
+<div id='entry'>
+<form id=connectForm>
+  <label for="handle">Handle: </label><input type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
+  <label for="bloodcaste">Pick a scrunkly color!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
+  <!--<label for="allowUnsafeTags">Allow unsafe tags </label><input type="checkbox" name="allowUnsafeTags" id="allowUnsafeTags">-->
+  <div id='connectButtonDiv'><button id="connectButton">Connect</button></div>
+</form>
+</div>
+</div>
+</body>
+</html>

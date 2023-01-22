@@ -1,0 +1,350 @@
+body {
+  animation-name: backgroundColorPalette;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  /*height: 100vh;
+  width: 100vw;*/
+}
+@keyframes backgroundColorPalette {
+  0% {
+    background: #fff700;
+  }
+  100% {
+    background: #ffb500;
+  }
+}
+
+.tab {
+    background-color:#fdb302;
+    border:0px;
+    margin-right:0.5%; 
+    margin-left:0.5%; 
+    height: 5%;
+    width: 80%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 0.5%;
+}
+
+.tablinks {
+  background-color: #7f7f7f;
+  font-family: 'Courier';
+  font-weight: bold;
+  font-size: 12px;
+  height: 80%;
+  vertical-align: top;
+}
+
+.tablinks:hover {
+  color: #FFFFFF;
+}
+
+.tablinks.active {
+  border:0px;
+  background-color:#fdb302;
+  border-top:2px solid yellow;
+  border-left:2px solid yellow;
+  border-right:2px solid yellow; 
+  border-top-left-radius: 4px; 
+  border-top-right-radius: 4px;
+  padding-right: 20px;
+}
+.centertxt {
+  text-align: center;
+}
+#entry {  
+  padding: 1% 5% 1% 5%;
+  font-size: 16px;
+}
+.centered {
+  position: fixed;
+  top: 12.5%;
+  left: 12.5%;
+  width: 75%;
+  height: 40%;
+  background-color: #fdb302; 
+  background-repeat: no-repeat; 
+  border:2px solid yellow; 
+  font-family: 'Courier'; 
+  font-weight: bold; 
+  padding: 1%;
+  overflow: auto;
+}
+.centeredGo {
+  position: fixed;
+  top: 53.75%;
+  left: 12.5%;
+  width: 75%;
+  height: 25%;
+  background-color: #fdb302; 
+  background-repeat: no-repeat; 
+  border:2px solid yellow; 
+  font-family: 'Courier'; 
+  font-weight: bold; 
+  padding: 1%;
+}
+.userlistButton {
+  background: transparent;
+  border: none;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  font-family: 'Courier';
+  width: inherit;
+  background-color: inherit;
+  white-space: nowrap;
+  font-size: 18px;
+}
+
+.userlistChum:hover {
+    background-color: #646464;
+}
+
+.MemosChumsTabs {
+  /* For USERLIST / MEMOS */
+  background-color: #7f7f7f;
+  font-family: 'Courier';
+  font-weight: bold;
+  font-size:12px;
+  height: 4%;
+  width: 50%;
+  float: left;
+  position: relative;
+  bottom: 1px;
+}
+
+.MemosChumsTabs.active {
+  /* For USERLIST / MEMOS */
+  border:0px;
+  background-color:#fdb302;
+  border-top:2px solid yellow;
+  border-left:2px solid yellow;
+  border-right:2px solid yellow; 
+  border-top-left-radius: 4px; 
+  border-top-right-radius: 4px;
+}
+
+.textarea {
+  background-color: white; 
+}
+
+.textarea.inactive {
+  background-color: lightgrey;
+}
+
+.memoUserlist {
+    background-color: white;
+}
+
+.memoUserlist.inactive {
+    background-color: lightgrey;
+}
+
+.msg {
+  background-color: white; 
+}
+
+.msg.inactive {
+  background-color: lightgray; 
+}
+
+.userstatus {
+  position: relative;
+  top: 4px;
+  left: 1.5%;
+}
+
+#part {
+  position: absolute;
+  border: none;
+  font-family: 'Courier';
+  font-weight: bold;
+  font-size:12px;
+  color: white;
+  width: 15px;
+  height: 15px;
+  background: none;
+  color: black;
+  display: none;
+}
+
+#part:hover {
+  color: white;
+}
+
+#manualJoinInput {
+  
+}
+
+.manualJoin {
+  width: 100%;
+  height: 10%;
+  color: white;
+  padding: 1%;
+  overflow: auto;
+}
+
+.memoChum {
+  white-space: nowrap;
+  position: relative;
+  left: 1.5%;
+}
+.memoChumContainer {
+  margin: 1%;
+}
+.memoChumContainer:hover {
+  color: white;
+  background-color: #646464;
+}
+
+.hidebutton {
+  height: 10%;
+  background: white;
+  font-weight: bold;
+  font-size: 24px;
+  font-family: 'Courier'; 
+  position: relative;
+  max-width: 5vw;
+}
+
+#connectButton {
+  background-color: #7f7f7f;
+  font-family: 'Courier';
+  font-weight: bold;
+  font-size: 12px;
+  width: 15%;
+  font-size: 16px;
+}
+#connectButton:hover {
+  background-color:#fdb302;
+}
+
+#connectButtonDiv {
+  text-align: center;
+  padding-top: 2%;
+}
+
+#bloodcaste {
+  border: none;
+}
+
+#hideChumroll {
+  float: right;
+  top: 45%;
+}
+
+#hideMemoUsers {
+  float: left;
+  top: 42.25%;
+  left: 0.85%;
+}
+
+#chumroll {
+  color: white;
+  font-weight: bold;
+  font-family: 'Courier';
+  overflow-x: scroll;
+  overflow-y: scroll;
+  height: 87%; /* -4%*/
+  font-size: 20px;
+  width: 100%;
+}
+
+#chumrollContainer {
+  border: 2px solid #fdb302;
+  background-color: black;
+  float: right;
+  height: 96%;
+  margin-right: 0.5%;
+  margin-left: 0.5%;
+  margin-top: 0.5%;
+  min-width: 20%;
+  max-width: 20vw;
+}
+
+#memoUserlist {
+  border:2px solid #c48a00; 
+  font-weight: bold;
+  font-family: 'Courier';
+  font-size: 18px;  
+  /*margin-right: 10px;*/
+  margin-top: 0.5%;
+  margin-left: 1%;
+  overflow-x: auto;
+  height: 93.5%;
+  width: 17%; 
+  float: left;
+}
+#msg {
+  color: black; 
+  border:2px solid #c48a00;
+  margin-top:0.25%; 
+  margin-left:0.5%; 
+  font-size: 12px;
+  margin-bottom:0.5%;
+  width: 99.6%; 
+  height: 20%;
+  float: left;
+  max-width: 93vw;
+}
+
+#textarea { 
+  font-size: 18px;
+  font-weight: bold; 
+  border:2px solid #c48a00;
+  margin-left:0.5%;
+  margin-top:0.5%;
+  font-family: 'Courier';
+  overflow-x: visible;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  height: 91%; 
+  /*max-width: 80vw;*/
+  width: 100%; 
+  float: left;
+}
+
+#tabContainer {
+  height: 98%;
+  width: 75%;
+}
+
+#textAndInputBox {
+  height: 100%;
+  width: 65%;
+  float: left;
+  /*max-width: 57vw;
+  min-width: 500px;*/
+}
+
+#chonkers {
+  background-color: #fdb302; 
+  background-repeat: no-repeat; 
+  border:2px solid yellow; 
+  font-family: 'Courier'; 
+  font-weight: bold; 
+  width: 98vw;
+  height: 90vh;
+  /*overflow: auto;*/
+}
+
+
+::-webkit-scrollbar {
+    /*padding-top: 1%; 
+    padding-bottom: 1%;
+    width: 1.1%;     */
+    background-color: white; 
+    border:2px solid #c48a00;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color:#c48a00;
+  /*min-height: 1.2%;    */
+}
+
+::-webkit-scrollbar-button {
+  /*height: 1.2%;*/
+  border:0px solid #c48a00;
+}

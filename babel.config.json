@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage",
+        corejs: {
+          version: "3.27.2", 
+          proposals: true 
+        },
+        "bugfixes": true,
+        "modules": "auto",
+        "shippedProposals": true
+      }
+    ]
+  ]
+}
