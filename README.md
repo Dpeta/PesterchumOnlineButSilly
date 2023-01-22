@@ -1,5 +1,5 @@
 # PesterchumOnlineButSilly
-Static Pure-JavaScript Pesterchum client (it's a bit too goofy and silly)
+A static pure-JavaScript Pesterchum client; not to be confused with the 2014 NodeIRC/Heroku 'Pesterchum Online'!!
 
 Pretty much the only thing I've ever made using JavaScript, so it's really not very good. Hopefully at least passably secure though; all content from the server is escaped and the live server has a fairly strict content security header. ([observatory](https://observatory.mozilla.org/analyze/pesterchum.online))
 
