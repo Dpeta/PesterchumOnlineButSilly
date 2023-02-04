@@ -42,7 +42,7 @@ const ServicesBots = ['NICKSERV', 'CHANSERV', 'MEMOSERV', 'OPERSERV', 'HELPSERV'
 // const sanitizer = new Sanitizer(allowElements=['span'])
 const _chumhandle = /^([a-z]+[A-Z][a-z]*)$/
 const _ctag_begin = /(<|&#60;)c=(.*?)(>|&#62;)/g
-const _ctagEnd = /(<|&#60;)\/c(>|&#62;)/g
+// const _ctagEnd = /(<|&#60;)\/c(>|&#62;)/g
 const _ctag_rgb = /(\d+,\d+,\d+)/g
 const _ctag_hex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
 const _ctag_rgbhex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
@@ -55,12 +55,12 @@ const _initials = /[A-Z]*[A-Z]*:\s/
 const _evil_rule_im_so_sorry = /.*--.+\[..\].+\[..\].+\d\d:\d\d --.*/gi
 const _url = /\b(https:\/\/(\w|\d|\.|\/)*)/gi
 const _user_prefix = /^(@|&#38;|~|&|\+)+/
-const _escapeable = /&|"|'|<|>/g
+// const _escapeable = /&|"|'|<|>/g
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
 function init () {
   const connectButton = document.getElementById('connectButton')
-  const handleInput = document.getElementById('handle')
+  // const handleInput = document.getElementById('handle')
   const connectForm = document.getElementById('connectForm')
 
   connectButton.addEventListener('click', function (event) {
@@ -136,7 +136,7 @@ function run () {
   })
 
   // Create gui
-  var gui = new clientGUI()
+  const gui = new clientGUI()
   gui.clear()
   gui.tabify()
   gui.nick = handle
@@ -311,7 +311,7 @@ function parseIRC (irc, gui, data) {
     }
   }
   // Scope is fucked
-  let client = ''
+  // const client = ''
   let channel = ''
   let target = ''
   let msgparts = ''
@@ -559,7 +559,7 @@ function parseIRC (irc, gui, data) {
       break
     case '366':
       // RPL_ENDOFNAMES
-      client = params[0]
+      // client = params[0]
       channel = params[1]
       if (channel === '#pesterchum') {
         irc.msg('#pesterchum', 'MOOD >0')
@@ -771,7 +771,7 @@ function connectButtonEvents (irc, gui) {
     const button = parts[i]
     button.addEventListener('click', function (event) {
       const id = event.currentTarget.id.slice(6)
-      const tabby = document.getElementById(id)
+      // const tabby = document.getElementById(id)
       // console.log(event.currentTarget.id.slice(6), tabby)
       for (let t = 0; t < gui.tabs.length; t++) {
         if (gui.tabs[t].label === id) {
@@ -871,7 +871,7 @@ function parsePesterchumSyntax (source, target, msg) {
   if (target !== null) {
     if ((target[0] === '#') || (target[0] === '&')) {
       // Memo
-      output = output
+      // output = output
     } else if (source !== null) {
       // Convo
       // Get nick
@@ -902,7 +902,7 @@ class clientGUI {
     this.color = document.getElementById('bloodcaste').value
     this.MemosTabOpen = true
     this.dead = false // Input is not allowed
-    this.nick
+    this.nick = null // FIXME, is this used?
     this.chums = new chums() // Stores data on individual others like color
     this.tabs = []
     this.userlist = []
@@ -913,11 +913,11 @@ class clientGUI {
   openChannelTab (channel) {
     // We open tabs with this and addText
     // Iterate through tabs, and check if it's present, add if not
-    var found = false
+    let found = false
     for (let i = 0; i < this.tabs.length; i++) {
       // This is to a memo
       if ((channel === this.tabs[i].label) && (this.tabs[i].memo === true)) {
-        var found = true
+        found = true
       }
     }
     // If we don't have a tab for the source, make one.
@@ -1101,22 +1101,22 @@ class clientGUI {
     }
 
     // Iterate through tabs, and check if it's present, add if not
-    var found = false
+    let found = false
     for (let i = 0; i < this.tabs.length; i++) {
       if (_memoprefix.test(target[0])) {
         // This is to a memo
         if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
-          var found = true
+          found = true
         }
       } else if (source !== this.nick) {
         // This is not to a memo
         if ((source === this.tabs[i].label) && (this.tabs[i].memo === false)) {
-          var found = true
+          found = true
         }
       } else if (source === this.nick) {
         // This is not to a memo
         if ((target === this.tabs[i].label) && (this.tabs[i].memo === false)) {
-          var found = true
+          found = true
         }
       }
     }
@@ -1318,7 +1318,7 @@ class ircClient {
   }
 }
 
-var sanitizeHTML = function (str) {
+const sanitizeHTML = function (str) {
   if (allowTags !== true) {
     str = str.replace(_amp, '&#38;')
     str = str.replace(_quot, '&quot;')
