@@ -41,20 +41,20 @@ const _gt = />/g
 const ServicesBots = ['NICKSERV', 'CHANSERV', 'MEMOSERV', 'OPERSERV', 'HELPSERV', 'HOSTSERV', 'BOTSERV', 'CALSPRITE', 'RANDOMENCOUNTER']
 // const sanitizer = new Sanitizer(allowElements=['span'])
 const _chumhandle = /^([a-z]+[A-Z][a-z]*)$/
-const _ctag_begin = /(<|&#60;)c=(.*?)(>|&#62;)/g
+const _ctagBegin = /(<|&#60;)c=(.*?)(>|&#62;)/g
 // const _ctagEnd = /(<|&#60;)\/c(>|&#62;)/g
-const _ctag_rgb = /(\d+,\d+,\d+)/g
-const _ctag_hex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
-const _ctag_rgbhex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
-const _color_msg = /^COLOR (>|&#62;)(\d+,\d+,\d+)$/
-const _color_msg_rgb = /\d+,\d+,\d+/
-const _memomsg_start = /^((<|&#60;)c=((\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})))(>|&#62;)[A-Z]*[A-Z]*:\s)/g
-const _memoprefix = /^(&|#)/
+const _ctagRgb = /(\d+,\d+,\d+)/g
+const _ctagHex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
+const _ctagRgbHex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
+const _colorMsg = /^COLOR (>|&#62;)(\d+,\d+,\d+)$/
+const _colorMsgRgb = /\d+,\d+,\d+/
+const _memoMsgStart = /^((<|&#60;)c=((\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})))(>|&#62;)[A-Z]*[A-Z]*:\s)/g
+const _memoPrefix = /^(&|#)/
 const _initials = /[A-Z]*[A-Z]*:\s/
-// const _evil_rule_im_so_sorry = /^(<|&#60;)c=(.*?)(>|&#62;)-- .+ (<|&#60;)c=(.*?)(>|&#62;)\[..\]<\/c> .+ pestering .+ (<|&#60;)c=(.*?)(>|&#62;)\[..\]<\/c> at \d\d:\d\d --<\/c>$/gi;
-const _evil_rule_im_so_sorry = /.*--.+\[..\].+\[..\].+\d\d:\d\d --.*/gi
+// const _evilRuleImSoSorry = /^(<|&#60;)c=(.*?)(>|&#62;)-- .+ (<|&#60;)c=(.*?)(>|&#62;)\[..\]<\/c> .+ pestering .+ (<|&#60;)c=(.*?)(>|&#62;)\[..\]<\/c> at \d\d:\d\d --<\/c>$/gi;
+const _evilRuleImSoSorry = /.*--.+\[..\].+\[..\].+\d\d:\d\d --.*/gi
 const _url = /\b(https:\/\/(\w|\d|\.|\/)*)/gi
-const _user_prefix = /^(@|&#38;|~|&|\+)+/
+const _userPrefix = /^(@|&#38;|~|&|\+)+/
 // const _escapeable = /&|"|'|<|>/g
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
@@ -108,7 +108,7 @@ function run () {
   }
 
   // Create client + connect
-  const irc = new ircClient(handle)
+  const irc = new IrcClient(handle)
   irc.connect()
 
   // Connection opened
@@ -136,7 +136,7 @@ function run () {
   })
 
   // Create gui
-  const gui = new clientGUI()
+  const gui = new GuiClient()
   gui.clear()
   gui.tabify()
   gui.nick = handle
@@ -362,22 +362,22 @@ function parseIRC (irc, gui, data) {
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} is now an idle chum! --</c>`
       } else if (msg.indexOf('/me ') === 0) {
         // msg = "-- CURRENT " + sourcenick + " [] " + msg.slice(4) + " --"
-        if (_memoprefix.test(target[0])) {
+        if (_memoPrefix.test(target[0])) {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}]</c>`
         } else {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick} ${srcInitials} ${msg.slice(4)} --</c>`
       } else if (msg.indexOf('/me\'s ') === 0) {
-        if (_memoprefix.test(target[0])) {
+        if (_memoPrefix.test(target[0])) {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}'S]</c>`
         } else {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}'S]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick}'s ${srcInitials} ${msg.slice(6)} --</c>`
-      } else if (_color_msg.test(msg) === true) {
-        // let cMatch = msg.match(_ctag_rgb)
-        const color = msg.match(_color_msg_rgb)
+      } else if (_colorMsg.test(msg) === true) {
+        // let cMatch = msg.match(_ctagRgb)
+        const color = msg.match(_colorMsgRgb)
         console.log('color: ' + color)
         gui.chums.setColor(sourcenick, color)
         return
@@ -385,9 +385,9 @@ function parseIRC (irc, gui, data) {
         return
       }
 
-      const start = msg.match(_memomsg_start)
+      const start = msg.match(_memoMsgStart)
       if (start !== null) {
-        const color = start[0].match(_ctag_rgbhex)[0]
+        const color = start[0].match(_ctagRgbHex)[0]
         // console.log('wpp', color)
         gui.chums.setColor(sourcenick, color)
       }
@@ -548,7 +548,7 @@ function parseIRC (irc, gui, data) {
         }
       } else {
         for (let i = 0; i < users.length; i++) {
-          const user = users[i].replace(_user_prefix, '')
+          const user = users[i].replace(_userPrefix, '')
           if (gui.userlist.indexOf(user) === -1) {
             gui.userlist.push(user)
             // console.log(gui.userlist);
@@ -578,7 +578,7 @@ function parseIRC (irc, gui, data) {
   }
 }
 
-class chum {
+class ChumConstruct {
   constructor (handle, color) {
     this.handle = handle
     this.color = color
@@ -586,7 +586,7 @@ class chum {
   }
 }
 
-class chums {
+class ChumsConstruct {
   constructor () {
     this.chums = []
   }
@@ -601,7 +601,7 @@ class chums {
       }
     } else {
       // New chum
-      this.chums.push(new chum(handle, color))
+      this.chums.push(new ChumConstruct(handle, color))
     }
     // console.log(this.chums)
   }
@@ -616,7 +616,7 @@ class chums {
   }
 }
 
-class memoConvoTab {
+class MemoConvoTab {
   constructor (source, target, label) {
     this.target = target // To who
     this.source = source // From who
@@ -626,7 +626,7 @@ class memoConvoTab {
     this.active = false
 
     if (label === null) {
-      if (_memoprefix.test(target[0])) {
+      if (_memoPrefix.test(target[0])) {
         this.memo = true
         this.label = target
       } else {
@@ -832,24 +832,24 @@ function parsePesterchumSyntax (source, target, msg) {
       // Memo
       // Add timeline
       // console.log(output)
-      let start = output.match(_memomsg_start)
+      let start = output.match(_memoMsgStart)
       if (start !== null) {
         start = start[0]
         const initials = start.match(_initials)
         start = start.replace(_initials, 'C' + initials)
-        output = output.replace(_memomsg_start, start)
+        output = output.replace(_memoMsgStart, start)
       }
     }
   }
-  const ctags = output.match(_ctag_begin)
+  const ctags = output.match(_ctagBegin)
   const smilies = output.match(_smilies)
   if (ctags !== null) {
     for (let i = 0; i < ctags.length; i++) {
-      const rgb = ctags[i].match(_ctag_rgb)
+      const rgb = ctags[i].match(_ctagRgb)
       if (rgb !== null) {
         output = output.replace(ctags[i], '<span style=\'color: rgb(' + rgb[0] + ');\'>')
       }
-      const hex = ctags[i].match(_ctag_hex)
+      const hex = ctags[i].match(_ctagHex)
       if (hex !== null) {
         output = output.replace(ctags[i], '<span style=\'color: ' + hex[0] + ';\'>')
       }
@@ -885,8 +885,8 @@ function parsePesterchumSyntax (source, target, msg) {
         nick = source
       }
       // console.log(source, target, msg)
-      // if (_evil_rule_im_so_sorry.test(msg) === false) {
-      if (msg.search(_evil_rule_im_so_sorry) === -1) {
+      // if (_evilRuleImSoSorry.test(msg) === false) {
+      if (msg.search(_evilRuleImSoSorry) === -1) {
         // console.log('yea')
         const initials = getInitials(nick)
         output = initials + ': ' + output
@@ -896,14 +896,14 @@ function parsePesterchumSyntax (source, target, msg) {
   return output
 }
 
-class clientGUI {
+class GuiClient {
   constructor () {
     this.body = document.getElementsByTagName('body').item(0)
     this.color = document.getElementById('bloodcaste').value
     this.MemosTabOpen = true
     this.dead = false // Input is not allowed
     this.nick = null // FIXME, is this used?
-    this.chums = new chums() // Stores data on individual others like color
+    this.chums = new ChumsConstruct() // Stores data on individual others like color
     this.tabs = []
     this.userlist = []
     this.memolist = []
@@ -923,7 +923,7 @@ class clientGUI {
     // If we don't have a tab for the source, make one.
     if (found === false) {
       // console.log('New tab ', channel);
-      const newtab = new memoConvoTab(channel, channel, null)
+      const newtab = new MemoConvoTab(channel, channel, null)
       const board = channel.slice(1).toUpperCase()
       newtab.tabcontent += `<span style='color: ${this.color};'>C${getInitials(this.nick)}</span> RIGHT NOW opened memo on board ${board}.`
       this.tabs.push(newtab)
@@ -1034,7 +1034,7 @@ class clientGUI {
     for (let i = 0; i < this.tabs.length; i++) {
       const label = this.tabs[i].label
       const pos = tablinksInner.indexOf(label)
-      if (_memoprefix.test(label)) {
+      if (_memoPrefix.test(label)) {
         // Memo
         if (pos === -1) {
           // Not present
@@ -1103,7 +1103,7 @@ class clientGUI {
     // Iterate through tabs, and check if it's present, add if not
     let found = false
     for (let i = 0; i < this.tabs.length; i++) {
-      if (_memoprefix.test(target[0])) {
+      if (_memoPrefix.test(target[0])) {
         // This is to a memo
         if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
           found = true
@@ -1124,9 +1124,9 @@ class clientGUI {
     if (found === false) {
       let newtab
       if (source !== this.nick) {
-        newtab = new memoConvoTab(source, target, null)
+        newtab = new MemoConvoTab(source, target, null)
       } else {
-        newtab = new memoConvoTab(source, target, target)
+        newtab = new MemoConvoTab(source, target, target)
       }
       if (newtab.memo === true) {
         newtab.tabcontent += `C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.`
@@ -1137,13 +1137,13 @@ class clientGUI {
     // Iterate through tabs, and add text
     for (let i = 0; i < this.tabs.length; i++) {
       // X RESPONSED TO MEMO
-      if ((_memoprefix.test(target[0])) && (target === this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) === -1)) {
+      if ((_memoPrefix.test(target[0])) && (target === this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) === -1)) {
         this.tabs[i].announced.push(source)
         this.tabs[i].tabcontent += `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`
       }
 
       // Add text
-      if (_memoprefix.test(target[0])) {
+      if (_memoPrefix.test(target[0])) {
         // This is to a memo
         if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
           // console.log('Add to tab (memo) ', target, msg);
@@ -1267,7 +1267,7 @@ class clientGUI {
   }
 }
 
-class ircClient {
+class IrcClient {
   constructor (handle) {
     this.handle = handle
   }
