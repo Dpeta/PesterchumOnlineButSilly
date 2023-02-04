@@ -58,8 +58,8 @@ const _userPrefix = /^(@|&#38;|~|&|\+)+/
 // const _escapeable = /&|"|'|<|>/g
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
-let irc
-let gui
+let ircClient
+let pcoClient
 
 function init () {
   const connectButton = document.getElementById('connectButton')
@@ -111,38 +111,38 @@ function run () {
   }
 
   // Create client + connect
-  irc = new IrcClient(handle)
-  irc.connect()
+  ircClient = new IrcClient(handle)
+  ircClient.connect()
 
   // Connection opened
-  irc.socket.addEventListener('open', function (event) {
-    irc.register()
+  ircClient.socket.addEventListener('open', function (event) {
+    ircClient.register()
   })
 
   // Data incoming
-  irc.socket.addEventListener('message', function (event) {
+  ircClient.socket.addEventListener('message', function (event) {
     // *ALL* input is sanitized now, the rest of the code needs to account for this.
     parseIRC(sanitizeHTML(event.data))
   })
 
   // Disconnected
-  irc.socket.addEventListener('close', function (event) {
+  ircClient.socket.addEventListener('close', function (event) {
     alert('Disconnected, pls reload page :(' +
             `\n    code: ${event.code}` +
             `\n    reason: ${event.reason}` +
             `\n    wasClean: ${event.wasClean}`
     )
-    gui.dead = true
+    pcoClient.dead = true
     const msgElm = document.getElementById('msg')
     msgElm.disabled = true
     msgElm.className += ' inactive'
   })
 
-  // Create gui
-  gui = new GuiClient()
-  gui.clear()
-  gui.tabify()
-  gui.nick = handle
+  // Create pcoClient
+  pcoClient = new PesterchumOnlineClient()
+  pcoClient.clear()
+  pcoClient.tabify()
+  pcoClient.nick = handle
 
   const msg = document.getElementById('msgform')
   msg.addEventListener('submit', function (event) {
@@ -163,15 +163,15 @@ function run () {
     event.preventDefault()
     const manualJoinInput = document.getElementById('manualJoinInput')
     const memostr = manualJoinInput.value
-    irc.join(`#${memostr}`)
+    ircClient.join(`#${memostr}`)
     manualJoinInput.value = ''
-    gui.memolist = []
-    irc.list()
+    pcoClient.memolist = []
+    ircClient.list()
   })
 
   const partButton = document.getElementById('part')
   partButton.addEventListener('click', function (event) {
-    const activeTab = gui.tabs.filter((tab) => tab.active === true)
+    const activeTab = pcoClient.tabs.filter((tab) => tab.active === true)
     for (let i = 0; i < activeTab.length; i++) {
       // Should only trigger once
 
@@ -184,13 +184,13 @@ function run () {
 
       // Part / Cease
       if (activeTab[i].memo === true) {
-        irc.part(activeTab[i].label)
+        ircClient.part(activeTab[i].label)
       } else {
-        irc.msg(activeTab[i].label, 'PESTERCHUM:CEASE')
+        ircClient.msg(activeTab[i].label, 'PESTERCHUM:CEASE')
       }
 
       // Remove tab
-      gui.tabs.splice(gui.tabs.indexOf(activeTab[i]), 1)
+      pcoClient.tabs.splice(pcoClient.tabs.indexOf(activeTab[i]), 1)
 
       // Disabled
       setTabEnabled(false)
@@ -202,7 +202,7 @@ function run () {
 
 function sendMsg (event) {
   const msgInput = document.getElementById('msg')
-  const nick = irc.handle
+  const nick = ircClient.handle
   const initials = getInitials(nick)
 
   // let msg = msgInput.value;
@@ -210,39 +210,39 @@ function sendMsg (event) {
   let msg
   let baremsg
   const splitMsg = msgInput.value.match(/.{1,361}/g)
-  // msg = '<c=' + gui.color + '>' + initials + ': ' + baremsg + '</c>';
+  // msg = '<c=' + pcoClient.color + '>' + initials + ': ' + baremsg + '</c>';
   for (let q = 0; q < splitMsg.length; q++) {
     msg = splitMsg[q]
     baremsg = msg
     if ((msg.indexOf('/me ') !== 0) && (msg.indexOf('/me\'s ') !== 0)) {
-      msg = `<c=${gui.color}>${initials}: ${baremsg}</c>`
+      msg = `<c=${pcoClient.color}>${initials}: ${baremsg}</c>`
     }
 
     // Send to who?
-    for (let n = 0; n < gui.tabs.length; n++) {
-      if (gui.tabs[n].active === true) {
-        if (gui.tabs[n].memo === true) {
-          irc.msg(gui.tabs[n].label, msg)
+    for (let n = 0; n < pcoClient.tabs.length; n++) {
+      if (pcoClient.tabs[n].active === true) {
+        if (pcoClient.tabs[n].memo === true) {
+          ircClient.msg(pcoClient.tabs[n].label, msg)
         } else {
-          irc.msg(gui.tabs[n].label, baremsg)
+          ircClient.msg(pcoClient.tabs[n].label, baremsg)
         }
         msg = sanitizeHTML(msg)
-        msg = parsePesterchumSyntax(null, gui.tabs[n].label, msg)
+        msg = parsePesterchumSyntax(null, pcoClient.tabs[n].label, msg)
         if (msg.indexOf('/me ') === 0) {
-          if (gui.tabs[n].memo === true) {
-            msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick} <span style='color: ${gui.color};'>[C${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
+          if (pcoClient.tabs[n].memo === true) {
+            msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick} <span style='color: ${pcoClient.color};'>[C${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           } else {
-            msg = `<span style='color: rgb(100,100,100)'>-- ${nick} <span style='color: ${gui.color};'>[${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
+            msg = `<span style='color: rgb(100,100,100)'>-- ${nick} <span style='color: ${pcoClient.color};'>[${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           }
         } else if (msg.indexOf('/me\'s ') === 0) {
-          if (gui.tabs[n].memo === true) {
-            msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick}'s <span style='color: ${gui.color};'>[C${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
+          if (pcoClient.tabs[n].memo === true) {
+            msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick}'s <span style='color: ${pcoClient.color};'>[C${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
           } else {
-            msg = `<span style='color: rgb(100,100,100)'>-- ${nick}'s <span style='color: ${gui.color};'>[${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
+            msg = `<span style='color: rgb(100,100,100)'>-- ${nick}'s <span style='color: ${pcoClient.color};'>[${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
           }
         }
-        gui.tabs[n].tabcontent += `<div>${msg}</div>`
-        gui.updateTabs()
+        pcoClient.tabs[n].tabcontent += `<div>${msg}</div>`
+        pcoClient.updateTabs()
       }
     }
   }
@@ -330,7 +330,7 @@ function parseIRC (data) {
   switch (command) {
     // Commands
     case 'PING':
-      irc.send('PONG ' + params[0])
+      ircClient.send('PONG ' + params[0])
       break
     case 'PRIVMSG':
       // Incoming message
@@ -354,36 +354,36 @@ function parseIRC (data) {
 
       if (msg === 'PESTERCHUM:BEGIN') {
         // -- Horse [HH] began pestering Horse [HH] at 07:19 --
-        srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
-        targetInitials = `<c=${gui.chums.getColor(target)}>[${getInitials(target)}]</c>`
+        srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
+        targetInitials = `<c=${pcoClient.chums.getColor(target)}>[${getInitials(target)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} began pestering ${target} ${targetInitials} at ${time()} --</c>`
       } else if (msg === 'PESTERCHUM:CEASE') {
-        srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
-        targetInitials = `<c=${gui.chums.getColor(target)}>[${getInitials(target)}]</c>`
+        srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
+        targetInitials = `<c=${pcoClient.chums.getColor(target)}>[${getInitials(target)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} ceased pestering ${target} ${targetInitials} at ${time()} --</c>`
       } else if (msg === 'PESTERCHUM:IDLE') {
-        srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
+        srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} is now an idle chum! --</c>`
       } else if (msg.indexOf('/me ') === 0) {
         // msg = "-- CURRENT " + sourcenick + " [] " + msg.slice(4) + " --"
         if (_memoPrefix.test(target[0])) {
-          srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}]</c>`
+          srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}]</c>`
         } else {
-          srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
+          srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick} ${srcInitials} ${msg.slice(4)} --</c>`
       } else if (msg.indexOf('/me\'s ') === 0) {
         if (_memoPrefix.test(target[0])) {
-          srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}'S]</c>`
+          srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}'S]</c>`
         } else {
-          srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}'S]</c>`
+          srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}'S]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick}'s ${srcInitials} ${msg.slice(6)} --</c>`
       } else if (_colorMsg.test(msg) === true) {
         // let cMatch = msg.match(_ctagRgb)
         const color = msg.match(_colorMsgRgb)
         console.log('color: ' + color)
-        gui.chums.setColor(sourcenick, color)
+        pcoClient.chums.setColor(sourcenick, color)
         return
       } else if (msg.indexOf('PESTERCHUM:') !== -1) {
         return
@@ -392,10 +392,10 @@ function parseIRC (data) {
       if (memoStartMsg !== null) {
         const color = memoStartMsg[0].match(_ctagRgbHex)[0]
         // console.log('wpp', color)
-        gui.chums.setColor(sourcenick, color)
+        pcoClient.chums.setColor(sourcenick, color)
       }
-      gui.addText(sourcenick, target, msg)
-      gui.updateTabs()
+      pcoClient.addText(sourcenick, target, msg)
+      pcoClient.updateTabs()
       connectButtonEvents()
       break
     case 'NOTICE':
@@ -415,17 +415,17 @@ function parseIRC (data) {
           }
         }
         // console.log(sourcenick, target, msgparts, channel, msg)
-        for (let n = 0; n < gui.tabs.length; n++) {
-          if (gui.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
-            gui.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
-          } else if ((gui.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
+        for (let n = 0; n < pcoClient.tabs.length; n++) {
+          if (pcoClient.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
+            pcoClient.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
+          } else if ((pcoClient.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
             // Services messages
             if (((msg.indexOf('Unknown command') !== -1) && (msg.indexOf('PESTERCHUM:BEGIN') !== -1)) === false) {
-              gui.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
+              pcoClient.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
             }
           }
         }
-        gui.updateTabs()
+        pcoClient.updateTabs()
       }
 
       break
@@ -455,14 +455,14 @@ function parseIRC (data) {
       for (let i = 0; i < params.length; i++) {
         console.log('params[i]:', params[i])
         if ((params[i] !== ':#pesterchum') && (params[i] !== '#pesterchum')) {
-          irc.names(params[i])
+          ircClient.names(params[i])
         }
       }
       break
     case 'PART':
       // goo b,,
       sourcenick = source.slice(1).split('!')[0]
-      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
+      updateQue = pcoClient.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
       updateQue = updateQue.filter((tab) => params.indexOf(tab.label) !== -1)
       for (let i = 0; i < updateQue.length; i++) {
         // CMM ceased responding to memo.
@@ -470,17 +470,17 @@ function parseIRC (data) {
         updateQue[i].tabcontent += `<div>${leaveMsg}</div>`
 
         updateQue[i].userlist = []
-        irc.names(updateQue[i].label)
+        ircClient.names(updateQue[i].label)
       }
       break
     case 'QUIT':
       // goo b,,
       sourcenick = source.slice(1).split('!')[0]
-      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
-      // updateQue = gui.tabs.filter(tab => tab.label !== "#pesterchum");
+      updateQue = pcoClient.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
+      // updateQue = pcoClient.tabs.filter(tab => tab.label !== "#pesterchum");
       for (let i = 0; i < updateQue.length; i++) {
         updateQue[i].userlist = []
-        irc.names(updateQue[i].label)
+        ircClient.names(updateQue[i].label)
 
         // CMM ceased responding to memo.
         const leaveMsg = `<span style='color: black;'>C${getInitials(sourcenick)}</span> <span style='color: #646464;'>ceased responding to memo.</span>`
@@ -490,25 +490,25 @@ function parseIRC (data) {
     case 'MODE':
       // mode,,
       // OP status may have changed
-      updateQue = gui.tabs.filter((tab) => tab.label === params[0])
+      updateQue = pcoClient.tabs.filter((tab) => tab.label === params[0])
       for (let i = 0; i < updateQue.length; i++) {
         updateQue[i].userlist = []
-        irc.names(updateQue[i].label)
+        ircClient.names(updateQue[i].label)
       }
       break
       // Numerical replies
     case '001':
       // RPL_WELCOME
-      irc.join('#pesterchum.online')
-      // irc.join("#want_to_make_a_new_chum")
-      // irc.join("#want_to_make_a_new_rp")
-      // irc.join("#TestingZone");
-      // irc.join("#TestingZone2");
-      // irc.join("#TestingZone3");
-      irc.join('#pesterchum')
-      irc.list()
-      irc.send('METADATA * set mood 0')
-      irc.send('METADATA * set color ' + gui.color)
+      ircClient.join('#pesterchum.online')
+      // ircClient.join("#want_to_make_a_new_chum")
+      // ircClient.join("#want_to_make_a_new_rp")
+      // ircClient.join("#TestingZone");
+      // ircClient.join("#TestingZone2");
+      // ircClient.join("#TestingZone3");
+      ircClient.join('#pesterchum')
+      ircClient.list()
+      ircClient.send('METADATA * set mood 0')
+      ircClient.send('METADATA * set color ' + pcoClient.color)
       break
     case '322':
       // RPL_LIST
@@ -518,13 +518,13 @@ function parseIRC (data) {
       if (channel === '#pesterchum') {
         return
       }
-      gui.memolist.push([channel, users])
-      // console.log(gui.memolist)
+      pcoClient.memolist.push([channel, users])
+      // console.log(pcoClient.memolist)
       break
     case '323':
       // RPL_LISTEND
-      if (gui.MemosTabOpen === true) {
-        gui.updateMemolist()
+      if (pcoClient.MemosTabOpen === true) {
+        pcoClient.updateMemolist()
       }
       break
     case '353':
@@ -537,14 +537,14 @@ function parseIRC (data) {
       users = params.slice(3)
 
       if (channel !== '#pesterchum') {
-        gui.openChannelTab(channel)
+        pcoClient.openChannelTab(channel)
         // Add user to list if not present
-        for (let n = 0; n < gui.tabs.length; n++) {
-          if (gui.tabs[n].label === channel) {
+        for (let n = 0; n < pcoClient.tabs.length; n++) {
+          if (pcoClient.tabs[n].label === channel) {
             for (let i = 0; i < users.length; i++) {
-              if (gui.tabs[n].userlist.indexOf(users[i]) === -1) {
-                gui.tabs[n].userlist.push(users[i])
-                // console.log(gui.tabs[n].userlist);
+              if (pcoClient.tabs[n].userlist.indexOf(users[i]) === -1) {
+                pcoClient.tabs[n].userlist.push(users[i])
+                // console.log(pcoClient.tabs[n].userlist);
               }
             }
           }
@@ -552,26 +552,26 @@ function parseIRC (data) {
       } else {
         for (let i = 0; i < users.length; i++) {
           const user = users[i].replace(_userPrefix, '')
-          if (gui.userlist.indexOf(user) === -1) {
-            gui.userlist.push(user)
-            // console.log(gui.userlist);
+          if (pcoClient.userlist.indexOf(user) === -1) {
+            pcoClient.userlist.push(user)
+            // console.log(pcoClient.userlist);
           }
         }
       }
-      gui.updateTabs()
+      pcoClient.updateTabs()
       break
     case '366':
       // RPL_ENDOFNAMES
       // client = params[0]
       channel = params[1]
       if (channel === '#pesterchum') {
-        irc.msg('#pesterchum', 'MOOD >0')
-        if (gui.MemosTabOpen === false) {
-          gui.updateUserlist()
+        ircClient.msg('#pesterchum', 'MOOD >0')
+        if (pcoClient.MemosTabOpen === false) {
+          pcoClient.updateUserlist()
         }
       } else {
-        gui.openChannelTab(channel)
-        gui.updateTabs()
+        pcoClient.openChannelTab(channel)
+        pcoClient.updateTabs()
         connectButtonEvents()
       }
       updateMemoUserlist(channel)
@@ -656,10 +656,10 @@ function connectMemoUserlistSwitch () {
       event.currentTarget.className += ' active'
     }
     mButton.className = mButton.className.replace(' active', '')
-    gui.MemosTabOpen = false
-    gui.updateUserlist()
-    gui.userlist = []
-    irc.names('#pesterchum')
+    pcoClient.MemosTabOpen = false
+    pcoClient.updateUserlist()
+    pcoClient.userlist = []
+    ircClient.names('#pesterchum')
   }
   )
   mButton.addEventListener('click', function (event) {
@@ -667,16 +667,16 @@ function connectMemoUserlistSwitch () {
       event.currentTarget.className += ' active'
     }
     uButton.className = uButton.className.replace(' active', '')
-    gui.MemosTabOpen = true
-    gui.updateMemolist()
-    gui.memolist = []
-    irc.list()
+    pcoClient.MemosTabOpen = true
+    pcoClient.updateMemolist()
+    pcoClient.memolist = []
+    ircClient.list()
   }
   )
 }
 
 function updateMemoUserlist (channel) {
-  const targetTab = gui.tabs.filter((tab) => tab.label === channel)
+  const targetTab = pcoClient.tabs.filter((tab) => tab.label === channel)
   for (let n = 0; n < targetTab.length; n++) {
     if (targetTab[n].active === true) {
       // document.getElementById('textarea').innerHTML = targetTab[n].tabcontent;
@@ -699,7 +699,7 @@ function updateMemoUserlist (channel) {
 
 function updatePartButtonPos () {
   const partButton = document.getElementById('part')
-  const activeTab = gui.tabs.filter((tab) => tab.active === true)
+  const activeTab = pcoClient.tabs.filter((tab) => tab.active === true)
   for (let i = 0; i < activeTab.length; i++) {
     // Should only trigger once
     partButton.style.display = 'inline'
@@ -713,27 +713,27 @@ function updatePartButtonPos () {
 }
 
 function connectButtonEvents () {
-  const tablinks = gui.maintab.getElementsByClassName('tablinks') // Tab buttons
-  // let parts = gui.maintab.getElementsByClassName('part');        // Close tab buttons
+  const tablinks = pcoClient.maintab.getElementsByClassName('tablinks') // Tab buttons
+  // let parts = pcoClient.maintab.getElementsByClassName('part');        // Close tab buttons
   const parts = []
   for (let i = 0; i < tablinks.length; i++) {
     const button = tablinks[i]
     button.addEventListener('click', function (event) {
       const buttontext = event.currentTarget.innerHTML
-      for (let n = 0; n < gui.tabs.length; n++) {
-        // console.log("gui.tabs[n].label === buttontext", gui.tabs[n].label, buttontext)
-        if (gui.tabs[n].label === buttontext) {
-          while (gui.textarea.firstChild) {
-            gui.textarea.removeChild(gui.textarea.firstChild)
+      for (let n = 0; n < pcoClient.tabs.length; n++) {
+        // console.log("pcoClient.tabs[n].label === buttontext", pcoClient.tabs[n].label, buttontext)
+        if (pcoClient.tabs[n].label === buttontext) {
+          while (pcoClient.textarea.firstChild) {
+            pcoClient.textarea.removeChild(pcoClient.textarea.firstChild)
           }
-          gui.textarea.insertAdjacentHTML('beforeend', gui.tabs[n].tabcontent)
+          pcoClient.textarea.insertAdjacentHTML('beforeend', pcoClient.tabs[n].tabcontent)
           const memoUserList = document.getElementById('memoUserlist')
           while (memoUserList.firstChild) {
             memoUserList.removeChild(memoUserList.firstChild)
           }
-          gui.tabs[n].userlist.sort()
-          for (let m = 0; m < gui.tabs[n].userlist.length; m++) {
-            let usrStr = `<div class="memoChumContainer"><div class='memoChum'>${gui.tabs[n].userlist[m]}</div></div>`
+          pcoClient.tabs[n].userlist.sort()
+          for (let m = 0; m < pcoClient.tabs[n].userlist.length; m++) {
+            let usrStr = `<div class="memoChumContainer"><div class='memoChum'>${pcoClient.tabs[n].userlist[m]}</div></div>`
             usrStr = usrStr.replace('@', '<img class=\'userstatus\' height=\'16px\' width=\'16px\' alt=\'op\' src=\'img/op.png\'> ')
             usrStr = usrStr.replace(/&#38;|&/, '<img class=\'userstatus\' height=\'16px\' width=\'16px\' alt=\'admin\' src=\'img/admin.png\'> ')
             usrStr = usrStr.replace('+', '<img class=\'userstatus\' height=\'16px\' width=\'16px\' alt=\'voice\' src=\'img/voice.png\'> ')
@@ -742,16 +742,16 @@ function connectButtonEvents () {
             // memoUserList.innerHTML += usrStr;
             memoUserList.insertAdjacentHTML('beforeend', usrStr)
           }
-          gui.tabs[n].active = true
+          pcoClient.tabs[n].active = true
         } else {
-          gui.tabs[n].active = false
+          pcoClient.tabs[n].active = false
         }
       }
 
       // Set button active class for style
-      for (let n = 0; n < gui.tabs.length; n++) {
-        const tabby = document.getElementById(gui.tabs[n].label)
-        if (gui.tabs[n].active === true) {
+      for (let n = 0; n < pcoClient.tabs.length; n++) {
+        const tabby = document.getElementById(pcoClient.tabs[n].label)
+        if (pcoClient.tabs[n].active === true) {
           if (tabby.className.indexOf(' active') === -1) {
             tabby.className += ' active'
           }
@@ -776,14 +776,14 @@ function connectButtonEvents () {
       const id = event.currentTarget.id.slice(6)
       // const tabby = document.getElementById(id)
       // console.log(event.currentTarget.id.slice(6), tabby)
-      for (let t = 0; t < gui.tabs.length; t++) {
-        if (gui.tabs[t].label === id) {
-          gui.tabs = gui.tabs.splice(t, 1)
+      for (let t = 0; t < pcoClient.tabs.length; t++) {
+        if (pcoClient.tabs[t].label === id) {
+          pcoClient.tabs = pcoClient.tabs.splice(t, 1)
         }
       }
       // tabby.remove();
       // event.currentTarget.remove();
-      gui.updateTabs()
+      pcoClient.updateTabs()
       setTabEnabled(false)
     }
     )
@@ -816,7 +816,7 @@ function setTabEnabled (enabled) {
     }
   }
 
-  if (gui.dead === true) {
+  if (pcoClient.dead === true) {
     // Dead session, don't allow input
     msgElm.disabled = true
     if (msgElm.className.indexOf(' inactive') === -1) {
@@ -899,7 +899,7 @@ function parsePesterchumSyntax (source, target, msg) {
   return output
 }
 
-class GuiClient {
+class PesterchumOnlineClient {
   constructor () {
     this.body = document.getElementsByTagName('body').item(0)
     this.color = document.getElementById('bloodcaste').value
@@ -955,7 +955,7 @@ class GuiClient {
     /* for (let i = 0; i < userButtons.length; i++) {
             userButtons[i].addEventListener('click', function (event) {
                 let buttontext = event.currentTarget.innerHTML;
-                irc.join(buttontext.split(',')[0])
+                ircClient.join(buttontext.split(',')[0])
                 connectButtonEvents()
             }
             );
@@ -964,7 +964,7 @@ class GuiClient {
       userlistChum[i].addEventListener('click', function (event) {
         const userButton = event.currentTarget.getElementsByClassName('userlistButton')[0]
         const buttontext = userButton.innerHTML
-        irc.join(buttontext.split(',')[0])
+        ircClient.join(buttontext.split(',')[0])
         connectButtonEvents()
       }
       )
@@ -1006,9 +1006,9 @@ class GuiClient {
             let userButton = userlistChum[i].getElementsByClassName('userlistButton')[0]
             userButton.addEventListener('click', function (event) {
                 let buttontext = event.currentTarget.innerHTML;
-                irc.msg(buttontext, "PESTERCHUM:BEGIN")
-                gui.addText(irc.handle, buttontext, "PESTERCHUM:BEGIN")
-                gui.updateTabs()
+                ircClient.msg(buttontext, "PESTERCHUM:BEGIN")
+                pcoClient.addText(ircClient.handle, buttontext, "PESTERCHUM:BEGIN")
+                pcoClient.updateTabs()
                 connectButtonEvents()
             }
             )
@@ -1018,9 +1018,9 @@ class GuiClient {
       userlistChum[i].addEventListener('click', function (event) {
         const userButton = event.currentTarget.getElementsByClassName('userlistButton')[0]
         const buttontext = userButton.innerHTML
-        irc.msg(buttontext, 'PESTERCHUM:BEGIN')
-        gui.addText(irc.handle, buttontext, 'PESTERCHUM:BEGIN')
-        gui.updateTabs()
+        ircClient.msg(buttontext, 'PESTERCHUM:BEGIN')
+        pcoClient.addText(ircClient.handle, buttontext, 'PESTERCHUM:BEGIN')
+        pcoClient.updateTabs()
         connectButtonEvents()
       }
       )
@@ -1100,8 +1100,8 @@ class GuiClient {
       // msg = "-- " + source + "[] began pestering " + target + " [] at 00:00 --";
       // msg = `-- ${source}[${getInitials(source)}] began pestering ${target} [${getInitials(target)}] at ${time()} --`;
 
-      const srcInitials = `<c=${gui.chums.getColor(source)}>[${getInitials(source)}]</c>`
-      const targetInitials = `<c=${gui.chums.getColor(target)}>[${getInitials(target)}]</c>`
+      const srcInitials = `<c=${pcoClient.chums.getColor(source)}>[${getInitials(source)}]</c>`
+      const targetInitials = `<c=${pcoClient.chums.getColor(target)}>[${getInitials(target)}]</c>`
       msg = `<c=100,100,100>-- ${source} ${srcInitials} began pestering ${target} ${targetInitials} at ${time()} --</c>`
     }
 
