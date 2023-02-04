@@ -58,6 +58,9 @@ const _userPrefix = /^(@|&#38;|~|&|\+)+/
 // const _escapeable = /&|"|'|<|>/g
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
+let irc
+let gui
+
 function init () {
   const connectButton = document.getElementById('connectButton')
   // const handleInput = document.getElementById('handle')
@@ -108,7 +111,7 @@ function run () {
   }
 
   // Create client + connect
-  const irc = new IrcClient(handle)
+  irc = new IrcClient(handle)
   irc.connect()
 
   // Connection opened
@@ -119,7 +122,7 @@ function run () {
   // Data incoming
   irc.socket.addEventListener('message', function (event) {
     // *ALL* input is sanitized now, the rest of the code needs to account for this.
-    parseIRC(irc, gui, sanitizeHTML(event.data))
+    parseIRC(sanitizeHTML(event.data))
   })
 
   // Disconnected
@@ -136,7 +139,7 @@ function run () {
   })
 
   // Create gui
-  const gui = new GuiClient()
+  gui = new GuiClient()
   gui.clear()
   gui.tabify()
   gui.nick = handle
@@ -145,12 +148,12 @@ function run () {
   msg.addEventListener('submit', function (event) {
     event.stopPropagation()
     event.preventDefault()
-    sendMsg(irc, gui, event)
+    sendMsg(event)
   })
 
   const maintab = document.getElementById('maintab')
   maintab.addEventListener('scroll', function (event) {
-    updatePartButtonPos(gui)
+    updatePartButtonPos()
   })
 
   const manualJoinForm = document.getElementById('manualJoinForm')
@@ -190,14 +193,14 @@ function run () {
       gui.tabs.splice(gui.tabs.indexOf(activeTab[i]), 1)
 
       // Disabled
-      setTabEnabled(gui, false)
+      setTabEnabled(false)
     }
   }
   )
-  connectMemoUserlistSwitch(irc, gui)
+  connectMemoUserlistSwitch()
 }
 
-function sendMsg (irc, gui, event) {
+function sendMsg (event) {
   const msgInput = document.getElementById('msg')
   const nick = irc.handle
   const initials = getInitials(nick)
@@ -288,7 +291,7 @@ function time () {
   return timeStamp
 }
 
-function parseIRC (irc, gui, data) {
+function parseIRC (data) {
   // Parse IRC message
   // message ::= ['@' <tags> SPACE] [':' <source> SPACE] <command> <parameters> <crlf>
   console.log('Received message from server ', data)
@@ -391,9 +394,9 @@ function parseIRC (irc, gui, data) {
         // console.log('wpp', color)
         gui.chums.setColor(sourcenick, color)
       }
-      gui.addText(gui, sourcenick, target, msg)
+      gui.addText(sourcenick, target, msg)
       gui.updateTabs()
-      connectButtonEvents(irc, gui)
+      connectButtonEvents()
       break
     case 'NOTICE':
       // Incoming message
@@ -521,7 +524,7 @@ function parseIRC (irc, gui, data) {
     case '323':
       // RPL_LISTEND
       if (gui.MemosTabOpen === true) {
-        gui.updateMemolist(irc, gui)
+        gui.updateMemolist()
       }
       break
     case '353':
@@ -564,14 +567,14 @@ function parseIRC (irc, gui, data) {
       if (channel === '#pesterchum') {
         irc.msg('#pesterchum', 'MOOD >0')
         if (gui.MemosTabOpen === false) {
-          gui.updateUserlist(irc, gui)
+          gui.updateUserlist()
         }
       } else {
         gui.openChannelTab(channel)
         gui.updateTabs()
-        connectButtonEvents(irc, gui)
+        connectButtonEvents()
       }
-      updateMemoUserlist(gui, channel)
+      updateMemoUserlist(channel)
       break
     case '433':
       alert('TH4T H4NDL3 1S T4K3N 4LR34DY >:[')
@@ -644,7 +647,7 @@ class MemoConvoTab {
   }
 }
 
-function connectMemoUserlistSwitch (irc, gui) {
+function connectMemoUserlistSwitch () {
   const uButton = document.getElementById('userlistButton')
   const mButton = document.getElementById('memolistButton')
 
@@ -654,7 +657,7 @@ function connectMemoUserlistSwitch (irc, gui) {
     }
     mButton.className = mButton.className.replace(' active', '')
     gui.MemosTabOpen = false
-    gui.updateUserlist(irc, gui)
+    gui.updateUserlist()
     gui.userlist = []
     irc.names('#pesterchum')
   }
@@ -665,14 +668,14 @@ function connectMemoUserlistSwitch (irc, gui) {
     }
     uButton.className = uButton.className.replace(' active', '')
     gui.MemosTabOpen = true
-    gui.updateMemolist(irc, gui)
+    gui.updateMemolist()
     gui.memolist = []
     irc.list()
   }
   )
 }
 
-function updateMemoUserlist (gui, channel) {
+function updateMemoUserlist (channel) {
   const targetTab = gui.tabs.filter((tab) => tab.label === channel)
   for (let n = 0; n < targetTab.length; n++) {
     if (targetTab[n].active === true) {
@@ -694,7 +697,7 @@ function updateMemoUserlist (gui, channel) {
   }
 }
 
-function updatePartButtonPos (gui) {
+function updatePartButtonPos () {
   const partButton = document.getElementById('part')
   const activeTab = gui.tabs.filter((tab) => tab.active === true)
   for (let i = 0; i < activeTab.length; i++) {
@@ -709,7 +712,7 @@ function updatePartButtonPos (gui) {
   }
 }
 
-function connectButtonEvents (irc, gui) {
+function connectButtonEvents () {
   const tablinks = gui.maintab.getElementsByClassName('tablinks') // Tab buttons
   // let parts = gui.maintab.getElementsByClassName('part');        // Close tab buttons
   const parts = []
@@ -758,10 +761,10 @@ function connectButtonEvents (irc, gui) {
       }
 
       // Manage the close button
-      updatePartButtonPos(gui)
+      updatePartButtonPos()
 
       // We're doing active stuff
-      setTabEnabled(gui, true)
+      setTabEnabled(true)
     }
     )
   }
@@ -781,13 +784,13 @@ function connectButtonEvents (irc, gui) {
       // tabby.remove();
       // event.currentTarget.remove();
       gui.updateTabs()
-      setTabEnabled(gui, false)
+      setTabEnabled(false)
     }
     )
   }
 }
 
-function setTabEnabled (gui, enabled) {
+function setTabEnabled (enabled) {
   const msgElm = document.getElementById('msg')
   const txtElm = document.getElementById('textarea')
   const mUserElm = document.getElementById('memoUserlist')
@@ -930,7 +933,7 @@ class GuiClient {
     }
   }
 
-  updateMemolist (irc, gui) {
+  updateMemolist () {
     // Server memolist
     this.memolist.sort() // abc sort
     this.memolist.sort((a, b) => b[1] - a[1]) // Sort by usercount
@@ -953,7 +956,7 @@ class GuiClient {
             userButtons[i].addEventListener('click', function (event) {
                 let buttontext = event.currentTarget.innerHTML;
                 irc.join(buttontext.split(',')[0])
-                connectButtonEvents(irc, gui)
+                connectButtonEvents()
             }
             );
         } */
@@ -962,13 +965,13 @@ class GuiClient {
         const userButton = event.currentTarget.getElementsByClassName('userlistButton')[0]
         const buttontext = userButton.innerHTML
         irc.join(buttontext.split(',')[0])
-        connectButtonEvents(irc, gui)
+        connectButtonEvents()
       }
       )
     }
   }
 
-  updateUserlist (irc, gui) {
+  updateUserlist () {
     // Server userlist
     this.userlist.sort() // abc sort
     this.userlist.sort((a, b) => {
@@ -1006,7 +1009,7 @@ class GuiClient {
                 irc.msg(buttontext, "PESTERCHUM:BEGIN")
                 gui.addText(irc.handle, buttontext, "PESTERCHUM:BEGIN")
                 gui.updateTabs()
-                connectButtonEvents(irc, gui)
+                connectButtonEvents()
             }
             )
         }
@@ -1016,9 +1019,9 @@ class GuiClient {
         const userButton = event.currentTarget.getElementsByClassName('userlistButton')[0]
         const buttontext = userButton.innerHTML
         irc.msg(buttontext, 'PESTERCHUM:BEGIN')
-        gui.addText(gui, irc.handle, buttontext, 'PESTERCHUM:BEGIN')
+        gui.addText(irc.handle, buttontext, 'PESTERCHUM:BEGIN')
         gui.updateTabs()
-        connectButtonEvents(irc, gui)
+        connectButtonEvents()
       }
       )
     }
@@ -1090,7 +1093,7 @@ class GuiClient {
     }
   }
 
-  addText (gui, source, target, msg) {
+  addText (source, target, msg) {
     // pchum begin
     if (msg === 'PESTERCHUM:BEGIN') {
       // -- Horse [HH] began pestering Horse [HH] at 07:19 --
