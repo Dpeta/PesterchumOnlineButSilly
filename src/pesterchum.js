@@ -322,6 +322,7 @@ function parseIRC (irc, gui, data) {
   let srcInitials = ''
   let targetInitials = ''
   let updateQue = []
+  const memoStartMsg = msg.match(_memoMsgStart)
 
   switch (command) {
     // Commands
@@ -385,9 +386,8 @@ function parseIRC (irc, gui, data) {
         return
       }
 
-      const start = msg.match(_memoMsgStart)
-      if (start !== null) {
-        const color = start[0].match(_ctagRgbHex)[0]
+      if (memoStartMsg !== null) {
+        const color = memoStartMsg[0].match(_ctagRgbHex)[0]
         // console.log('wpp', color)
         gui.chums.setColor(sourcenick, color)
       }
