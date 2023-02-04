@@ -56,8 +56,17 @@ const _evilRuleImSoSorry = /.*--.+\[..\].+\[..\].+\d\d:\d\d --.*/gi
 const _url = /\b(https:\/\/(\w|\d|\.|\/)*)/gi
 const _userPrefix = /^(@|&#38;|~|&|\+)+/
 // const _escapeable = /&|"|'|<|>/g
+const _honk = /honk/gi
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
+// Audio
+let alarmMemo
+let alarmDm
+let alarmMention
+let soundCease
+let soundHonk
+
+// The important!!
 let ircClient
 let pcoClient
 
@@ -100,6 +109,9 @@ function runCheck () {
 }
 
 function run () {
+  // Load Audio (26kb)
+  loadAudio()
+
   // Get Handle
   const handleInput = document.getElementById('handle')
   const handle = handleInput.value
@@ -198,6 +210,14 @@ function run () {
   }
   )
   connectMemoUserlistSwitch()
+}
+
+function loadAudio () {
+  alarmMemo = new Audio('sound/aac.m4a/alarm_memo.m4a')
+  alarmDm = new Audio('sound/aac.m4a/alarm_direct_message.m4a')
+  alarmMention = new Audio('sound/aac.m4a/alarm_mention.m4a')
+  soundCease = new Audio('sound/aac.m4a/cease_direct_message.m4a')
+  soundHonk = new Audio('sound/aac.m4a/evil.m4a')
 }
 
 function sendMsg (event) {
@@ -1155,6 +1175,7 @@ class PesterchumOnlineClient {
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
           this.tabs[i].tabcontent += `<div>${msg}</div>`
+          audioCheck(true, msg)
         }
       } else if (source !== this.nick) {
         // This is not to a memo, we didn't send this msg.
@@ -1163,6 +1184,7 @@ class PesterchumOnlineClient {
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
           this.tabs[i].tabcontent += `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`
+          audioCheck(false, msg)
         }
       } else if (source === this.nick) {
         // This is not to a memo, we send this msg.
@@ -1269,6 +1291,27 @@ class PesterchumOnlineClient {
 
   clear () {
     this.body.innerHTML = ''
+  }
+}
+
+function audioCheck (isToMemo, msg) {
+  /* Check if we should play a goofy silly sound. */
+  if (_honk.test(msg)) {
+    // We were honked!!
+    soundHonk.play()
+  }
+  if (isToMemo) {
+    if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
+      // We were mentioned!!
+      alarmMention.play()
+    }
+    alarmMemo.play()
+  } else {
+    if (_evilRuleImSoSorry.test(msg)) {
+      soundCease.play()
+    } else {
+      alarmDm.play()
+    }
   }
 }
 
