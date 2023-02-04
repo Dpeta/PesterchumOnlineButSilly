@@ -78,7 +78,7 @@ function init () {
 
   // Default value
   const tagCheck = document.getElementById('allowUnsafeTags')
-  if (tagCheck != null) {
+  if (tagCheck !== null) {
     tagCheck.checked = false
   }
 }
@@ -87,7 +87,7 @@ function runCheck () {
   // Get Handle
   const handleInput = document.getElementById('handle')
 
-  if (_chumhandle.test(handleInput.value) == true) {
+  if (_chumhandle.test(handleInput.value) === true) {
     // Valid chumhandle
     run()
   } else {
@@ -103,7 +103,7 @@ function run () {
 
   // Get escape-allowed setting
   const tagCheck = document.getElementById('allowUnsafeTags')
-  if (tagCheck != null) {
+  if (tagCheck !== null) {
     allowTags = tagCheck.checked
   }
 
@@ -168,7 +168,7 @@ function run () {
 
   const partButton = document.getElementById('part')
   partButton.addEventListener('click', function (event) {
-    const activeTab = gui.tabs.filter((tab) => tab.active == true)
+    const activeTab = gui.tabs.filter((tab) => tab.active === true)
     for (let i = 0; i < activeTab.length; i++) {
       // Should only trigger once
 
@@ -180,7 +180,7 @@ function run () {
       event.currentTarget.style.display = 'none'
 
       // Part / Cease
-      if (activeTab[i].memo == true) {
+      if (activeTab[i].memo === true) {
         irc.part(activeTab[i].label)
       } else {
         irc.msg(activeTab[i].label, 'PESTERCHUM:CEASE')
@@ -211,28 +211,28 @@ function sendMsg (irc, gui, event) {
   for (let q = 0; q < splitMsg.length; q++) {
     msg = splitMsg[q]
     baremsg = msg
-    if ((msg.indexOf('/me ') != 0) && (msg.indexOf('/me\'s ') != 0)) {
+    if ((msg.indexOf('/me ') !== 0) && (msg.indexOf('/me\'s ') !== 0)) {
       msg = `<c=${gui.color}>${initials}: ${baremsg}</c>`
     }
 
     // Send to who?
     for (let n = 0; n < gui.tabs.length; n++) {
-      if (gui.tabs[n].active == true) {
-        if (gui.tabs[n].memo == true) {
+      if (gui.tabs[n].active === true) {
+        if (gui.tabs[n].memo === true) {
           irc.msg(gui.tabs[n].label, msg)
         } else {
           irc.msg(gui.tabs[n].label, baremsg)
         }
         msg = sanitizeHTML(msg)
         msg = parsePesterchumSyntax(null, gui.tabs[n].label, msg)
-        if (msg.indexOf('/me ') == 0) {
-          if (gui.tabs[n].memo == true) {
+        if (msg.indexOf('/me ') === 0) {
+          if (gui.tabs[n].memo === true) {
             msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick} <span style='color: ${gui.color};'>[C${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           } else {
             msg = `<span style='color: rgb(100,100,100)'>-- ${nick} <span style='color: ${gui.color};'>[${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           }
-        } else if (msg.indexOf('/me\'s ') == 0) {
-          if (gui.tabs[n].memo == true) {
+        } else if (msg.indexOf('/me\'s ') === 0) {
+          if (gui.tabs[n].memo === true) {
             msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick}'s <span style='color: ${gui.color};'>[C${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
           } else {
             msg = `<span style='color: rgb(100,100,100)'>-- ${nick}'s <span style='color: ${gui.color};'>[${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
@@ -250,12 +250,12 @@ function getInitials (nick) {
   // Initials
   let initials = nick[0].toUpperCase()
   for (let i = 0; i < nick.length; i++) {
-    if (nick[i] == nick[i].toUpperCase()) {
+    if (nick[i] === nick[i].toUpperCase()) {
       initials += nick[i]
       break
     }
   }
-  if (initials.length == 1) {
+  if (initials.length === 1) {
     initials += nick[0].toUpperCase()
   }
   return initials
@@ -268,7 +268,7 @@ function time () {
   const minute = String(currentdate.getMinutes())
   let timeStamp = ''
   // console.log('hour', typeof(hour), hour.length)
-  if (hour.length == 1) {
+  if (hour.length === 1) {
     // 1:XX --> 01:XX
     timeStamp += `0${hour}`
   } else {
@@ -276,7 +276,7 @@ function time () {
     timeStamp += hour
   }
   timeStamp += ':'
-  if (minute.length == 1) {
+  if (minute.length === 1) {
     // XX:1 --> XX:01
     timeStamp += `0${minute}`
   } else {
@@ -296,7 +296,7 @@ function parseIRC (irc, gui, data) {
   let source = ''
   let command = ''
   let params = []
-  if (parts[0][0] == ':') {
+  if (parts[0][0] === ':') {
     // Has source
     source = parts[0]
     command = parts[1]
@@ -336,31 +336,31 @@ function parseIRC (irc, gui, data) {
       msgparts = params.slice(1)
       // console.log('Incoming PRIVMSG ', params);
       // If #pesterchum, return
-      if (target == '#pesterchum') {
+      if (target === '#pesterchum') {
         return
       }
       // Reassemble message
       msg = msgparts[0]
-      if (msg[0] == ':') {
+      if (msg[0] === ':') {
         msg = msg.slice(1)
       }
       for (let i = 1; i < msgparts.length; i++) {
         msg += ' ' + msgparts[i]
       }
 
-      if (msg == 'PESTERCHUM:BEGIN') {
+      if (msg === 'PESTERCHUM:BEGIN') {
         // -- Horse [HH] began pestering Horse [HH] at 07:19 --
         srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         targetInitials = `<c=${gui.chums.getColor(target)}>[${getInitials(target)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} began pestering ${target} ${targetInitials} at ${time()} --</c>`
-      } else if (msg == 'PESTERCHUM:CEASE') {
+      } else if (msg === 'PESTERCHUM:CEASE') {
         srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         targetInitials = `<c=${gui.chums.getColor(target)}>[${getInitials(target)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} ceased pestering ${target} ${targetInitials} at ${time()} --</c>`
-      } else if (msg == 'PESTERCHUM:IDLE') {
+      } else if (msg === 'PESTERCHUM:IDLE') {
         srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         msg = `<c=100,100,100>-- ${sourcenick} ${srcInitials} is now an idle chum! --</c>`
-      } else if (msg.indexOf('/me ') == 0) {
+      } else if (msg.indexOf('/me ') === 0) {
         // msg = "-- CURRENT " + sourcenick + " [] " + msg.slice(4) + " --"
         if (_memoprefix.test(target[0])) {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}]</c>`
@@ -368,25 +368,25 @@ function parseIRC (irc, gui, data) {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick} ${srcInitials} ${msg.slice(4)} --</c>`
-      } else if (msg.indexOf('/me\'s ') == 0) {
+      } else if (msg.indexOf('/me\'s ') === 0) {
         if (_memoprefix.test(target[0])) {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[C${getInitials(sourcenick)}'S]</c>`
         } else {
           srcInitials = `<c=${gui.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}'S]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick}'s ${srcInitials} ${msg.slice(6)} --</c>`
-      } else if (_color_msg.test(msg) == true) {
+      } else if (_color_msg.test(msg) === true) {
         // let cMatch = msg.match(_ctag_rgb)
         const color = msg.match(_color_msg_rgb)
         console.log('color: ' + color)
         gui.chums.setColor(sourcenick, color)
         return
-      } else if (msg.indexOf('PESTERCHUM:') != -1) {
+      } else if (msg.indexOf('PESTERCHUM:') !== -1) {
         return
       }
 
       const start = msg.match(_memomsg_start)
-      if (start != null) {
+      if (start !== null) {
         const color = start[0].match(_ctag_rgbhex)[0]
         // console.log('wpp', color)
         gui.chums.setColor(sourcenick, color)
@@ -406,18 +406,18 @@ function parseIRC (irc, gui, data) {
         msg = data.slice(data.indexOf(msgparts[0].slice(1))) // Data from & incl. channel
         urls = msg.match(_url)
         // console.log('urls: ', urls)
-        if (urls != null) {
+        if (urls !== null) {
           for (let i = 0; i < urls.length; i++) {
             msg = msg.replaceAll(urls[i], `<a href=${urls[i]}>${urls[i]}</a>`)
           }
         }
         // console.log(sourcenick, target, msgparts, channel, msg)
         for (let n = 0; n < gui.tabs.length; n++) {
-          if (gui.tabs[n].label.toLowerCase() == channel.toLowerCase()) {
+          if (gui.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
             gui.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
-          } else if ((gui.tabs[n].label.toLowerCase() == sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) != -1)) {
+          } else if ((gui.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
             // Services messages
-            if (((msg.indexOf('Unknown command') != -1) && (msg.indexOf('PESTERCHUM:BEGIN') != -1)) == false) {
+            if (((msg.indexOf('Unknown command') !== -1) && (msg.indexOf('PESTERCHUM:BEGIN') !== -1)) === false) {
               gui.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
             }
           }
@@ -430,7 +430,7 @@ function parseIRC (irc, gui, data) {
       // Kicked
       if (params.length > 0) {
         const reason = params.slice(1)
-        // if (reason[0] == ':') {
+        // if (reason[0] === ':') {
         //    reason = reason.split(':')[1]
         // }
         alert('USER WAS KICKED FROM SERVER' +
@@ -451,7 +451,7 @@ function parseIRC (irc, gui, data) {
       console.log('sourcenick: ' + sourcenick)
       for (let i = 0; i < params.length; i++) {
         console.log('params[i]:', params[i])
-        if ((params[i] != ':#pesterchum') && (params[i] != '#pesterchum')) {
+        if ((params[i] !== ':#pesterchum') && (params[i] !== '#pesterchum')) {
           irc.names(params[i])
         }
       }
@@ -459,8 +459,8 @@ function parseIRC (irc, gui, data) {
     case 'PART':
       // goo b,,
       sourcenick = source.slice(1).split('!')[0]
-      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) != -1)
-      updateQue = updateQue.filter((tab) => params.indexOf(tab.label) != -1)
+      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
+      updateQue = updateQue.filter((tab) => params.indexOf(tab.label) !== -1)
       for (let i = 0; i < updateQue.length; i++) {
         // CMM ceased responding to memo.
         const leaveMsg = `<span style='color: black;'>C${getInitials(sourcenick)}</span> <span style='color: #646464;'>ceased responding to memo.</span>`
@@ -473,8 +473,8 @@ function parseIRC (irc, gui, data) {
     case 'QUIT':
       // goo b,,
       sourcenick = source.slice(1).split('!')[0]
-      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) != -1)
-      // updateQue = gui.tabs.filter(tab => tab.label != "#pesterchum");
+      updateQue = gui.tabs.filter((tab) => tab.userlist.indexOf(sourcenick) !== -1)
+      // updateQue = gui.tabs.filter(tab => tab.label !== "#pesterchum");
       for (let i = 0; i < updateQue.length; i++) {
         updateQue[i].userlist = []
         irc.names(updateQue[i].label)
@@ -487,7 +487,7 @@ function parseIRC (irc, gui, data) {
     case 'MODE':
       // mode,,
       // OP status may have changed
-      updateQue = gui.tabs.filter((tab) => tab.label == params[0])
+      updateQue = gui.tabs.filter((tab) => tab.label === params[0])
       for (let i = 0; i < updateQue.length; i++) {
         updateQue[i].userlist = []
         irc.names(updateQue[i].label)
@@ -512,7 +512,7 @@ function parseIRC (irc, gui, data) {
       // "<channel> <# visible> :<topic>"
       channel = params[1]
       users = params[2]
-      if (channel == '#pesterchum') {
+      if (channel === '#pesterchum') {
         return
       }
       gui.memolist.push([channel, users])
@@ -520,7 +520,7 @@ function parseIRC (irc, gui, data) {
       break
     case '323':
       // RPL_LISTEND
-      if (gui.MemosTabOpen == true) {
+      if (gui.MemosTabOpen === true) {
         gui.updateMemolist(irc, gui)
       }
       break
@@ -528,18 +528,18 @@ function parseIRC (irc, gui, data) {
       // RPL_NAMREPLY
       // "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
       channel = params[2]
-      if (params[3][0] == ':') {
+      if (params[3][0] === ':') {
         params[3] = params[3].slice(1)
       }
       users = params.slice(3)
 
-      if (channel != '#pesterchum') {
+      if (channel !== '#pesterchum') {
         gui.openChannelTab(channel)
         // Add user to list if not present
         for (let n = 0; n < gui.tabs.length; n++) {
-          if (gui.tabs[n].label == channel) {
+          if (gui.tabs[n].label === channel) {
             for (let i = 0; i < users.length; i++) {
-              if (gui.tabs[n].userlist.indexOf(users[i]) == -1) {
+              if (gui.tabs[n].userlist.indexOf(users[i]) === -1) {
                 gui.tabs[n].userlist.push(users[i])
                 // console.log(gui.tabs[n].userlist);
               }
@@ -549,7 +549,7 @@ function parseIRC (irc, gui, data) {
       } else {
         for (let i = 0; i < users.length; i++) {
           const user = users[i].replace(_user_prefix, '')
-          if (gui.userlist.indexOf(user) == -1) {
+          if (gui.userlist.indexOf(user) === -1) {
             gui.userlist.push(user)
             // console.log(gui.userlist);
           }
@@ -561,9 +561,9 @@ function parseIRC (irc, gui, data) {
       // RPL_ENDOFNAMES
       client = params[0]
       channel = params[1]
-      if (channel == '#pesterchum') {
+      if (channel === '#pesterchum') {
         irc.msg('#pesterchum', 'MOOD >0')
-        if (gui.MemosTabOpen == false) {
+        if (gui.MemosTabOpen === false) {
           gui.updateUserlist(irc, gui)
         }
       } else {
@@ -592,7 +592,7 @@ class chums {
   }
 
   setColor (handle, color) {
-    const chumMatches = this.chums.filter((chum) => chum.handle == handle)
+    const chumMatches = this.chums.filter((chum) => chum.handle === handle)
     // console.log(chumMatches)
     if (chumMatches.length > 0) {
       // Change color for matches
@@ -607,7 +607,7 @@ class chums {
   }
 
   getColor (handle) {
-    const chumMatches = this.chums.filter((chum) => chum.handle == handle)
+    const chumMatches = this.chums.filter((chum) => chum.handle === handle)
     if (chumMatches.length > 0) {
       return chumMatches[0].color
     } else {
@@ -625,13 +625,13 @@ class memoConvoTab {
     this.announced = []
     this.active = false
 
-    if (label == null) {
+    if (label === null) {
       if (_memoprefix.test(target[0])) {
         this.memo = true
         this.label = target
       } else {
         this.memo = false
-        if (source[0] == ':') {
+        if (source[0] === ':') {
           this.label = source.slice(1).split('!')[0]
         } else {
           this.label = source.split('!')[0]
@@ -649,7 +649,7 @@ function connectMemoUserlistSwitch (irc, gui) {
   const mButton = document.getElementById('memolistButton')
 
   uButton.addEventListener('click', function (event) {
-    if (event.currentTarget.className.indexOf(' active') == -1) {
+    if (event.currentTarget.className.indexOf(' active') === -1) {
       event.currentTarget.className += ' active'
     }
     mButton.className = mButton.className.replace(' active', '')
@@ -660,7 +660,7 @@ function connectMemoUserlistSwitch (irc, gui) {
   }
   )
   mButton.addEventListener('click', function (event) {
-    if (event.currentTarget.className.indexOf(' active') == -1) {
+    if (event.currentTarget.className.indexOf(' active') === -1) {
       event.currentTarget.className += ' active'
     }
     uButton.className = uButton.className.replace(' active', '')
@@ -673,9 +673,9 @@ function connectMemoUserlistSwitch (irc, gui) {
 }
 
 function updateMemoUserlist (gui, channel) {
-  const targetTab = gui.tabs.filter((tab) => tab.label == channel)
+  const targetTab = gui.tabs.filter((tab) => tab.label === channel)
   for (let n = 0; n < targetTab.length; n++) {
-    if (targetTab[n].active == true) {
+    if (targetTab[n].active === true) {
       // document.getElementById('textarea').innerHTML = targetTab[n].tabcontent;
       const memoUserList = document.getElementById('memoUserlist')
       memoUserList.innerHTML = ''
@@ -696,7 +696,7 @@ function updateMemoUserlist (gui, channel) {
 
 function updatePartButtonPos (gui) {
   const partButton = document.getElementById('part')
-  const activeTab = gui.tabs.filter((tab) => tab.active == true)
+  const activeTab = gui.tabs.filter((tab) => tab.active === true)
   for (let i = 0; i < activeTab.length; i++) {
     // Should only trigger once
     partButton.style.display = 'inline'
@@ -718,8 +718,8 @@ function connectButtonEvents (irc, gui) {
     button.addEventListener('click', function (event) {
       const buttontext = event.currentTarget.innerHTML
       for (let n = 0; n < gui.tabs.length; n++) {
-        // console.log("gui.tabs[n].label == buttontext", gui.tabs[n].label, buttontext)
-        if (gui.tabs[n].label == buttontext) {
+        // console.log("gui.tabs[n].label === buttontext", gui.tabs[n].label, buttontext)
+        if (gui.tabs[n].label === buttontext) {
           while (gui.textarea.firstChild) {
             gui.textarea.removeChild(gui.textarea.firstChild)
           }
@@ -748,8 +748,8 @@ function connectButtonEvents (irc, gui) {
       // Set button active class for style
       for (let n = 0; n < gui.tabs.length; n++) {
         const tabby = document.getElementById(gui.tabs[n].label)
-        if (gui.tabs[n].active == true) {
-          if (tabby.className.indexOf(' active') == -1) {
+        if (gui.tabs[n].active === true) {
+          if (tabby.className.indexOf(' active') === -1) {
             tabby.className += ' active'
           }
         } else {
@@ -774,7 +774,7 @@ function connectButtonEvents (irc, gui) {
       const tabby = document.getElementById(id)
       // console.log(event.currentTarget.id.slice(6), tabby)
       for (let t = 0; t < gui.tabs.length; t++) {
-        if (gui.tabs[t].label == id) {
+        if (gui.tabs[t].label === id) {
           gui.tabs = gui.tabs.splice(t, 1)
         }
       }
@@ -791,16 +791,16 @@ function setTabEnabled (gui, enabled) {
   const msgElm = document.getElementById('msg')
   const txtElm = document.getElementById('textarea')
   const mUserElm = document.getElementById('memoUserlist')
-  if (enabled == true) {
+  if (enabled === true) {
     // We're doing active stuff
     msgElm.disabled = false
     msgElm.className = msgElm.className.replace(' inactive', '')
     txtElm.className = txtElm.className.replace(' inactive', '')
     mUserElm.className = mUserElm.className.replace(' inactive', '')
-  } else if (enabled == false) {
+  } else if (enabled === false) {
     msgElm.disabled = true
     const allclassnames = msgElm.className + txtElm.className + mUserElm.className
-    if (allclassnames.indexOf(' inactive') == -1) {
+    if (allclassnames.indexOf(' inactive') === -1) {
       msgElm.className += ' inactive'
       txtElm.className += ' inactive'
       mUserElm.className += ' inactive'
@@ -813,10 +813,10 @@ function setTabEnabled (gui, enabled) {
     }
   }
 
-  if (gui.dead == true) {
+  if (gui.dead === true) {
     // Dead session, don't allow input
     msgElm.disabled = true
-    if (msgElm.className.indexOf(' inactive') == -1) {
+    if (msgElm.className.indexOf(' inactive') === -1) {
       msgElm.className += ' inactive'
     }
   }
@@ -827,13 +827,13 @@ function parsePesterchumSyntax (source, target, msg) {
   let output = msg
 
   // Timeline
-  if (target != null) {
-    if ((target[0] == '#') || (target[0] == '&')) {
+  if (target !== null) {
+    if ((target[0] === '#') || (target[0] === '&')) {
       // Memo
       // Add timeline
       // console.log(output)
       let start = output.match(_memomsg_start)
-      if (start != null) {
+      if (start !== null) {
         start = start[0]
         const initials = start.match(_initials)
         start = start.replace(_initials, 'C' + initials)
@@ -843,14 +843,14 @@ function parsePesterchumSyntax (source, target, msg) {
   }
   const ctags = output.match(_ctag_begin)
   const smilies = output.match(_smilies)
-  if (ctags != null) {
+  if (ctags !== null) {
     for (let i = 0; i < ctags.length; i++) {
       const rgb = ctags[i].match(_ctag_rgb)
-      if (rgb != null) {
+      if (rgb !== null) {
         output = output.replace(ctags[i], '<span style=\'color: rgb(' + rgb[0] + ');\'>')
       }
       const hex = ctags[i].match(_ctag_hex)
-      if (hex != null) {
+      if (hex !== null) {
         output = output.replace(ctags[i], '<span style=\'color: ' + hex[0] + ';\'>')
       }
     }
@@ -859,7 +859,7 @@ function parsePesterchumSyntax (source, target, msg) {
   output = output.replaceAll(sanitizeHTML('</c>'), '</span>')
 
   // Smilies
-  if (smilies != null) {
+  if (smilies !== null) {
     for (let i = 0; i < smilies.length; i++) {
       const smilename = smilies[i].replaceAll(':', '')
       const filename = smilename + '.gif'
@@ -868,25 +868,25 @@ function parsePesterchumSyntax (source, target, msg) {
     }
   }
 
-  if (target != null) {
-    if ((target[0] == '#') || (target[0] == '&')) {
+  if (target !== null) {
+    if ((target[0] === '#') || (target[0] === '&')) {
       // Memo
       output = output
-    } else if (source != null) {
+    } else if (source !== null) {
       // Convo
       // Get nick
       let nick = ''
-      if (source[0] == ':') {
+      if (source[0] === ':') {
         nick = source.slice(1)
-        if (nick.indexOf('!') != -1) {
+        if (nick.indexOf('!') !== -1) {
           nick = nick.split('!')[0]
         }
       } else {
         nick = source
       }
       // console.log(source, target, msg)
-      // if (_evil_rule_im_so_sorry.test(msg) == false) {
-      if (msg.search(_evil_rule_im_so_sorry) == -1) {
+      // if (_evil_rule_im_so_sorry.test(msg) === false) {
+      if (msg.search(_evil_rule_im_so_sorry) === -1) {
         // console.log('yea')
         const initials = getInitials(nick)
         output = initials + ': ' + output
@@ -916,12 +916,12 @@ class clientGUI {
     var found = false
     for (let i = 0; i < this.tabs.length; i++) {
       // This is to a memo
-      if ((channel == this.tabs[i].label) && (this.tabs[i].memo == true)) {
+      if ((channel === this.tabs[i].label) && (this.tabs[i].memo === true)) {
         var found = true
       }
     }
     // If we don't have a tab for the source, make one.
-    if (found == false) {
+    if (found === false) {
       // console.log('New tab ', channel);
       const newtab = new memoConvoTab(channel, channel, null)
       const board = channel.slice(1).toUpperCase()
@@ -939,7 +939,7 @@ class clientGUI {
       chumroll.removeChild(chumroll.firstChild)
     }
     for (let i = 0; i < this.memolist.length; i++) {
-      if (this.memolist[i] != '') {
+      if (this.memolist[i] !== '') {
         const memostr = `${this.memolist[i][0]} (${this.memolist[i][1]})`
         // chumroll.innerHTML += "<div class='userlistChum'><button class='userlistButton'>" + memostr + "</button></div>";
         chumroll.insertAdjacentHTML('beforeend', '<div class=\'userlistChum\'><button class=\'userlistButton\'>' + memostr + '</button></div>')
@@ -975,11 +975,11 @@ class clientGUI {
       // Put invalid handles last
       const aIsHandle = _chumhandle.test(a)
       const bIsHandle = _chumhandle.test(b)
-      if (aIsHandle == bIsHandle) {
+      if (aIsHandle === bIsHandle) {
         return 0
-      } else if ((aIsHandle == true) || (bIsHandle == false)) {
+      } else if ((aIsHandle === true) || (bIsHandle === false)) {
         return -1
-      } else if ((aIsHandle == false) || (bIsHandle == true)) {
+      } else if ((aIsHandle === false) || (bIsHandle === true)) {
         return 1
       }
     })
@@ -988,7 +988,7 @@ class clientGUI {
       chumroll.removeChild(chumroll.firstChild)
     }
     for (let i = 0; i < this.userlist.length; i++) {
-      if (this.userlist[i] != '') {
+      if (this.userlist[i] !== '') {
         // chumroll.innerHTML += "<div class='userlistChum'><button class='userlistButton'>" + this.userlist[i] + "</button></div>";
         chumroll.insertAdjacentHTML('beforeend', '<div class=\'userlistChum\'><button class=\'userlistButton\'>' + this.userlist[i] + '</button></div>')
       }
@@ -1036,7 +1036,7 @@ class clientGUI {
       const pos = tablinksInner.indexOf(label)
       if (_memoprefix.test(label)) {
         // Memo
-        if (pos == -1) {
+        if (pos === -1) {
           // Not present
           // this.maintab.innerHTML += `<button id='${label}' class='tablinks'>${label}</button>`;
           this.maintab.insertAdjacentHTML('beforeend', `<button id='${label}' class='tablinks'>${label}</button>`)
@@ -1044,7 +1044,7 @@ class clientGUI {
         }
       } else {
         // Convo
-        if (pos == -1) {
+        if (pos === -1) {
           // Not present
           // this.maintab.innerHTML += `<button id='${label}' class='tablinks'>${label}</button>`;
           this.maintab.insertAdjacentHTML('beforeend', `<button id='${label}' class='tablinks'>${label}</button>`)
@@ -1077,7 +1077,7 @@ class clientGUI {
     // textarea
     for (let n = 0; n < this.tabs.length; n++) {
       // console.log(this.tabs[n])
-      if (this.tabs[n].active == true) {
+      if (this.tabs[n].active === true) {
         // this.textarea.innerHTML = this.tabs[n].tabcontent;
         while (this.textarea.firstChild) {
           this.textarea.removeChild(this.textarea.firstChild)
@@ -1090,7 +1090,7 @@ class clientGUI {
 
   addText (gui, source, target, msg) {
     // pchum begin
-    if (msg == 'PESTERCHUM:BEGIN') {
+    if (msg === 'PESTERCHUM:BEGIN') {
       // -- Horse [HH] began pestering Horse [HH] at 07:19 --
       // msg = "-- " + source + "[] began pestering " + target + " [] at 00:00 --";
       // msg = `-- ${source}[${getInitials(source)}] began pestering ${target} [${getInitials(target)}] at ${time()} --`;
@@ -1105,30 +1105,30 @@ class clientGUI {
     for (let i = 0; i < this.tabs.length; i++) {
       if (_memoprefix.test(target[0])) {
         // This is to a memo
-        if ((target == this.tabs[i].target) && (this.tabs[i].memo == true)) {
+        if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
           var found = true
         }
-      } else if (source != this.nick) {
+      } else if (source !== this.nick) {
         // This is not to a memo
-        if ((source == this.tabs[i].label) && (this.tabs[i].memo == false)) {
+        if ((source === this.tabs[i].label) && (this.tabs[i].memo === false)) {
           var found = true
         }
-      } else if (source == this.nick) {
+      } else if (source === this.nick) {
         // This is not to a memo
-        if ((target == this.tabs[i].label) && (this.tabs[i].memo == false)) {
+        if ((target === this.tabs[i].label) && (this.tabs[i].memo === false)) {
           var found = true
         }
       }
     }
     // If we don't have a tab for the source, make one.
-    if (found == false) {
+    if (found === false) {
       let newtab
-      if (source != this.nick) {
+      if (source !== this.nick) {
         newtab = new memoConvoTab(source, target, null)
       } else {
         newtab = new memoConvoTab(source, target, target)
       }
-      if (newtab.memo == true) {
+      if (newtab.memo === true) {
         newtab.tabcontent += `C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.`
       }
       this.tabs.push(newtab)
@@ -1137,7 +1137,7 @@ class clientGUI {
     // Iterate through tabs, and add text
     for (let i = 0; i < this.tabs.length; i++) {
       // X RESPONSED TO MEMO
-      if ((_memoprefix.test(target[0])) && (target == this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) == -1)) {
+      if ((_memoprefix.test(target[0])) && (target === this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) === -1)) {
         this.tabs[i].announced.push(source)
         this.tabs[i].tabcontent += `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`
       }
@@ -1145,23 +1145,23 @@ class clientGUI {
       // Add text
       if (_memoprefix.test(target[0])) {
         // This is to a memo
-        if ((target == this.tabs[i].target) && (this.tabs[i].memo == true)) {
+        if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
           // console.log('Add to tab (memo) ', target, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
           this.tabs[i].tabcontent += `<div>${msg}</div>`
         }
-      } else if (source != this.nick) {
+      } else if (source !== this.nick) {
         // This is not to a memo, we didn't send this msg.
-        if ((source == this.tabs[i].label) && (this.tabs[i].memo == false)) {
+        if ((source === this.tabs[i].label) && (this.tabs[i].memo === false)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
           this.tabs[i].tabcontent += `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`
         }
-      } else if (source == this.nick) {
+      } else if (source === this.nick) {
         // This is not to a memo, we send this msg.
-        if ((target == this.tabs[i].label) && (this.tabs[i].memo == false)) {
+        if ((target === this.tabs[i].label) && (this.tabs[i].memo === false)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           this.tabs[i].tabcontent += `<div>${msg}</div>`
@@ -1210,7 +1210,7 @@ class clientGUI {
       const memoUserlist = document.getElementById('memoUserlist')
       const textAndInputBox = document.getElementById('textAndInputBox')
       const elmTxt = event.currentTarget.innerHTML
-      if (['&#8594;', '→'].indexOf(elmTxt) != -1) { // -->
+      if (['&#8594;', '→'].indexOf(elmTxt) !== -1) { // -->
         memoUserlist.style.display = 'none'
         event.currentTarget.innerHTML = '&#8592;' // <--
         // console.log(textAndInputBox.style.width)
@@ -1238,7 +1238,7 @@ class clientGUI {
       const tabContainer = document.getElementById('tabContainer')
       const chumrollContainer = document.getElementById('chumrollContainer')
       const elmTxt = event.currentTarget.innerHTML
-      if (['&#8594;', '→'].indexOf(elmTxt) != -1) { // -->
+      if (['&#8594;', '→'].indexOf(elmTxt) !== -1) { // -->
         chumrollContainer.style.display = 'none'
         event.currentTarget.innerHTML = '&#8592;' // <--
         switch (tabContainer.style.width) {
@@ -1319,7 +1319,7 @@ class ircClient {
 }
 
 var sanitizeHTML = function (str) {
-  if (allowTags != true) {
+  if (allowTags !== true) {
     str = str.replace(_amp, '&#38;')
     str = str.replace(_quot, '&quot;')
     str = str.replace(_ampo, '&#039;')
