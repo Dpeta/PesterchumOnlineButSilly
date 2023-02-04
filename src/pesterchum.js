@@ -99,7 +99,7 @@ function runCheck () {
   // Get Handle
   const handleInput = document.getElementById('handle')
 
-  if (_chumhandle.test(handleInput.value) === true) {
+  if (_chumhandle.test(handleInput.value)) {
     // Valid chumhandle
     run()
   } else {
@@ -183,7 +183,7 @@ function run () {
 
   const partButton = document.getElementById('part')
   partButton.addEventListener('click', function (event) {
-    const activeTab = pcoClient.tabs.filter((tab) => tab.active === true)
+    const activeTab = pcoClient.tabs.filter((tab) => tab.active)
     for (let i = 0; i < activeTab.length; i++) {
       // Should only trigger once
 
@@ -195,7 +195,7 @@ function run () {
       event.currentTarget.style.display = 'none'
 
       // Part / Cease
-      if (activeTab[i].memo === true) {
+      if (activeTab[i].memo) {
         ircClient.part(activeTab[i].label)
       } else {
         ircClient.msg(activeTab[i].label, 'PESTERCHUM:CEASE')
@@ -240,8 +240,8 @@ function sendMsg (event) {
 
     // Send to who?
     for (let n = 0; n < pcoClient.tabs.length; n++) {
-      if (pcoClient.tabs[n].active === true) {
-        if (pcoClient.tabs[n].memo === true) {
+      if (pcoClient.tabs[n].active) {
+        if (pcoClient.tabs[n].memo) {
           ircClient.msg(pcoClient.tabs[n].label, msg)
         } else {
           ircClient.msg(pcoClient.tabs[n].label, baremsg)
@@ -249,13 +249,13 @@ function sendMsg (event) {
         msg = sanitizeHTML(msg)
         msg = parsePesterchumSyntax(null, pcoClient.tabs[n].label, msg)
         if (msg.indexOf('/me ') === 0) {
-          if (pcoClient.tabs[n].memo === true) {
+          if (pcoClient.tabs[n].memo) {
             msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick} <span style='color: ${pcoClient.color};'>[C${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           } else {
             msg = `<span style='color: rgb(100,100,100)'>-- ${nick} <span style='color: ${pcoClient.color};'>[${getInitials(nick)}]</span> ${msg.slice('/me '.length)} --</span>`
           }
         } else if (msg.indexOf('/me\'s ') === 0) {
-          if (pcoClient.tabs[n].memo === true) {
+          if (pcoClient.tabs[n].memo) {
             msg = `<span style='color: rgb(100,100,100)'>-- CURRENT ${nick}'s <span style='color: ${pcoClient.color};'>[C${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
           } else {
             msg = `<span style='color: rgb(100,100,100)'>-- ${nick}'s <span style='color: ${pcoClient.color};'>[${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
@@ -399,7 +399,7 @@ function parseIRC (data) {
           srcInitials = `<c=${pcoClient.chums.getColor(sourcenick)}>[${getInitials(sourcenick)}'S]</c>`
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick}'s ${srcInitials} ${msg.slice(6)} --</c>`
-      } else if (_colorMsg.test(msg) === true) {
+      } else if (_colorMsg.test(msg)) {
         // let cMatch = msg.match(_ctagRgb)
         const color = msg.match(_colorMsgRgb)
         console.log('color: ' + color)
@@ -543,7 +543,7 @@ function parseIRC (data) {
       break
     case '323':
       // RPL_LISTEND
-      if (pcoClient.MemosTabOpen === true) {
+      if (pcoClient.MemosTabOpen) {
         pcoClient.updateMemolist()
       }
       break
@@ -586,7 +586,7 @@ function parseIRC (data) {
       channel = params[1]
       if (channel === '#pesterchum') {
         ircClient.msg('#pesterchum', 'MOOD >0')
-        if (pcoClient.MemosTabOpen === false) {
+        if (!pcoClient.MemosTabOpen) {
           pcoClient.updateUserlist()
         }
       } else {
@@ -698,7 +698,7 @@ function connectMemoUserlistSwitch () {
 function updateMemoUserlist (channel) {
   const targetTab = pcoClient.tabs.filter((tab) => tab.label === channel)
   for (let n = 0; n < targetTab.length; n++) {
-    if (targetTab[n].active === true) {
+    if (targetTab[n].active) {
       // document.getElementById('textarea').innerHTML = targetTab[n].tabcontent;
       const memoUserList = document.getElementById('memoUserlist')
       memoUserList.innerHTML = ''
@@ -719,7 +719,7 @@ function updateMemoUserlist (channel) {
 
 function updatePartButtonPos () {
   const partButton = document.getElementById('part')
-  const activeTab = pcoClient.tabs.filter((tab) => tab.active === true)
+  const activeTab = pcoClient.tabs.filter((tab) => tab.active)
   for (let i = 0; i < activeTab.length; i++) {
     // Should only trigger once
     partButton.style.display = 'inline'
@@ -771,7 +771,7 @@ function connectButtonEvents () {
       // Set button active class for style
       for (let n = 0; n < pcoClient.tabs.length; n++) {
         const tabby = document.getElementById(pcoClient.tabs[n].label)
-        if (pcoClient.tabs[n].active === true) {
+        if (pcoClient.tabs[n].active) {
           if (tabby.className.indexOf(' active') === -1) {
             tabby.className += ' active'
           }
@@ -814,13 +814,13 @@ function setTabEnabled (enabled) {
   const msgElm = document.getElementById('msg')
   const txtElm = document.getElementById('textarea')
   const mUserElm = document.getElementById('memoUserlist')
-  if (enabled === true) {
+  if (enabled) {
     // We're doing active stuff
     msgElm.disabled = false
     msgElm.className = msgElm.className.replace(' inactive', '')
     txtElm.className = txtElm.className.replace(' inactive', '')
     mUserElm.className = mUserElm.className.replace(' inactive', '')
-  } else if (enabled === false) {
+  } else {
     msgElm.disabled = true
     const allclassnames = msgElm.className + txtElm.className + mUserElm.className
     if (allclassnames.indexOf(' inactive') === -1) {
@@ -836,7 +836,7 @@ function setTabEnabled (enabled) {
     }
   }
 
-  if (pcoClient.dead === true) {
+  if (pcoClient.dead) {
     // Dead session, don't allow input
     msgElm.disabled = true
     if (msgElm.className.indexOf(' inactive') === -1) {
@@ -939,12 +939,12 @@ class PesterchumOnlineClient {
     let found = false
     for (let i = 0; i < this.tabs.length; i++) {
       // This is to a memo
-      if ((channel === this.tabs[i].label) && (this.tabs[i].memo === true)) {
+      if ((channel === this.tabs[i].label) && (this.tabs[i].memo)) {
         found = true
       }
     }
     // If we don't have a tab for the source, make one.
-    if (found === false) {
+    if (!found) {
       // console.log('New tab ', channel);
       const newtab = new MemoConvoTab(channel, channel, null)
       const board = channel.slice(1).toUpperCase()
@@ -1000,9 +1000,9 @@ class PesterchumOnlineClient {
       const bIsHandle = _chumhandle.test(b)
       if (aIsHandle === bIsHandle) {
         return 0
-      } else if ((aIsHandle === true) || (bIsHandle === false)) {
+      } else if ((aIsHandle) || (!bIsHandle)) {
         return -1
-      } else if ((aIsHandle === false) || (bIsHandle === true)) {
+      } else if ((!aIsHandle) || (bIsHandle)) {
         return 1
       } else {
         return 0 // Shouldn't happen
@@ -1102,7 +1102,7 @@ class PesterchumOnlineClient {
     // textarea
     for (let n = 0; n < this.tabs.length; n++) {
       // console.log(this.tabs[n])
-      if (this.tabs[n].active === true) {
+      if (this.tabs[n].active) {
         // this.textarea.innerHTML = this.tabs[n].tabcontent;
         while (this.textarea.firstChild) {
           this.textarea.removeChild(this.textarea.firstChild)
@@ -1130,30 +1130,30 @@ class PesterchumOnlineClient {
     for (let i = 0; i < this.tabs.length; i++) {
       if (_memoPrefix.test(target[0])) {
         // This is to a memo
-        if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
+        if ((target === this.tabs[i].target) && (this.tabs[i].memo)) {
           found = true
         }
       } else if (source !== this.nick) {
         // This is not to a memo
-        if ((source === this.tabs[i].label) && (this.tabs[i].memo === false)) {
+        if ((source === this.tabs[i].label) && (!this.tabs[i].memo)) {
           found = true
         }
       } else if (source === this.nick) {
         // This is not to a memo
-        if ((target === this.tabs[i].label) && (this.tabs[i].memo === false)) {
+        if ((target === this.tabs[i].label) && (!this.tabs[i].memo)) {
           found = true
         }
       }
     }
     // If we don't have a tab for the source, make one.
-    if (found === false) {
+    if (!found) {
       let newtab
       if (source !== this.nick) {
         newtab = new MemoConvoTab(source, target, null)
       } else {
         newtab = new MemoConvoTab(source, target, target)
       }
-      if (newtab.memo === true) {
+      if (newtab.memo) {
         newtab.tabcontent += `C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.`
       }
       this.tabs.push(newtab)
@@ -1170,7 +1170,7 @@ class PesterchumOnlineClient {
       // Add text
       if (_memoPrefix.test(target[0])) {
         // This is to a memo
-        if ((target === this.tabs[i].target) && (this.tabs[i].memo === true)) {
+        if ((target === this.tabs[i].target) && (this.tabs[i].memo)) {
           // console.log('Add to tab (memo) ', target, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
@@ -1179,7 +1179,7 @@ class PesterchumOnlineClient {
         }
       } else if (source !== this.nick) {
         // This is not to a memo, we didn't send this msg.
-        if ((source === this.tabs[i].label) && (this.tabs[i].memo === false)) {
+        if ((source === this.tabs[i].label) && (!this.tabs[i].memo)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
@@ -1188,7 +1188,7 @@ class PesterchumOnlineClient {
         }
       } else if (source === this.nick) {
         // This is not to a memo, we send this msg.
-        if ((target === this.tabs[i].label) && (this.tabs[i].memo === false)) {
+        if ((target === this.tabs[i].label) && (!this.tabs[i].memo)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           this.tabs[i].tabcontent += `<div>${msg}</div>`
@@ -1367,7 +1367,7 @@ class IrcClient {
 }
 
 const sanitizeHTML = function (str) {
-  if (allowTags !== true) {
+  if (!allowTags) {
     str = str.replace(_amp, '&#38;')
     str = str.replace(_quot, '&quot;')
     str = str.replace(_ampo, '&#039;')
