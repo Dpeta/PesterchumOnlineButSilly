@@ -59,6 +59,25 @@ const _userPrefix = /^(@|&#38;|~|&|\+)+/
 const _honk = /honk/gi
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
+let typePolicy = null
+if (typeof trustedTypes !== "undefined") {
+  // Create a policy that can create TrustedHTML values
+  // after sanitizing the input strings with DOMPurify library.
+  typePolicy = trustedTypes.createPolicy("weewa", {
+  createHTML: (str) => {
+    str = str.replace(_amp, '&#38;')
+    str = str.replace(_quot, '&quot;')
+    str = str.replace(_ampo, '&#039;')
+    str = str.replace(_lt, '&#60;')
+    str = str.replace(_gt, '&#62;')
+    return str
+  }
+})
+  console.log("✅ Browser supports trustedTypes :3")
+} else {
+  console.log("❌ Browser doesn't trustedTypes :(")
+}
+
 // Audio
 let alarmMemo
 let alarmDm
@@ -1368,11 +1387,15 @@ class IrcClient {
 
 const sanitizeHTML = function (str) {
   if (!allowTags) {
-    str = str.replace(_amp, '&#38;')
-    str = str.replace(_quot, '&quot;')
-    str = str.replace(_ampo, '&#039;')
-    str = str.replace(_lt, '&#60;')
-    str = str.replace(_gt, '&#62;')
+    if (typePolicy !== null) {
+      str = typePolicy.createHTML(str).toString()
+    } else {
+      str = str.replace(_amp, '&#38;')
+      str = str.replace(_quot, '&quot;')
+      str = str.replace(_ampo, '&#039;')
+      str = str.replace(_lt, '&#60;')
+      str = str.replace(_gt, '&#62;')
+    }
     return str
   } else {
     return str
