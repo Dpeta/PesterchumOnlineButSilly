@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@babel/core": "^7.20.12",
+    "@babel/core": "^7.23.2",
     "babelify": "^10.0.0",
     "eslint": "^8.33.0",
     "eslint-config-standard": "^17.0.0",
@@ -11,9 +11,9 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/cli": "^7.23.0",
+    "@babel/preset-env": "^7.23.2",
     "browserify": "^17.0.0",
-    "core-js": "^3.27.2"
+    "core-js": "^3.33.1"
   }
 }
