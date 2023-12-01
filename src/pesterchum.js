@@ -261,7 +261,8 @@ function sendMsg (event) {
             msg = `<span style='color: rgb(100,100,100)'>-- ${nick}'s <span style='color: ${pcoClient.color};'>[${getInitials(nick)}'S]</span> ${msg.slice('/me\'s '.length)} --</span>`
           }
         }
-        pcoClient.tabs[n].tabcontent += `<div>${msg}</div>`
+        // pcoClient.tabs[n].tabcontent += `<div>${msg}</div>`
+        pcoClient.tabs[n].textfield.insertAdjacentHTML('beforeend', `<div>${msg}</div>`)
         pcoClient.updateTabs()
       }
     }
@@ -437,11 +438,11 @@ function parseIRC (data) {
         // console.log(sourcenick, target, msgparts, channel, msg)
         for (let n = 0; n < pcoClient.tabs.length; n++) {
           if (pcoClient.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
-            pcoClient.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
+            // pcoClient.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
           } else if ((pcoClient.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
             // Services messages
             if (((msg.indexOf('Unknown command') !== -1) && (msg.indexOf('PESTERCHUM:BEGIN') !== -1)) === false) {
-              pcoClient.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
+              // pcoClient.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
             }
           }
         }
@@ -487,7 +488,8 @@ function parseIRC (data) {
       for (let i = 0; i < updateQue.length; i++) {
         // CMM ceased responding to memo.
         const leaveMsg = `<span style='color: black;'>C${getInitials(sourcenick)}</span> <span style='color: #646464;'>ceased responding to memo.</span>`
-        updateQue[i].tabcontent += `<div>${leaveMsg}</div>`
+        // updateQue[i].tabcontent += `<div>${leaveMsg}</div>`
+        updateQue[i].textfield.insertAdjacentHTML('beforeend', `<div>${leaveMsg}</div>`)
 
         updateQue[i].userlist = []
         ircClient.names(updateQue[i].label)
@@ -504,7 +506,8 @@ function parseIRC (data) {
 
         // CMM ceased responding to memo.
         const leaveMsg = `<span style='color: black;'>C${getInitials(sourcenick)}</span> <span style='color: #646464;'>ceased responding to memo.</span>`
-        updateQue[i].tabcontent += `<div>${leaveMsg}</div>`
+        // updateQue[i].tabcontent += `<div>${leaveMsg}</div>`
+        updateQue[i].textfield.insertAdjacentHTML('beforeend', `<div>${leaveMsg}</div>`)
       }
       break
     case 'MODE':
@@ -643,10 +646,11 @@ class MemoConvoTab {
   constructor (source, target, label) {
     this.target = target // To who
     this.source = source // From who
-    this.tabcontent = '' // All msges
+    //    this.tabcontent = '' // All msges
     this.userlist = [] // Array of users present
     this.announced = []
     this.active = false
+    this.textfield = null
 
     if (label === null) {
       if (_memoPrefix.test(target[0])) {
@@ -699,7 +703,7 @@ function updateMemoUserlist (channel) {
   const targetTab = pcoClient.tabs.filter((tab) => tab.label === channel)
   for (let n = 0; n < targetTab.length; n++) {
     if (targetTab[n].active) {
-      // document.getElementById('textarea').innerHTML = targetTab[n].tabcontent;
+      //      // document.getElementById('textarea').innerHTML = targetTab[n].tabcontent;
       const memoUserList = document.getElementById('memoUserlist')
       memoUserList.innerHTML = ''
       targetTab[n].userlist.sort()
@@ -743,10 +747,19 @@ function connectButtonEvents () {
       for (let n = 0; n < pcoClient.tabs.length; n++) {
         // console.log("pcoClient.tabs[n].label === buttontext", pcoClient.tabs[n].label, buttontext)
         if (pcoClient.tabs[n].label === buttontext) {
+          /*
           while (pcoClient.textarea.firstChild) {
             pcoClient.textarea.removeChild(pcoClient.textarea.firstChild)
           }
-          pcoClient.textarea.insertAdjacentHTML('beforeend', pcoClient.tabs[n].tabcontent)
+          //pcoClient.textarea.insertAdjacentHTML('beforeend', pcoClient.tabs[n].tabcontent)
+          */
+          for (let n = 0; n < pcoClient.tabs.length; n++) {
+            if (pcoClient.tabs[n].active) {
+              pcoClient.tabs[n].textfield.hidden = false
+            } else {
+              pcoClient.tabs[n].textfield.hidden = true
+            }
+          }
           const memoUserList = document.getElementById('memoUserlist')
           while (memoUserList.firstChild) {
             memoUserList.removeChild(memoUserList.firstChild)
@@ -828,8 +841,13 @@ function setTabEnabled (enabled) {
       txtElm.className += ' inactive'
       mUserElm.className += ' inactive'
     }
-    while (txtElm.firstChild) {
-      txtElm.removeChild(txtElm.firstChild)
+    // while (txtElm.firstChild) {
+    //  txtElm.removeChild(txtElm.firstChild)
+    // }
+    // Hide all tabtexts
+    const texts = document.getElementsByClassName('tabtext')
+    for (let i = 0; i < texts.length; i++) {
+      texts[i].hidden = true
     }
     while (mUserElm.firstChild) {
       mUserElm.removeChild(mUserElm.firstChild)
@@ -948,7 +966,10 @@ class PesterchumOnlineClient {
       // console.log('New tab ', channel);
       const newtab = new MemoConvoTab(channel, channel, null)
       const board = channel.slice(1).toUpperCase()
-      newtab.tabcontent += `<span style='color: ${this.color};'>C${getInitials(this.nick)}</span> RIGHT NOW opened memo on board ${board}.`
+      //      newtab.tabcontent += `<div><span style='color: ${this.color};'>C${getInitials(this.nick)}</span> RIGHT NOW opened memo on board ${board}.</div>`
+      pcoClient.textarea.insertAdjacentHTML('beforeend', `<div class="tabtext" id="text_${newtab.label}"></div>`)
+      newtab.textfield = document.getElementById(`text_${newtab.label}`)
+      newtab.textfield.insertAdjacentHTML('beforeend', `<div><span style='color: ${this.color};'>C${getInitials(this.nick)}</span> RIGHT NOW opened memo on board ${board}.</div>`)
       this.tabs.push(newtab)
     }
   }
@@ -1103,12 +1124,9 @@ class PesterchumOnlineClient {
     for (let n = 0; n < this.tabs.length; n++) {
       // console.log(this.tabs[n])
       if (this.tabs[n].active) {
-        // this.textarea.innerHTML = this.tabs[n].tabcontent;
-        while (this.textarea.firstChild) {
-          this.textarea.removeChild(this.textarea.firstChild)
-        }
-        this.textarea.insertAdjacentHTML('beforeend', this.tabs[n].tabcontent)
-        this.textarea.scrollTop = this.textarea.scrollHeight // Scroll to bottom
+        this.tabs[n].textfield.hidden = false
+      } else {
+        this.tabs[n].textfield.hidden = true
       }
     }
   }
@@ -1122,7 +1140,7 @@ class PesterchumOnlineClient {
 
       const srcInitials = `<c=${pcoClient.chums.getColor(source)}>[${getInitials(source)}]</c>`
       const targetInitials = `<c=${pcoClient.chums.getColor(target)}>[${getInitials(target)}]</c>`
-      msg = `<c=100,100,100>-- ${source} ${srcInitials} began pestering ${target} ${targetInitials} at ${time()} --</c>`
+      msg = `<div><c=100,100,100>-- ${source} ${srcInitials} began pestering ${target} ${targetInitials} at ${time()} --</c></div>`
     }
 
     // Iterate through tabs, and check if it's present, add if not
@@ -1153,8 +1171,11 @@ class PesterchumOnlineClient {
       } else {
         newtab = new MemoConvoTab(source, target, target)
       }
+      pcoClient.textarea.insertAdjacentHTML('beforeend', `<div class="tabtext" id="text_${newtab.label}"></div>`)
+      newtab.textfield = document.getElementById(`text_${newtab.label}`)
       if (newtab.memo) {
-        newtab.tabcontent += `C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.`
+        // newtab.tabcontent += `<div>C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.</div>`
+        newtab.textfield.insertAdjacentHTML('beforeend', `<div>C${getInitials(this.nick)} RIGHT NOW opened memo on board ${target}.</div>`)
       }
       this.tabs.push(newtab)
     }
@@ -1164,7 +1185,8 @@ class PesterchumOnlineClient {
       // X RESPONSED TO MEMO
       if ((_memoPrefix.test(target[0])) && (target === this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) === -1)) {
         this.tabs[i].announced.push(source)
-        this.tabs[i].tabcontent += `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`
+        // this.tabs[i].tabcontent += `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`
+        this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`)
       }
 
       // Add text
@@ -1174,7 +1196,8 @@ class PesterchumOnlineClient {
           // console.log('Add to tab (memo) ', target, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
-          this.tabs[i].tabcontent += `<div>${msg}</div>`
+          // this.tabs[i].tabcontent += `<div>${msg}</div>`
+          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>${msg}</div>`)
           audioCheck(true, msg)
         }
       } else if (source !== this.nick) {
@@ -1183,7 +1206,8 @@ class PesterchumOnlineClient {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
           // this.tabs[i].tabcontent += msg + '<br>'
-          this.tabs[i].tabcontent += `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`
+          // this.tabs[i].tabcontent += `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`
+          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`)
           audioCheck(false, msg)
         }
       } else if (source === this.nick) {
@@ -1191,7 +1215,8 @@ class PesterchumOnlineClient {
         if ((target === this.tabs[i].label) && (!this.tabs[i].memo)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
-          this.tabs[i].tabcontent += `<div>${msg}</div>`
+          // this.tabs[i].tabcontent += `<div>${msg}</div>`
+          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>${msg}</div>`)
         }
       }
     }
