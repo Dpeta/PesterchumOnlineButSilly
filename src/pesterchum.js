@@ -1129,6 +1129,7 @@ class PesterchumOnlineClient {
         this.tabs[n].textfield.hidden = true
       }
     }
+    this.textarea.scrollTop = this.textarea.scrollHeight // Scroll to bottom
   }
 
   addText (source, target, msg) {
