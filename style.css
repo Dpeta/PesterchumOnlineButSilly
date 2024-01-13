@@ -15,93 +15,128 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+/*To improove*/
+:root{
+  --outsite-orange:#D59700;
+  --inside-orange:#FFB500;
+  --yellow:#FFF700;
+  --red:#F60100;
+  --grey:#5F5F5F;
+  --black:#000001;
+  --white:#F4FEDF;
+  --dark-yellow:#C59400;
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Courier;
+  font-weight: 1000;
+  font-size: 1rem;
+}
+@font-face {
+    font-family: Strife;
+    src: url(./fonts/strife/strife.ttf);
+}
+.pixelated { 
+  font-family: 'Strife';
+  font-size: 2rem;
+}
+.couriered{
+  font-family: courier;
+  font-weight: 200;
+}
 
 body {
-  animation-name: backgroundColorPalette;
-  animation-duration: 10s;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  /*height: 100vh;
-  width: 100vw;*/
+  overflow: auto;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-block-start: 7vh;
+  background: var(--outsite-orange);
 }
-@keyframes backgroundColorPalette {
-  0% {
-    background: #fff700;
-  }
-  100% {
-    background: #ffb500;
-  }
-}
-
-.tab {
-    background-color:#fdb302;
-    border:0px;
-    margin-right:0.5%; 
-    margin-left:0.5%; 
-    height: 5%;
-    width: 80%;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-    padding-bottom: 0.5%;
+.title{
+  display:grid;
+  grid-template-columns:1fr 2fr 1fr ;
+  grid-template-rows: auto auto;
+  width: 100%;
+  margin-block: 1rem;
 }
 
-.tablinks {
-  background-color: #7f7f7f;
-  font-family: 'Courier';
-  font-weight: bold;
-  font-size: 12px;
-  height: 80%;
-  vertical-align: top;
+.title > p{
+  font-size: max(5.5vw,3rem);
+  font-family: Strife;
+  text-align: center;
+  color:var(--white);
 }
 
-.tablinks:hover {
-  color: #FFFFFF;
+.title > *:nth-child(2){
+  height: max(3vw,2rem);
 }
 
-.tablinks.active {
-  border:0px;
-  background-color:#fdb302;
-  border-top:2px solid yellow;
-  border-left:2px solid yellow;
-  border-right:2px solid yellow; 
-  border-top-left-radius: 4px; 
-  border-top-right-radius: 4px;
-  padding-right: 20px;
+.title > *:nth-child(3){
+  font-size: max(7vw,5.2rem);
+  height: max(5vw,);
 }
+
+.title > img{
+  width:6vw;
+  margin:auto;
+}
+
+.title > img:first-child{
+  grid-row:1/3 ;
+  grid-column: 1/2;
+}
+.title > img:last-child{
+  grid-row:1/3 ;
+  grid-column: 3/4;
+}
+
 .centertxt {
   text-align: center;
 }
 #entry {  
-  padding: 1% 5% 1% 5%;
-  font-size: 16px;
+  width: min(30rem,100%);
+  margin: auto;
 }
 .centered {
-  position: fixed;
-  top: 12.5%;
-  left: 12.5%;
-  width: 75%;
-  height: 40%;
+  width: max(20rem,50%);
   background-color: #fdb302; 
   background-repeat: no-repeat; 
   border:2px solid yellow; 
   font-family: 'Courier'; 
-  font-weight: bold; 
-  padding: 1%;
-  overflow: auto;
+  padding: 0.5rem 3vw;
+}
+.centered > p{
+  text-align: center;
+  font-size: 1.5rem;
+}
+.centered > p > a{
+  font-size: 1.5rem;
 }
 .centeredGo {
-  position: fixed;
-  top: 53.75%;
-  left: 12.5%;
-  width: 75%;
-  height: 25%;
+  width: max(20rem,50%);
   background-color: #fdb302; 
   background-repeat: no-repeat; 
   border:2px solid yellow; 
   font-family: 'Courier'; 
   font-weight: bold; 
-  padding: 1%;
+  padding: 0.5rem;
+}
+
+#connectForm input{
+  background: var(--black);
+  border-color: var(--yellow);
+  border-style: solid;
+  width: 100%;
+  color: var(--white);
+  font-size: 1.2rem;
+  transform: translateY(-10%);
+  padding:0.2rem 1rem;
 }
 #notice {
   text-align: right;
@@ -111,14 +146,58 @@ body {
   border: none;
   background-color: black;
   color: white;
-  font-weight: bold;
-  font-family: 'Courier';
+  font-family: 'strife';
   width: inherit;
   background-color: inherit;
   white-space: nowrap;
-  font-size: 18px;
+  font-size: 1.4rem;
 }
 
+button{
+  background-color:var(--yellow);
+border: 3px solid var(--dark-yellow);
+padding: 0.2rem 1rem;
+  font-family: Strife;
+
+font-size: 2rem;
+}
+
+/*Client*/
+
+
+.tab {
+    background-color:#fdb302;
+    border:0px;
+    height: 5%;
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 0.5%;
+}
+
+.tablinks {
+  background-color: #7f7f7f;
+  font-family: 'strife';
+  font-size: 1rem;
+  height: 80%;
+  vertical-align: top;
+}
+
+.tablinks:hover {
+  color: #FFFFFF;
+}
+
+.tablinks.active {
+  background-color:#fdb302;
+  border-top:2px solid yellow;
+  border-left:2px solid yellow;
+  border-right:2px solid yellow; 
+  border-top-left-radius: 4px; 
+  border-top-right-radius: 4px;
+  padding-right: 20px;
+  padding-block-end: 0.4rem ;
+}
 .userlistChum:hover {
     background-color: #646464;
 }
@@ -126,14 +205,14 @@ body {
 .MemosChumsTabs {
   /* For USERLIST / MEMOS */
   background-color: #7f7f7f;
-  font-family: 'Courier';
-  font-weight: bold;
-  font-size:12px;
-  height: 4%;
+  font-family: 'strife';
+  font-size:1.3rem;
+  height: 3.5%;
   width: 50%;
   float: left;
   position: relative;
   bottom: 1px;
+  border-bottom: none;
 }
 
 .MemosChumsTabs.active {
@@ -171,6 +250,10 @@ body {
   background-color: lightgray; 
 }
 
+.tabtext{
+  width: 100%
+}
+
 .userstatus {
   position: relative;
   top: 4px;
@@ -189,6 +272,7 @@ body {
   background: none;
   color: black;
   display: none;
+  opacity: 0;
 }
 
 #part:hover {
@@ -196,20 +280,32 @@ body {
 }
 
 #manualJoinInput {
-  
+font-family: strife;
+color: var(--white);
+background: var(--black);
+margin-inline-start: 0.5rem;
+width: 95%;
 }
 
 .manualJoin {
+  font-family:strife;
   width: 100%;
   height: 10%;
   color: white;
   padding: 1%;
   overflow: auto;
 }
+.manualJoin > div{
+  font-family:strife;
+font-size: 2rem;
+padding-inline-start: 0.5rem;
+}
 
 .memoChum {
   white-space: nowrap;
   position: relative;
+  font-family: strife;
+  font-size: 1.2rem;
   left: 1.5%;
 }
 .memoChumContainer {
@@ -228,16 +324,9 @@ body {
   font-family: 'Courier'; 
   position: relative;
   max-width: 5vw;
+  display:none;
 }
 
-#connectButton {
-  background-color: #7f7f7f;
-  font-family: 'Courier';
-  font-weight: bold;
-  font-size: 12px;
-  width: 15%;
-  font-size: 16px;
-}
 #connectButton:hover {
   background-color:#fdb302;
 }
@@ -249,6 +338,7 @@ body {
 
 #bloodcaste {
   border: none;
+  padding: 0 !important;
 }
 
 #hideChumroll {
@@ -277,25 +367,23 @@ body {
   border: 2px solid #fdb302;
   background-color: black;
   float: right;
-  height: 96%;
   margin-right: 0.5%;
   margin-left: 0.5%;
   margin-top: 0.5%;
-  min-width: 20%;
-  max-width: 20vw;
+  width: 27rem;
+  order:3;
+  height: 86vh;
+  margin-block-end: 0.5rem;
 }
 
 #memoUserlist {
   border:2px solid #c48a00; 
-  font-weight: bold;
-  font-family: 'Courier';
-  font-size: 18px;  
   /*margin-right: 10px;*/
-  margin-top: 0.5%;
+  margin-block-start: 2rem;
   margin-left: 1%;
   overflow-x: auto;
-  height: 93.5%;
-  width: 17%; 
+  height: 83.2vh;
+  width: 15rem; 
   float: left;
 }
 #msg {
@@ -305,10 +393,15 @@ body {
   margin-left:0.5%; 
   font-size: 12px;
   margin-bottom:0.5%;
-  width: 99.6%; 
-  height: 20%;
+  width: 100%; 
+  height: 3vh;
   float: left;
   max-width: 93vw;
+}
+
+.mainContainer {
+  margin-block-start: 0.5rem;
+  margin-inline-start: 0.5rem;
 }
 
 #textarea { 
@@ -316,26 +409,32 @@ body {
   font-weight: bold; 
   border:2px solid #c48a00;
   margin-left:0.5%;
-  margin-top:0.5%;
   font-family: 'Courier';
   overflow-x: visible;
   overflow-wrap: break-word;
   overflow-y: auto;
-  height: 91%; 
+  height: 80vh; 
   /*max-width: 80vw;*/
   width: 100%; 
   float: left;
+  margin-block-start: -0.8rem;
+  position: relative;
+  z-index: 1;
 }
-
+#maintab{
+  display: flex;
+  margin-inline-start: 0.5rem;
+  width: 97%;
+}
 #tabContainer {
-  height: 98%;
-  width: 75%;
+  height: 80vh;
+  width: 40rem;
 }
 
 #textAndInputBox {
-  height: 100%;
-  width: 65%;
+  height: 90vh;
   float: left;
+  width: 100%;
   /*max-width: 57vw;
   min-width: 500px;*/
 }
@@ -346,8 +445,11 @@ body {
   border:2px solid yellow; 
   font-family: 'Courier'; 
   font-weight: bold; 
-  width: 98vw;
-  height: 90vh;
+  width: 80vw;
+  display: flex;
+  flex-wrap: wrap;
+justify-content: center;
+padding:0.5rem
   /*overflow: auto;*/
 }
 
@@ -368,4 +470,40 @@ body {
 ::-webkit-scrollbar-button {
   /*height: 1.2%;*/
   border:0px solid #c48a00;
+}
+
+@media (max-width:800px) {
+  .title > img {
+    width: 0;
+  }
+  .centered >p {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 1640px) {
+  #chumrollContainer{
+    width: 100%;
+  }
+  #tabContainer{
+    width:70%;
+  }
+  #memoUserlist{
+    width: 29%;
+  }
+}
+@media (max-width: 980px) {
+  #chonkers{
+    width:90vw;
+  }
+}
+
+@media (max-width: 640px) {
+  #memoUserlist{
+    width:97%;
+    margin-block-start: 4rem;
+  }
+  #tabContainer{
+    width:100%;
+  }
 }
