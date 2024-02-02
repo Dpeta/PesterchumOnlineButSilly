@@ -1242,8 +1242,8 @@ class PesterchumOnlineClient {
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideChumroll\'>&#8594;</button>' + // -->
                                      '<div id=\'tabContainer\'>' +
-                                     '<div class=\'mainContainer\'>'+ 
-                                     '<div id=\'maintab\' class=\'tab\'>'+
+                                     '<div class=\'mainContainer\'>' +
+                                     '<div id=\'maintab\' class=\'tab\'>' +
                                      '</div>' +
                                      '<div id=\'textAndInputBox\'>' +
                                      '<div id=\'textarea\' class=\'textarea inactive\'></div>' +
