@@ -1242,7 +1242,9 @@ class PesterchumOnlineClient {
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideChumroll\'>&#8594;</button>' + // -->
                                      '<div id=\'tabContainer\'>' +
-                                     '<div id=\'maintab\' class=\'tab\'></div>' +
+                                     '<div class=\'mainContainer\'>'+ 
+                                     '<div id=\'maintab\' class=\'tab\'>'+
+                                     '</div>' +
                                      '<div id=\'textAndInputBox\'>' +
                                      '<div id=\'textarea\' class=\'textarea inactive\'></div>' +
                                      '<form id=\'msgform\'>' +
@@ -1250,9 +1252,9 @@ class PesterchumOnlineClient {
                                      '</form>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
-                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive\'></div>' +
                                      '</div>' +
-                                     '</div>')
+                                     '</div>' +
+                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive\'></div>')
     this.maintab = document.getElementById('maintab')
     this.textarea = document.getElementById('textarea')
 
