@@ -937,10 +937,6 @@ function parsePesterchumSyntax (source, target, msg) {
   return output
 }
 
-
-
-
-
 class PesterchumOnlineClient {
   constructor () {
     this.body = document.getElementsByTagName('body').item(0)
@@ -1246,12 +1242,12 @@ class PesterchumOnlineClient {
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideChumroll\'>&#8594;</button>' + // -->
                                      '<div id=\'tabContainer\'>' +
-                                     '<div class=\'mainContainer\'>'+ 
-                                     '<div id=\'maintab\' class=\'tab\'>'+
-                                     '<div class=\'tab-arrow-container\'>'+
-                                     '<button class=\'tab-arrow\' > <- </button>'+
-                                     '<button class=\'tab-arrow\' > -> </button>'+
-                                     '</div>'+
+                                     '<div class=\'mainContainer\'>' +
+                                     '<div id=\'maintab\' class=\'tab\'>' +
+                                     '<div class=\'tab-arrow-container\'>' +
+                                     '<button class=\'tab-arrow\' > <- </button>' +
+                                     '<button class=\'tab-arrow\' > -> </button>' +
+                                     '</div>' +
                                      '</div>' +
                                      '<div id=\'textAndInputBox\'>' +
                                      '<div id=\'textarea\' class=\'textarea inactive\'></div>' +
@@ -1265,38 +1261,36 @@ class PesterchumOnlineClient {
                                      '<div id=\'memoUserlist\' class=\'memoUserlist inactive\'></div>')
     this.maintab = document.getElementById('maintab')
     this.textarea = document.getElementById('textarea')
-    
+
     //
     //
-    //This coded was added by laaledesiempre, this does not respect the original
+    // This coded was added by laaledesiempre, this does not respect the original
     // convetions this code had, so sorry for that, this still WIP
 
     const maintabScrollValues = {
-      x:0
+      x: 0
     }
-    document.querySelectorAll(".tab-arrow")[1].addEventListener( "click",()=>{
-    const box= document.querySelector("#maintab")
-    console.log(maintabScrollValues.x)
-      if (maintabScrollValues.x > box.scrollLeft+51){
-        maintabScrollValues.x=box.scrollLeft
-        box.scrollLeft=maintabScrollValues.x
+    document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
+      const box = document.querySelector('#maintab')
+      console.log(maintabScrollValues.x)
+      if (maintabScrollValues.x > box.scrollLeft + 51) {
+        maintabScrollValues.x = box.scrollLeft
+        box.scrollLeft = maintabScrollValues.x
       } else {
-        maintabScrollValues.x+=50
-        box.scrollLeft=+maintabScrollValues.x
+        maintabScrollValues.x += 50
+        box.scrollLeft = +maintabScrollValues.x
       }
     })
-    document.querySelectorAll(".tab-arrow")[0].addEventListener( "click",()=>{
-    const box= document.querySelector("#maintab")
-    console.log(maintabScrollValues.x)
-      if (maintabScrollValues.x < 0) 
-      {
-        maintabScrollValues.x=0
-        box.scrollLeft=maintabScrollValues.x
+    document.querySelectorAll('.tab-arrow')[0].addEventListener('click', () => {
+      const box = document.querySelector('#maintab')
+      console.log(maintabScrollValues.x)
+      if (maintabScrollValues.x < 0) {
+        maintabScrollValues.x = 0
+        box.scrollLeft = maintabScrollValues.x
       } else {
-        maintabScrollValues.x-=50
-        box.scrollLeft=maintabScrollValues.x
+        maintabScrollValues.x -= 50
+        box.scrollLeft = maintabScrollValues.x
       }
-    
     })
 
     // Here is where the WIP ends
