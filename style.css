@@ -38,6 +38,10 @@
     font-family: Strife;
     src: url(./fonts/strife/strife.woff);
 }
+@font-face {
+    font-family: Courier;
+    src: url(./fonts/courier/CourierPrime-Regular.ttf);
+}
 .pixelated { 
   font-family: Strife;
   font-size: 2rem;
@@ -148,7 +152,7 @@ body {
   background: transparent;
   border: none;
   background-color: black;
-  color: white;
+  color: var(--white);
   font-family: 'strife';
   width: inherit;
   background-color: inherit;
@@ -173,7 +177,7 @@ font-size: 2rem;
     border:0px;
     height: 5%;
     width: 100%;
-    overflow-x: scroll;
+    overflow-x: hidden;
     overflow-y: hidden;
     white-space: nowrap;
     padding-bottom: 0.5%;
@@ -190,6 +194,29 @@ font-size: 2rem;
 .tablinks:hover {
   color: #FFFFFF;
 }
+
+.tab-arrow-container{
+  position:absolute;
+  left: 1.1rem;
+  background-color: var(--inside-orange);
+}
+
+.tab-arrow {
+  background-color: var(--inside-orange);
+  font-family: 'strife';
+  font-size: 1.2rem;
+  height: 80%;
+  vertical-align: top;
+  border-color:var(--yellow);
+  border-top-right-radius:0.5rem ;
+  border-top-left-radius:0.5rem ;
+  border-width: 1px;
+}
+
+.tab-arrow:hover {
+  color: #FFFFFF;
+}
+
 
 .tablinks.active {
   background-color:#fdb302;
@@ -371,7 +398,7 @@ padding-inline-start: 0.5rem;
   margin-right: 0.5%;
   margin-left: 0.5%;
   margin-top: 0.5%;
-  width: 27rem;
+  width:27%;
   order:3;
   height: 86.5vh;
   margin-block-end: 0.5rem;
@@ -384,7 +411,7 @@ padding-inline-start: 0.5rem;
   margin-left: 1%;
   overflow-x: auto;
   height: 83.2vh;
-  width: 15rem; 
+  width: 15%; 
   float: left;
   background-color: black;
 }
@@ -427,9 +454,10 @@ padding-inline-start: 0.5rem;
   display: flex;
   margin-inline-start: 0.5rem;
   width: 97%;
+  padding-inline-start: 7rem;
 }
 #tabContainer {
-  width: 40rem;
+  width: 56%;
   margin-block-start: -0.4rem;
 }
 
@@ -441,6 +469,7 @@ padding-inline-start: 0.5rem;
 }
 
 #chonkers {
+  position: relative;
   background-color: #fdb302; 
   background-repeat: no-repeat; 
   border:2px solid yellow; 
@@ -454,25 +483,26 @@ padding:0.5rem
   /*overflow: auto;*/
 }
 
-
+/*this is a trial*/
+/*
 ::-webkit-scrollbar {
-    /*padding-top: 1%; 
+    padding-top: 1%; 
     padding-bottom: 1%;
-    width: 1.1%;     */
+    width: 1.1%;     
     background-color: white; 
     border:2px solid #c48a00;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color:#c48a00;
-  /*min-height: 1.2%;    */
+  /*min-height: 1.2%;    
 }
 
 ::-webkit-scrollbar-button {
-  /*height: 1.2%;*/
+  height: 1.2%;
   border:0px solid #c48a00;
 }
-
+*/
 @media (max-width:910px) {
   .title > img {
     width: 65%;
