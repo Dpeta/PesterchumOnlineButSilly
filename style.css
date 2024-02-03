@@ -152,7 +152,7 @@ body {
   background: transparent;
   border: none;
   background-color: black;
-  color: white;
+  color: var(--white);
   font-family: 'strife';
   width: inherit;
   background-color: inherit;
