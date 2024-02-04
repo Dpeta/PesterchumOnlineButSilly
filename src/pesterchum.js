@@ -162,9 +162,9 @@ function run () {
     event.preventDefault()
     sendMsg(event)
   })
-
-  const maintab = document.getElementById('maintab')
- /*
+  // this was commented by ale since this is not used anymore
+  // const maintab = document.getElementById('maintab')
+  /*
   maintab.addEventListener('scroll', function (event) {
     updatePartButtonPos()
   })
@@ -798,7 +798,7 @@ function connectButtonEvents () {
 
       // Manage the close button
       // deleted by ale not needed anymore
-     // updatePartButtonPos()
+      // updatePartButtonPos()
 
       // We're doing active stuff
       setTabEnabled(true)
