@@ -286,26 +286,6 @@ font-size: 2rem;
   top: 4px;
   left: 1.5%;
 }
-
-#part {
-  position: absolute;
-  border: none;
-  font-family: 'Courier';
-  font-weight: bold;
-  font-size:12px;
-  color: white;
-  width: 15px;
-  height: 15px;
-  background: none;
-  color: black;
-  display: none;
-  opacity: 0;
-}
-
-#part:hover {
-  color: white;
-}
-
 #manualJoinInput {
 font-family: strife;
 color: var(--white);
@@ -454,7 +434,7 @@ padding-inline-start: 0.5rem;
   display: flex;
   margin-inline-start: 0.5rem;
   width: 97%;
-  padding-inline-start: 7rem;
+  padding-inline-start: 10rem;
 }
 #tabContainer {
   width: 56%;

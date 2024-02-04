@@ -164,10 +164,11 @@ function run () {
   })
 
   const maintab = document.getElementById('maintab')
+ /*
   maintab.addEventListener('scroll', function (event) {
     updatePartButtonPos()
   })
-
+*/
   const manualJoinForm = document.getElementById('manualJoinForm')
   // const manualJoinInput = document.getElementById('manualJoinInput');
   manualJoinForm.addEventListener('submit', function (event) {
@@ -192,7 +193,8 @@ function run () {
       tabButton.remove()
 
       // Hide part button
-      event.currentTarget.style.display = 'none'
+      // deleted by ale not needed anymore
+      // event.currentTarget.style.display = 'none'
 
       // Part / Cease
       if (activeTab[i].memo) {
@@ -720,7 +722,8 @@ function updateMemoUserlist (channel) {
     }
   }
 }
-
+// this code was hidden by ale, since button now is fixed, no needed anymore
+/*
 function updatePartButtonPos () {
   const partButton = document.getElementById('part')
   const activeTab = pcoClient.tabs.filter((tab) => tab.active)
@@ -735,7 +738,7 @@ function updatePartButtonPos () {
     partButton.style.top = (((elmRect.bottom - elmRect.y) / 2) + 4) + 'px' // the +4 is to offset the magin/padding
   }
 }
-
+*/
 function connectButtonEvents () {
   const tablinks = pcoClient.maintab.getElementsByClassName('tablinks') // Tab buttons
   // let parts = pcoClient.maintab.getElementsByClassName('part');        // Close tab buttons
@@ -794,7 +797,8 @@ function connectButtonEvents () {
       }
 
       // Manage the close button
-      updatePartButtonPos()
+      // deleted by ale not needed anymore
+     // updatePartButtonPos()
 
       // We're doing active stuff
       setTabEnabled(true)
@@ -1228,7 +1232,6 @@ class PesterchumOnlineClient {
   tabify () {
     this.body.insertAdjacentHTML('beforeend',
       '<div id=\'chonkers\'>' +
-                                     '<button id=\'part\'>X</button>' +
                                      '<div id=\'chumrollContainer\'>' +
                                      '<button id=\'memolistButton\' class=\'MemosChumsTabs active\'>MEMOS</button>' +
                                      '<button id=\'userlistButton\' class=\'MemosChumsTabs\'>CHUMS</button>' +
@@ -1245,6 +1248,7 @@ class PesterchumOnlineClient {
                                      '<div class=\'mainContainer\'>' +
                                      '<div id=\'maintab\' class=\'tab\'>' +
                                      '<div class=\'tab-arrow-container\'>' +
+                                     '<button id=\'part\' class=\'tab-arrow\' >X</button>' +
                                      '<button class=\'tab-arrow\' > <- </button>' +
                                      '<button class=\'tab-arrow\' > -> </button>' +
                                      '</div>' +
@@ -1270,7 +1274,7 @@ class PesterchumOnlineClient {
     const maintabScrollValues = {
       x: 0
     }
-    document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
+    document.querySelectorAll('.tab-arrow')[2].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
       console.log(maintabScrollValues.x)
       if (maintabScrollValues.x > box.scrollLeft + 51) {
@@ -1281,7 +1285,7 @@ class PesterchumOnlineClient {
         box.scrollLeft = +maintabScrollValues.x
       }
     })
-    document.querySelectorAll('.tab-arrow')[0].addEventListener('click', () => {
+    document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
       console.log(maintabScrollValues.x)
       if (maintabScrollValues.x < 0) {
