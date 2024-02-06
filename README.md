@@ -42,4 +42,4 @@ Then input the resulting hashes, same as the previous setup.
 
 Before sending a pull request, if you modified the `/src/pesterchum.js` file, please run 
 `npm run lint`
-This will run eslint automatic linter and scream about errors, it needs to be flawless for the `CI/CD` building.
+This will run ESLint (``eslint --fix``) and automatically fix problems and enforce style guidelines. 
