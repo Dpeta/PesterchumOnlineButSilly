@@ -35,3 +35,11 @@ Run source through browserify + babel, equivalent to running bundle.sh:
 cat dist/pesterchum.js | openssl dgst -sha256 -binary | openssl base64 -A && echo
 ```
 Then input the resulting hashes, same as the previous setup.
+
+# Contributing
+> [!NOTE]  
+> This section still WIP
+
+Before sending a pull request, if you modified the `/src/pesterchum.js` file, please run 
+`npm run lint`
+This will run ESLint (``eslint --fix``) and automatically fix problems and enforce style guidelines. 

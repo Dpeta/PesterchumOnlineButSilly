@@ -23,7 +23,7 @@
   --red:#F60100;
   --gray:#5F5F5F;
   --black:#000001;
-  --white:#F4FEDF;
+  --white:#FFFFFF;
   --dark-yellow:#C59400;
 }
 *{
@@ -258,7 +258,7 @@ font-size: 2rem;
 }
 
 .textarea {
-  background-color: white; 
+  background-color: var(--white); 
 }
 
 .textarea.inactive {
@@ -270,7 +270,7 @@ font-size: 2rem;
 }
 
 .msg {
-  background-color: white; 
+  background-color: var(--white); 
 }
 
 .msg.inactive {
@@ -286,26 +286,6 @@ font-size: 2rem;
   top: 4px;
   left: 1.5%;
 }
-
-#part {
-  position: absolute;
-  border: none;
-  font-family: 'Courier';
-  font-weight: bold;
-  font-size:12px;
-  color: white;
-  width: 15px;
-  height: 15px;
-  background: none;
-  color: black;
-  display: none;
-  opacity: 0;
-}
-
-#part:hover {
-  color: white;
-}
-
 #manualJoinInput {
 font-family: strife;
 color: var(--white);
@@ -318,7 +298,7 @@ width: 95%;
   font-family:strife;
   width: 100%;
   height: 15%;
-  color: white;
+  color: var(--white);
   padding: 1%;
   overflow: auto;
 }
@@ -340,13 +320,13 @@ padding-inline-start: 0.5rem;
   margin: 1%;
 }
 .memoChumContainer:hover {
-  color: white;
+  color: var(--white);
   background-color: #646464;
 }
 
 .hidebutton {
   height: 10%;
-  background: white;
+  background: var(--white);
   font-weight: bold;
   font-size: 24px;
   font-family: 'Courier'; 
@@ -381,7 +361,7 @@ padding-inline-start: 0.5rem;
 }
 
 #chumroll {
-  color: white;
+  color: var(--white);
   font-weight: bold;
   font-family: 'Courier';
   overflow-x: scroll;
@@ -454,7 +434,7 @@ padding-inline-start: 0.5rem;
   display: flex;
   margin-inline-start: 0.5rem;
   width: 97%;
-  padding-inline-start: 7rem;
+  padding-inline-start: 10rem;
 }
 #tabContainer {
   width: 56%;
@@ -489,7 +469,7 @@ padding:0.5rem
     padding-top: 1%; 
     padding-bottom: 1%;
     width: 1.1%;     
-    background-color: white; 
+    background-color: var(--white); 
     border:2px solid #c48a00;
 }
 
