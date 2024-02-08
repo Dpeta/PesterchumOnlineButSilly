@@ -1463,16 +1463,7 @@ class ColorScheme{
   /** Changes the current color scheme into this one */
   changeTheme() {
     const propertyNames= Object.getOwnPropertyNames(this.colors)
-    const propertyCss= propertyNames.map(e=> //this is not necesary it could save compute time.
-      {
-        const propertyWords= e.split(/([A-Z])/)
-        return propertyWords.reduce((acc,e,i,arr)=>
-        {
-          return (i%2 && i!=0) ? [...acc , e+arr[i+1]] : acc
-        },
-          [propertyWords[0]])
-      }
-    ).map(e=>"--"+e.join("-").toLowerCase())
+    const propertyCss= propertyNames.map(e=> "--"+e.replace(/[A-Z]/g, match=> "-" +match).toLowerCase()) //this is not necesary it could save compute time.
     for (let i=0;i<propertyNames.length;i++){
       document.documentElement.style.setProperty(propertyCss[i],this.colors[propertyNames[i]])
     }
@@ -1510,7 +1501,6 @@ const trollianColors={
 }
 
 const pesterchumTheme= Theme.new("Pesterchum","hi", pesterchumColors)
-const otherTheme= Theme.new("other","",trollianColors)
 const trollianTheme= Theme.new("Trollian","hi", trollianColors)
 const customTheme= Theme.new("Custom","hi",pesterchumColors);
 
