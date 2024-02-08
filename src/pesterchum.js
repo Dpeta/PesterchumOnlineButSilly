@@ -1448,3 +1448,93 @@ const sanitizeHTML = function (str) {
     return str
   }
 }
+
+
+class ColorScheme{ 
+  constructor(
+    name,
+    image,
+    colors) {
+      this.name=name;
+      this.image=image;
+      this.colors=colors;
+  }
+  
+  /** Changes the current color scheme into this one */
+  changeTheme() {
+    const propertyNames= Object.getOwnPropertyNames(this.colors)
+    const propertyCss= propertyNames.map(e=> //this is not necesary it could save compute time.
+      {
+        const propertyWords= e.split(/([A-Z])/)
+        return propertyWords.reduce((acc,e,i,arr)=>
+        {
+          return (i%2 && i!=0) ? [...acc , e+arr[i+1]] : acc
+        },
+          [propertyWords[0]])
+      }
+    ).map(e=>"--"+e.join("-").toLowerCase())
+    for (let i=0;i<propertyNames.length;i++){
+      document.documentElement.style.setProperty(propertyCss[i],this.colors[propertyNames[i]])
+    }
+  }
+}
+
+class Theme{
+  static instances=[]
+
+  static new (name,image,colors){
+    let newInstance= new ColorScheme(name,image,colors)
+    this.instances.push(newInstance)
+    return newInstance
+  }
+}
+
+const pesterchumColors={
+    outsideColor:"#d59700",
+    insideColor:"#ffb500",
+    buttonAndBorderAscent:"#fff700",
+    unselectedColor:"#5f5f5f",
+    black:"#000001",
+    white:"#ffffff",
+    buttonBorderColor:"#c59400",
+}
+
+const trollianColors={
+    outsideColor:"#c2c2c2",
+    insideColor:"#e30421",
+    buttonAndBorderAscent:"#ffa5a4",
+    unselectedColor:"#5f5f5f",
+    black:"#000001",
+    white:"#ffffff",
+    buttonBorderColor:"#b00e14"
+}
+
+const pesterchumTheme= Theme.new("Pesterchum","hi", pesterchumColors)
+const otherTheme= Theme.new("other","",trollianColors)
+const trollianTheme= Theme.new("Trollian","hi", trollianColors)
+const customTheme= Theme.new("Custom","hi",pesterchumColors);
+
+//Color dialog code
+let colorDialog= document.querySelector("#color-dialog")
+let colorDialogForm= document.querySelector("#color-dialog form")
+let inputs = document.querySelectorAll("#color-dialog input")
+
+let dialogChangeColor =()=>{
+  let customColor= {}; 
+  for (let x of inputs){
+    customColor[x.id]=x.value
+  }
+  customTheme.colors=customColor
+  customTheme.changeTheme()
+}
+document.querySelector("#color-dialog button").addEventListener("click",()=>{
+  colorDialog.close()
+  dialogChangeColor()
+})
+document.querySelector("#custom-color").addEventListener("click",()=>colorDialog.showModal())
+inputs.forEach(e=>e.addEventListener("change", ()=>dialogChangeColor()))
+document.querySelectorAll(".theme")[0].addEventListener("click",()=>pesterchumTheme.changeTheme())
+document.querySelectorAll(".theme")[1].addEventListener("click",()=>trollianTheme.changeTheme())
+//
+
+

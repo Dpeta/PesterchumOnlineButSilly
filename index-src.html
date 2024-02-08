@@ -33,13 +33,11 @@
 <link rel="icon" href="favicon.ico">
 <link rel="canonical" href="https://pesterchum.online">
 <link rel="stylesheet" href="style.css">
-<script src="src/pesterchum.js"></script>
 
 <title>Pesterchum Online</title>
 </head>
 <body>
 <div class="centered">
-
     <h1 class='no-centertxt no-pixelated'>
       <div class="title">
           <img src="smilies/perky_big.gif"/>
@@ -64,7 +62,37 @@
   <div id='connectButtonDiv'><button id="connectButton">CONNECT!</button></div>
 </form>
 </div>
+  
 </div>
+    <div class="centered">
+      <h3 class="pixelated">TH3M3S!</h3>
+      <div class="theme-wrapper">
+        <button class="theme" id="theme-pesterchum">Pesterchum</button>
+        <button class="theme" id="theme-trollian">Trollian</button>
+        <button class="theme" id="custom-color">Custom</button>
+      </div>
+</div>
+       <dialog id="color-dialog">
+        <p class="pixelated">Select colors:</p>
+          <form method="dialog">
+          <label for="outsideColor">outside color</label>
+          <input type="color" name="outsideColor" id="outsideColor" value="#d59700"/>
+          <label for="insideColor">inside color</label>
+          <input type="color" name="insideColor" id="insideColor" value="#ffb500"/>
+          <label for="buttonAndBorderAscent">button and border ascent</label>
+          <input type="color" name="buttonAndBorderAscent" id="buttonAndBorderAscent" value="#fff700"/>
+          <label for="unselectedColor">unselected/shadowed color</label>
+          <input type="color" name="unselectedColor" id="unselectedColor" value="#5f5f5f"/>
+          <label for="black">black</label>
+          <input type="color" name="black" id="black" value="#000001"/>
+          <label for="white">white</label>
+          <input type="color" name="white" id="white" value="#ffffff"/>
+          <label for="buttonBorderColor">buttons border's color</label>
+          <input type="color" name="buttonBorderColor" id="buttonBorderColor" value="#c59400"/>
+          <button>OK</button>
+          </form>
+      </dialog>   
 </body>
+<script src="src/pesterchum.js"></script>
 </html>
 <!-- You are reading our html! have a wonderful day! by: laaledesiempre--->
