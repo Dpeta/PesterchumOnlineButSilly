@@ -39,8 +39,7 @@
 </head>
 <body>
 <div class="centered">
-<div id='openingtext'>
-<h1 class='no-centertxt no-pixelated'>
+    <h1 class='no-centertxt no-pixelated'>
       <div class="title">
           <img src="smilies/perky_big.gif"/>
           <p>PESTERCHUM</p>
@@ -48,23 +47,51 @@
           <img src="smilies/perky_big.gif"/>
       </div>
     </h1>
-<p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
-<p>Now up on <a href="https://github.com/Dpeta/PesterchumOnlineButSilly">GitHub</a> and under the <a href="LICENSE">AGPL</a>, woo yeah woo yeah <img src="smilies/3_big.gif" alt="pesterchum kitty face emote"> </p>
-<p>This is a WIP!!! It only has pretty basic features rn :"3</p>
-</div>
-<footer class='centertxt'>Last update: 2024-02-02</footer>
-<div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png" alt="Affero General Public License logo"></div>
+  <p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
+      <p>Now up on <a href="https://github.com/Dpeta/PesterchumOnlineButSilly">GitHub</a> and under the <a href="agpl-3.0-standalone.html">AGPL</a>,</p>
+      <p class="pixelated"> woo yeah woo yeah <img src="smilies/3_big.gif"> </p>
+  <p>This is a WIP!!! It only has pretty basic features rn :"3</p>
+<footer class='centertxt'>Last update: 2023-02-07</footer>
+<div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
 <div class='centeredGo'>
 <div id='entry'>
-<form id=connectForm>
-  <label for="handle">Handle: </label><input type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
-  <label for="bloodcaste">Pick a scrunkly color!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
+<form id='connectForm'>
+  <label class="pixelated" for="handle">MYCHUMHANDLE:</label><input class="pixelated" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
+  <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
   <!--<label for="allowUnsafeTags">Allow unsafe tags </label><input type="checkbox" name="allowUnsafeTags" id="allowUnsafeTags">-->
-  <div id='connectButtonDiv'><button id="connectButton">Connect</button></div>
+  <div id='connectButtonDiv'><button id="connectButton">CONNECT!</button></div>
 </form>
 </div>
+  
 </div>
+    <div class="centered">
+      <h3 class="pixelated">TH3M3S!</h3>
+      <div class="theme-wrapper">
+      </div>
+</div>
+       <dialog id="color-dialog">
+        <p class="pixelated">Select colors:</p>
+          <form method="dialog">
+          <label for="outsideColor">outside color</label>
+          <input type="color" name="outsideColor" id="outsideColor" value="#d59700"/>
+          <label for="insideColor">inside color</label>
+          <input type="color" name="insideColor" id="insideColor" value="#ffb500"/>
+          <label for="buttonAndBorderAscent">button and border ascent</label>
+          <input type="color" name="buttonAndBorderAscent" id="buttonAndBorderAscent" value="#fff700"/>
+          <label for="unselectedColor">unselected/shadowed color</label>
+          <input type="color" name="unselectedColor" id="unselectedColor" value="#5f5f5f"/>
+          <label for="black">black</label>
+          <input type="color" name="black" id="black" value="#000001"/>
+          <label for="white">white</label>
+          <input type="color" name="white" id="white" value="#ffffff"/>
+          <label for="buttonBorderColor">buttons border's color</label>
+          <input type="color" name="buttonBorderColor" id="buttonBorderColor" value="#c59400"/>
+          <button>SAVE</button>
+          <button>LOAD LAST</button>
+          <button>CLOSE</button>
+          </form>
+      </dialog>  
 </body>
 <script src="dist/pesterchum.js" integrity="sha256-0vWgkYvqjBnOaNs7lhBMKO6k6dHX74seYWRHp5E3t7s="></script>
 </html>
