@@ -1542,11 +1542,16 @@ modalButtons[0].addEventListener("click",()=>{
   dialogChangeColor()
 })
 
-//load button
-modalButtons[1].addEventListener("click",()=>{
+const loadSavedTheme=()=>{
   customTheme.colors=JSON.parse(window.localStorage.getItem("customTheme"))
   customTheme.changeTheme()
+}
+//load button
+modalButtons[1].addEventListener("click",()=>{
+  loadSavedTheme()
 })
+//by default loads the last theme saved
+loadSavedTheme()
 
 //close button
 modalButtons[2].addEventListener("click",()=>{

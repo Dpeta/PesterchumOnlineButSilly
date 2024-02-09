@@ -24,6 +24,7 @@
   --black:#000001;
   --white:#FFFFFF;
   --button-border-color:#C59400;
+  scrollbar-color: var(--outside-color) var(--white);
 }
 *{
   margin: 0;
@@ -32,6 +33,7 @@
   font-family: Courier;
   font-weight: 1000;
   font-size: 1rem;
+  color: var(--black)
 }
 @font-face {
     font-family: Strife;
@@ -67,7 +69,6 @@ dialog {
   gap:0.5rem;
 } 
 #color-dialog form button{
-  margin-block-start: 2rem;
   grid-column: 1/3;
 }
 #color-dialog form label{
@@ -203,11 +204,15 @@ body {
 }
 button{
   background-color:var(--button-and-border-ascent);
-border: 3px solid var(--button-border-color);
-padding: 0.2rem 1rem;
+  border: 3px solid var(--button-border-color);
+  padding: 0.2rem 1rem;
   font-family: Strife;
+  font-size: 2rem;
+}
 
-font-size: 2rem;
+button:hover{
+  background-color: var(--outside-color);
+  color: var(--white)
 }
 
 /*Client*/
@@ -344,9 +349,10 @@ width: 95%;
   overflow: auto;
 }
 .manualJoin > div{
+  color:var(--white);
   font-family:strife;
-font-size: 2rem;
-padding-inline-start: 0.5rem;
+  font-size: 2rem;
+  padding-inline-start: 0.5rem;
 }
 
 .memoChum {
@@ -476,6 +482,7 @@ padding-inline-start: 0.5rem;
   margin-inline-start: 0.5rem;
   width: 97%;
   padding-inline-start: 10rem;
+  height: 2.4rem;
 }
 #tabContainer {
   width: 56%;
