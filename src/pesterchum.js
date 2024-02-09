@@ -1448,34 +1448,34 @@ const sanitizeHTML = function (str) {
     return str
   }
 }
-//////// TODO code review
-//Theming model
-class ColorScheme{ 
-  constructor(
+
+// Theming model
+class ColorScheme {
+  constructor (
     name,
     image,
     colors) {
-      this.name=name;
-      this.image=image;
-      this.colors=colors;
+    this.name = name
+    this.image = image
+    this.colors = colors
   }
-  
+
   /** Changes the current color scheme into this one */
-  changeTheme() {
-    const propertyNames= Object.getOwnPropertyNames(this.colors)
-    const propertyCss= propertyNames.map(e=> "--"+e.replace(/[A-Z]/g, match=> "-" +match).toLowerCase()) //this is not necesary it could save compute time.
-    const inputs = document.querySelectorAll("#color-dialog input")
-    for (let i=0;i<propertyNames.length;i++){
-      document.documentElement.style.setProperty(propertyCss[i],this.colors[propertyNames[i]])
-      inputs[i].value=this.colors[propertyNames[i]]
+  changeTheme () {
+    const propertyNames = Object.getOwnPropertyNames(this.colors)
+    const propertyCss = propertyNames.map(e => '--' + e.replace(/[A-Z]/g, match => '-' + match).toLowerCase()) // this is not necesary it could save compute time.
+    const inputs = document.querySelectorAll('#color-dialog input')
+    for (let i = 0; i < propertyNames.length; i++) {
+      document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]])
+      inputs[i].value = this.colors[propertyNames[i]]
     }
   }
 }
+// Theme factory
+class Theme {
+  static instances = []
 
-class Theme{
-  static instances=[]
-
-  /**Creates a new Color Scheme instance and adds it to the instance count
+  /** Creates a new Color Scheme instance and adds it to the instance count
    *  Args:
    *  name : String => Color scheme name
    *  image : String => image source, example: "img/pesterchum_icon.png"
@@ -1489,94 +1489,107 @@ class Theme{
    *    buttonBorderColor:"#c59400",
    *  }
    * */
-  static new (name,image,colors){
-    let newInstance= new ColorScheme(name,image,colors)
+  static new (name, image, colors) {
+    const newInstance = new ColorScheme(name, image, colors)
     this.instances.push(newInstance)
     return newInstance
   }
 }
-//
-const pesterchumColors={
-    outsideColor:"#d59700",
-    insideColor:"#ffb500",
-    buttonAndBorderAscent:"#fff700",
-    unselectedColor:"#5f5f5f",
-    black:"#000001",
-    white:"#ffffff",
-    buttonBorderColor:"#c59400",
+
+// Themes Color Schemes
+const pesterchumColors = {
+  outsideColor: '#d59700',
+  insideColor: '#ffb500',
+  buttonAndBorderAscent: '#fff700',
+  unselectedColor: '#5f5f5f',
+  black: '#000001',
+  white: '#ffffff',
+  buttonBorderColor: '#c59400'
 }
 
-const trollianColors={
-    outsideColor:"#c2c2c2",
-    insideColor:"#e30421",
-    buttonAndBorderAscent:"#ffa5a4",
-    unselectedColor:"#5f5f5f",
-    black:"#000001",
-    white:"#ffffff",
-    buttonBorderColor:"#b00e14"
+const trollianColors = {
+  outsideColor: '#c2c2c2',
+  insideColor: '#e30421',
+  buttonAndBorderAscent: '#ffa5a4',
+  unselectedColor: '#5f5f5f',
+  black: '#000001',
+  white: '#ffffff',
+  buttonBorderColor: '#b00e14'
 }
 
-// default themes
-const pesterchumTheme= Theme.new("Pesterchum","img/pesterchum_icon.png", pesterchumColors)
-const trollianTheme= Theme.new("Trollian","img/trollian_icon.png", trollianColors)
-const customTheme= Theme.new("Custom","",pesterchumColors);
-//Color dialog code
-let colorDialog= document.querySelector("#color-dialog")
-let colorDialogForm= document.querySelector("#color-dialog form")
-let inputs = document.querySelectorAll("#color-dialog input")
+/// ///// TODO code review
+// Default themes
+Theme.new('Pesterchum', 'img/pesterchum_icon.png', pesterchumColors)
+Theme.new('Trollian', 'img/trollian_icon.png', trollianColors)
+const customTheme = Theme.new('Custom', '', pesterchumColors)
 
-let dialogChangeColor =()=>{
-  let customColor= {}; 
-  for (let x of inputs){
-    customColor[x.id]=x.value
+// Color dialog elements
+const colorDialog = document.querySelector('#color-dialog')
+const inputs = document.querySelectorAll('#color-dialog input')
+const modalButtons = document.querySelectorAll('#color-dialog button')
+
+// Color dialog functions
+/** Changes current custom theme colors into the Dialog form input values */
+const dialogChangeColor = () => {
+  const customColor = {}
+  for (const x of inputs) {
+    customColor[x.id] = x.value
   }
-  customTheme.colors=customColor
+  customTheme.colors = customColor
   customTheme.changeTheme()
 }
-//modal buttons
-let modalButtons= document.querySelectorAll("#color-dialog button")
 
-//save button
-modalButtons[0].addEventListener("click",()=>{
-  window.localStorage.setItem("customTheme",JSON.stringify(customTheme.colors))
+/** Loads the theme stored in localStorage "customTheme" key */
+const loadSavedTheme = () => {
+  customTheme.colors = JSON.parse(window.localStorage.getItem('customTheme'))
+  customTheme.changeTheme()
+}
+
+// by default loads the last theme saved
+loadSavedTheme()
+
+// save button
+modalButtons[0].addEventListener('click', () => {
+  window.localStorage.setItem('customTheme', JSON.stringify(customTheme.colors))
   dialogChangeColor()
 })
 
-const loadSavedTheme=()=>{
-  customTheme.colors=JSON.parse(window.localStorage.getItem("customTheme"))
-  customTheme.changeTheme()
-}
-//load button
-modalButtons[1].addEventListener("click",()=>{
+// load button
+modalButtons[1].addEventListener('click', () => {
   loadSavedTheme()
 })
-//by default loads the last theme saved
-loadSavedTheme()
 
-//close button
-modalButtons[2].addEventListener("click",()=>{
+// close button
+modalButtons[2].addEventListener('click', () => {
   colorDialog.close()
 })
 
-inputs.forEach(e=>e.addEventListener("change", ()=>dialogChangeColor()))
+inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
 
-let themeWrapper= document.querySelector(".theme-wrapper")
-themeWrapper.innerHTML=""
-Theme.instances.forEach(e=>{
-  themeWrapper.innerHTML+= `
-    <button class=\'theme-button\' id=\'${"theme-"+e.name.toLowerCase()}\'>
-      ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
-    </button>
-  `
-})
-document.querySelectorAll(".theme-button").forEach((e,i)=>{
-  Theme.instances[i].name!="Custom" && e.addEventListener("click",()=>{
-    Theme.instances[i].changeTheme()
-  })
-})
+// Theme list builder
+const themeWrapper = document.querySelector('.theme-wrapper')
+themeWrapper.innerHTML = ''
+Theme.instances.forEach(
+  e => {
+    themeWrapper.innerHTML += `
+      <button class='theme-button' id='${'theme-' + e.name.toLowerCase()}'>
+        ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
+      </button>
+    `
+  }
+)
 
-let customThemeButton=document.querySelector("#theme-custom")
-customThemeButton.addEventListener("click",()=>colorDialog.showModal())
-//
+// Theme button list event listeners
+document.querySelectorAll('.theme-button').forEach(
+  (e, i) => {
+    Theme.instances[i].name !== 'Custom' && e.addEventListener(
+      'click', () => {
+        Theme.instances[i].changeTheme()
+      }
+    )
+  }
+)
 
-
+// customThemeButton behaviour
+const customThemeButton = document.querySelector('#theme-custom')
+customThemeButton.addEventListener('click', () => colorDialog.showModal())
