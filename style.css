@@ -186,10 +186,21 @@ body {
   font-size: 1.4rem;
 }
 
-theme-wrapper{
+.theme-wrapper{
   display: flex;
+  align-items: center;
+  gap:1rem;
 }
 
+.theme-button{
+  height: 3rem;
+  text-align: center;
+  text-justify: center;
+  padding:0
+}
+#theme-custom{
+  padding:0 1rem
+}
 button{
   background-color:var(--button-and-border-ascent);
 border: 3px solid var(--button-border-color);

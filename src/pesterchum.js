@@ -1448,8 +1448,8 @@ const sanitizeHTML = function (str) {
     return str
   }
 }
-
-
+//////// TODO code review
+//Theming model
 class ColorScheme{ 
   constructor(
     name,
@@ -1464,8 +1464,10 @@ class ColorScheme{
   changeTheme() {
     const propertyNames= Object.getOwnPropertyNames(this.colors)
     const propertyCss= propertyNames.map(e=> "--"+e.replace(/[A-Z]/g, match=> "-" +match).toLowerCase()) //this is not necesary it could save compute time.
+    const inputs = document.querySelectorAll("#color-dialog input")
     for (let i=0;i<propertyNames.length;i++){
       document.documentElement.style.setProperty(propertyCss[i],this.colors[propertyNames[i]])
+      inputs[i].value=this.colors[propertyNames[i]]
     }
   }
 }
@@ -1473,13 +1475,27 @@ class ColorScheme{
 class Theme{
   static instances=[]
 
+  /**Creates a new Color Scheme instance and adds it to the instance count
+   *  Args:
+   *  name : String => Color scheme name
+   *  image : String => image source, example: "img/pesterchum_icon.png"
+   *  colors : ColorScheme => example: {
+   *    outsideColor:"#d59700",
+   *    insideColor:"#ffb500",
+   *    buttonAndBorderAscent:"#fff700",
+   *    unselectedColor:"#5f5f5f",
+   *    black:"#000001",
+   *    white:"#ffffff",
+   *    buttonBorderColor:"#c59400",
+   *  }
+   * */
   static new (name,image,colors){
     let newInstance= new ColorScheme(name,image,colors)
     this.instances.push(newInstance)
     return newInstance
   }
 }
-
+//
 const pesterchumColors={
     outsideColor:"#d59700",
     insideColor:"#ffb500",
@@ -1500,10 +1516,10 @@ const trollianColors={
     buttonBorderColor:"#b00e14"
 }
 
-const pesterchumTheme= Theme.new("Pesterchum","hi", pesterchumColors)
-const trollianTheme= Theme.new("Trollian","hi", trollianColors)
-const customTheme= Theme.new("Custom","hi",pesterchumColors);
-
+// default themes
+const pesterchumTheme= Theme.new("Pesterchum","img/pesterchum_icon.png", pesterchumColors)
+const trollianTheme= Theme.new("Trollian","img/trollian_icon.png", trollianColors)
+const customTheme= Theme.new("Custom","",pesterchumColors);
 //Color dialog code
 let colorDialog= document.querySelector("#color-dialog")
 let colorDialogForm= document.querySelector("#color-dialog form")
@@ -1517,14 +1533,45 @@ let dialogChangeColor =()=>{
   customTheme.colors=customColor
   customTheme.changeTheme()
 }
-document.querySelector("#color-dialog button").addEventListener("click",()=>{
-  colorDialog.close()
+//modal buttons
+let modalButtons= document.querySelectorAll("#color-dialog button")
+
+//save button
+modalButtons[0].addEventListener("click",()=>{
+  window.localStorage.setItem("customTheme",JSON.stringify(customTheme.colors))
   dialogChangeColor()
 })
-document.querySelector("#custom-color").addEventListener("click",()=>colorDialog.showModal())
+
+//load button
+modalButtons[1].addEventListener("click",()=>{
+  customTheme.colors=JSON.parse(window.localStorage.getItem("customTheme"))
+  customTheme.changeTheme()
+})
+
+//close button
+modalButtons[2].addEventListener("click",()=>{
+  colorDialog.close()
+})
+
 inputs.forEach(e=>e.addEventListener("change", ()=>dialogChangeColor()))
-document.querySelectorAll(".theme")[0].addEventListener("click",()=>pesterchumTheme.changeTheme())
-document.querySelectorAll(".theme")[1].addEventListener("click",()=>trollianTheme.changeTheme())
+
+let themeWrapper= document.querySelector(".theme-wrapper")
+themeWrapper.innerHTML=""
+Theme.instances.forEach(e=>{
+  themeWrapper.innerHTML+= `
+    <button class=\'theme-button\' id=\'${"theme-"+e.name.toLowerCase()}\'>
+      ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
+    </button>
+  `
+})
+document.querySelectorAll(".theme-button").forEach((e,i)=>{
+  Theme.instances[i].name!="Custom" && e.addEventListener("click",()=>{
+    Theme.instances[i].changeTheme()
+  })
+})
+
+let customThemeButton=document.querySelector("#theme-custom")
+customThemeButton.addEventListener("click",()=>colorDialog.showModal())
 //
 
 
