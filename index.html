@@ -28,12 +28,13 @@
 -->
         <!-- When hosting on an actual web server the CSP should be more restrictive. (hash for script-src) -->
 
-<link rel="preload" href="style.css" integrity="sha256-oGIZlO87onOOvKbIVVOS/haIR5SbdjZEe8zYUUqCa3g=" as="style">
-<link rel="preload" href="dist/pesterchum.js" integrity="sha256-0vWgkYvqjBnOaNs7lhBMKO6k6dHX74seYWRHp5E3t7s=" as="script"> <!-- integrity hash is with babel -->
+<link rel="preload" href="style.css" integrity="sha256-spckZmQHlVa4XXqSqfEc2xq23CHnwOEGHutXZqI+0vs=" as="style">
+<link rel="preload" href="dist/pesterchum.js" integrity="sha256-FTf4vrY/VsLaFd5orM4wzG7HVG8yQQwIXVRsGcmaB5c=" as="script"> <!-- integrity hash is not with babel this time :3 -->
 
 <link rel="icon" href="favicon.ico">
 <link rel="canonical" href="https://pesterchum.online">
-<link rel="stylesheet" integrity="sha256-oGIZlO87onOOvKbIVVOS/haIR5SbdjZEe8zYUUqCa3g=" href="style.css">
+<link rel="stylesheet" integrity="sha256-spckZmQHlVa4XXqSqfEc2xq23CHnwOEGHutXZqI+0vs=" href="style.css">
+<script src="dist/pesterchum.js" integrity="sha256-FTf4vrY/VsLaFd5orM4wzG7HVG8yQQwIXVRsGcmaB5c=" defer></script>
 
 <title>Pesterchum Online</title>
 </head>
@@ -93,5 +94,4 @@
           </form>
       </dialog>  
 </body>
-<script src="dist/pesterchum.js" integrity="sha256-0vWgkYvqjBnOaNs7lhBMKO6k6dHX74seYWRHp5E3t7s="></script>
 </html>
