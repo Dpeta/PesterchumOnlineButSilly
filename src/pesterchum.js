@@ -1541,12 +1541,17 @@ const dialogChangeColor = () => {
 
 /** Loads the theme stored in localStorage "customTheme" key */
 const loadSavedTheme = () => {
-  customTheme.colors = JSON.parse(window.localStorage.getItem('customTheme'))
-  customTheme.changeTheme()
+  const savedTheme = window.localStorage.getItem('customTheme')
+  if (savedTheme) {
+    customTheme.colors = JSON.parse(savedTheme)
+    customTheme.changeTheme()
+  } else {
+    alert('NO CUSTOM TH3M3 Y3T!')
+  }
 }
 
 // by default loads the last theme saved
-loadSavedTheme()
+window.localStorage.getItem('customTheme') && loadSavedTheme()
 
 // save button
 modalButtons[0].addEventListener('click', () => {
