@@ -443,6 +443,7 @@ width: 95%;
   background-color: var(--black);
 }
 #msg {
+  touch-action: none;
   color: var(--black); 
   border:2px solid var(--button-and-border-ascent);
   margin-top:0.25%; 
