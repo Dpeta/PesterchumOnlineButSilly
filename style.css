@@ -78,6 +78,10 @@ dialog {
   font-size: 1.5rem;
 }
 
+input[type=range]{
+  accent-color:var(--button-and-border-ascent);
+}
+
 dialog::backdrop{
   background-color: var(--unselected-color) ;
   opacity: 0.5;
@@ -138,7 +142,7 @@ main {
   align-items: center;
   gap: 1rem;
   padding-block: 3vh;
-
+  background: var(--outside-color)
 }
 
 .title{

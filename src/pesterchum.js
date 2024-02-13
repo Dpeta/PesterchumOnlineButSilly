@@ -1478,8 +1478,9 @@ class ColorScheme {
     const propertyNames = Object.getOwnPropertyNames(this.colors)
     const propertyCss = propertyNames.map(e => '--' + e.replace(/[A-Z]/g, match => '-' + match).toLowerCase()) // this is not necesary it could save compute time.
     const inputs = document.querySelectorAll('#color-dialog input')
-    for (let i = 0; i < propertyNames.length; i++) {
-      document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]])
+    for (let i = 0; i < propertyNames.length; i+=2) {
+      let hexTransparency=parseInt(255*parseFloat(this.colors[propertyNames[i+1]])).toString(16);
+      document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]]+hexTransparency)
       inputs[i].value = this.colors[propertyNames[i]]
     }
   }
@@ -1512,22 +1513,36 @@ class Theme {
 // Themes Color Schemes
 const pesterchumColors = {
   outsideColor: '#d59700',
+  outsideColorOpacity: '1',
   insideColor: '#ffb500',
+  insideColorOpacity: '1',
   buttonAndBorderAscent: '#fff700',
+  buttonAndBorderAscentOpacity: '1',
   unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
   black: '#000001',
+  blackOpacity: '1',
   white: '#ffffff',
-  buttonBorderColor: '#c59400'
+  whiteOpacity: '1',
+  buttonBorderColor: '#c59400',
+  buttonBorderColorOpacity: '1'
 }
 
 const trollianColors = {
   outsideColor: '#c2c2c2',
+  outsideColorOpacity: '1',
   insideColor: '#e30421',
+  insideColorOpacity: '1',
   buttonAndBorderAscent: '#ffa5a4',
+  buttonAndBorderAscentOpacity: '1',
   unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
   black: '#000001',
+  blackOpacity: '1',
   white: '#ffffff',
-  buttonBorderColor: '#b00e14'
+  whiteOpacity: '1',
+  buttonBorderColor: '#b00e14',
+  buttonBorderColorOpacity: '1'
 }
 
 /// ///// TODO code review
