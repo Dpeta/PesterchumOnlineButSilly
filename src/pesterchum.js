@@ -943,7 +943,7 @@ function parsePesterchumSyntax (source, target, msg) {
 
 class PesterchumOnlineClient {
   constructor () {
-    this.body = document.getElementsByTagName('body').item(0)
+    this.body = document.getElementsByTagName('main').item(0)
     this.color = document.getElementById('bloodcaste').value
     this.MemosTabOpen = true
     this.dead = false // Input is not allowed
@@ -1598,3 +1598,87 @@ document.querySelectorAll('.theme-button').forEach(
 // customThemeButton behaviour
 const customThemeButton = document.querySelector('#theme-custom')
 customThemeButton.addEventListener('click', () => colorDialog.showModal())
+
+// Backgrounds
+const backgroundWrapper= document.querySelector(".background-wrapper")
+const backgroundImage=document.querySelectorAll(".background-image")
+const backgroundImageWrapper=document.querySelector("#background-image-wrapper")
+const storedBackground=window.localStorage.getItem("background")
+
+// Theming model
+class BackgroundImage{
+  constructor (
+    name,
+    path,
+    alt
+    ) {
+    this.name = name
+    this.path = path
+    this.alt= alt
+  }
+
+  /** Changes the current background src into this one */
+  changeBackground () {
+    backgroundImage.forEach(e=>e.src=this.path)
+  }
+}
+// Theme factory
+class Background {
+  static instances = []
+
+  /** Creates a new background image instance and adds it to the instance count
+   *  Args:
+   *  name : String => Image name, used for id
+   *  path: String => image source, example: "backgrounds/pesterchum_icon.png"
+   *  alt : alt text for screen reader
+   * */
+  static new (name, path, alt) {
+    const newInstance = new BackgroundImage(name, path,alt)
+    this.instances.push(newInstance)
+    return newInstance
+  }
+}
+
+// here comes the background instances
+const poolBackground= Background.new("pool","backgrounds/pool_background.png","pool balls")
+const vriskaBackground= Background.new("vriska","backgrounds/vriska_background.png","blood tained 8 balls and vriska scorpio signs")
+const striderBackground= Background.new("strider","backgrounds/strider_background.png","strider vinil icon scratched and whole")
+const lalondeBackground= Background.new("lalonde","backgrounds/lalonde_background.png","both lalonde icons, a squid and a muttant kitten")
+const redJujuBackground= Background.new("red-juju","backgrounds/red_juju_background.png","a red spiral")
+const greenJujuBackground= Background.new("green-juju","backgrounds/green_juju_background.png","a green spiral")
+const signsBackground= Background.new("signs","backgrounds/signs_background.png","main troll zodiac signs")
+const sbahjBackground= Background.new("sbahj","backgrounds/sbahj_background.png","warned you about the stairs meme")
+const egbertBackground= Background.new("egbert","backgrounds/egbert_background.png","jonh egbert pogo icon")
+const squiddlesBackground= Background.new("squiddles","backgrounds/squiddles_background.png","a bunch of squiddles")
+
+// background buttons
+Background.instances.forEach(e=>{
+  backgroundWrapper.innerHTML+= `
+  <button class="background-button" id="${e.name}">
+    <img src="${e.path}" alt="${e.path}"/> 
+  </button>
+`
+})
+
+/** Load the background stored on localStorage background*/
+const loadBackground=()=>{
+  const background = window.localStorage.getItem("background") 
+  background && Background.instances[background].changeBackground()
+}
+//loads the last background
+storedBackground && loadBackground()
+
+// Background buttons actions
+const buttons= document.querySelectorAll(".background-button")
+buttons.forEach((e,i)=>{
+  e.addEventListener('click',()=>{
+    Background.instances[i].changeBackground()
+    window.localStorage.setItem("background",i)
+    backgroundImageWrapper.style.display="flex"
+  })
+})
+
+// Reset background action
+document.querySelector("#reset-background").addEventListener("click",()=>{
+  backgroundImageWrapper.style.display="none"
+})
