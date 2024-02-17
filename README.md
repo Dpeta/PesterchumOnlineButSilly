@@ -43,3 +43,9 @@ Then input the resulting hashes, same as the previous setup.
 Before sending a pull request, if you modified the `/src/pesterchum.js` file, please run 
 `npm run lint`
 This will run ESLint (``eslint --fix``) and automatically fix problems and enforce style guidelines. 
+## Thanks to:
+
+All the artist collaborating with backgrounds:
+- paleWreath
+- AU Dave
+- Caliborn (Pure art skills!)
