@@ -1231,7 +1231,7 @@ class PesterchumOnlineClient {
 
   tabify () {
     this.body.insertAdjacentHTML('beforeend',
-      '<div id=\'chonkers\'>' +
+      '<div id=\'chonkers\' class=\'border-radius-effect\'>' +
                                      '<div id=\'chumrollContainer\'>' +
                                      '<button id=\'memolistButton\' class=\'MemosChumsTabs active\'>MEMOS</button>' +
                                      '<button id=\'userlistButton\' class=\'MemosChumsTabs\'>CHUMS</button>' +
@@ -1254,9 +1254,9 @@ class PesterchumOnlineClient {
                                      '</div>' +
                                      '</div>' +
                                      '<div id=\'textAndInputBox\'>' +
-                                     '<div id=\'textarea\' class=\'textarea inactive\'></div>' +
+                                     '<div id=\'textarea\' class=\'textarea inactive border-radius-effect\'></div>' +
                                      '<form id=\'msgform\'>' +
-                                     '<input id=\'msg\' class=\'msg inactive\' minlength=\'1\' required disabled>' +
+                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' minlength=\'1\' required disabled>' +
                                      '</form>' +
                                      '<div class="action-button-wrapper">' +
                                      '<button>Silence</button>' +
@@ -1265,7 +1265,7 @@ class PesterchumOnlineClient {
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
                                      '</div>' +
                                      '</div>' +
-                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive\'></div>')
+                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive border-radius-effect\'></div>')
     this.maintab = document.getElementById('maintab')
     this.textarea = document.getElementById('textarea')
 
@@ -1478,17 +1478,61 @@ class ColorScheme {
     const propertyNames = Object.getOwnPropertyNames(this.colors)
     const propertyCss = propertyNames.map(e => '--' + e.replace(/[A-Z]/g, match => '-' + match).toLowerCase()) // this is not necesary it could save compute time.
     const inputs = document.querySelectorAll('#color-dialog input')
-    for (let i = 0; i < propertyNames.length; i+=2) {
+    for (let i = 1; i < propertyNames.length-1; i+=2) {
       let hexTransparency=parseInt(255*parseFloat(this.colors[propertyNames[i+1]])).toString(16);
       document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]]+hexTransparency)
       inputs[i].value = this.colors[propertyNames[i]]
     }
+      document.documentElement.style.setProperty("--border-radius", this.colors[propertyNames[propertyNames.length-1]]+"rem")
   }
 }
 // Theme factory
+// Themes Color Schemes
+const pesterchumColors = {
+  name: 'pesterchum',
+  outsideColor: '#d59700',
+  outsideColorOpacity: '1',
+  insideColor: '#ffb500',
+  insideColorOpacity: '1',
+  buttonAndBorderAscent: '#fff700',
+  buttonAndBorderAscentOpacity: '1',
+  unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
+  black: '#000001',
+  blackOpacity: '1',
+  white: '#ffffff',
+  whiteOpacity: '1',
+  buttonBorderColor: '#c59400',
+  buttonBorderColorOpacity: '1',
+  borderRadius:0
+}
+
+const trollianColors = {
+  name: 'trollian',
+  outsideColor: '#c2c2c2',
+  outsideColorOpacity: '1',
+  insideColor: '#e30421',
+  insideColorOpacity: '1',
+  buttonAndBorderAscent: '#ffa5a4',
+  buttonAndBorderAscentOpacity: '1',
+  unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
+  black: '#000001',
+  blackOpacity: '1',
+  white: '#ffffff',
+  whiteOpacity: '1',
+  buttonBorderColor: '#b00e14',
+  buttonBorderColorOpacity: '1',
+  borderRadius:0
+}
+
+let customTheme;
+
+!window.localStorage.getItem("themes") && window.localStorage.setItem("themes",'{"currentTheme":0,"themes":{}}')
+
 class Theme {
   static instances = []
-
+  static loadedThemes= {}
   /** Creates a new Color Scheme instance and adds it to the instance count
    *  Args:
    *  name : String => Color scheme name
@@ -1508,51 +1552,75 @@ class Theme {
     this.instances.push(newInstance)
     return newInstance
   }
-}
+  static save(name,colors,background){
+    const newTheme={}
+    newTheme.name=name
+    newTheme.colors=colors
+    newTheme.background=background
+    this.loadedThemes.themes[`${name}`]=newTheme
+    Theme.updateJSON() 
+    Theme.defaultState()
+    Theme.load()
+    Theme.buildList()
+  }
+  static defaultState(){
+    Theme.instances=[]
+    Theme.new('Pesterchum', 'img/pesterchum_icon.png', pesterchumColors)
+    Theme.new('Trollian', 'img/trollian_icon.png', trollianColors)
+    customTheme= Theme.new('Custom',null,pesterchumColors)
+    
+  }
+  static load(){
+    this.instances=this.instances.slice()
+    let themes=window.localStorage.getItem("themes")
+    let themeSystem=JSON.parse(themes)
+    this.loadedThemes=themeSystem
+    if (Object.keys(this.loadedThemes.themes).length) {
+      for (let x in this.loadedThemes.themes) {
+        let theme=this.loadedThemes.themes[x]
+        Theme.new (theme.name,null,theme.colors)
+      }
+      Theme.buildList()
+    }
+  }
+  static buildList(){
+    const themeWrapper = document.querySelector('.theme-wrapper')
+    themeWrapper.innerHTML = ''
+    Theme.instances.forEach(
+      e => {
+        themeWrapper.innerHTML += `
+          <button class='theme-button' id='${'theme-' + e.name.toLowerCase()}'>
+            ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
+          </button>
+      `}
 
-// Themes Color Schemes
-const pesterchumColors = {
-  outsideColor: '#d59700',
-  outsideColorOpacity: '1',
-  insideColor: '#ffb500',
-  insideColorOpacity: '1',
-  buttonAndBorderAscent: '#fff700',
-  buttonAndBorderAscentOpacity: '1',
-  unselectedColor: '#5f5f5f',
-  unselectedColorOpacity: '1',
-  black: '#000001',
-  blackOpacity: '1',
-  white: '#ffffff',
-  whiteOpacity: '1',
-  buttonBorderColor: '#c59400',
-  buttonBorderColorOpacity: '1'
+    )
+    document.querySelectorAll('.theme-button').forEach(
+      (e, i) => {
+        Theme.instances[i].name !== 'Custom' && e.addEventListener(
+          'click', () => {
+            Theme.instances[i].changeTheme()
+          }
+        )
+      }
+    )
+  }
+  static updateJSON(){
+    window.localStorage.setItem("themes",JSON.stringify(this.loadedThemes))
+  }
+  static setCurrentTheme(id){
+    this.loadedThemes.currentTheme=id
+    Theme.updateList()
+  }
 }
-
-const trollianColors = {
-  outsideColor: '#c2c2c2',
-  outsideColorOpacity: '1',
-  insideColor: '#e30421',
-  insideColorOpacity: '1',
-  buttonAndBorderAscent: '#ffa5a4',
-  buttonAndBorderAscentOpacity: '1',
-  unselectedColor: '#5f5f5f',
-  unselectedColorOpacity: '1',
-  black: '#000001',
-  blackOpacity: '1',
-  white: '#ffffff',
-  whiteOpacity: '1',
-  buttonBorderColor: '#b00e14',
-  buttonBorderColorOpacity: '1'
-}
-
 /// ///// TODO code review
 // Default themes
-Theme.new('Pesterchum', 'img/pesterchum_icon.png', pesterchumColors)
-Theme.new('Trollian', 'img/trollian_icon.png', trollianColors)
-const customTheme = Theme.new('Custom', '', pesterchumColors)
-
+Theme.defaultState()
+Theme.load()
+Theme.buildList()
 // Color dialog elements
 const colorDialog = document.querySelector('#color-dialog')
+const colorDialogForm = document.querySelector('#color-dialog form')
 const inputs = document.querySelectorAll('#color-dialog input')
 const modalButtons = document.querySelectorAll('#color-dialog button')
 
@@ -1568,63 +1636,31 @@ const dialogChangeColor = () => {
 }
 
 /** Loads the theme stored in localStorage "customTheme" key */
-const loadSavedTheme = () => {
-  const savedTheme = window.localStorage.getItem('customTheme')
-  if (savedTheme) {
-    customTheme.colors = JSON.parse(savedTheme)
-    customTheme.changeTheme()
-  } else {
-    alert('NO CUSTOM TH3M3 Y3T!')
-  }
-}
 
-// by default loads the last theme saved
-window.localStorage.getItem('customTheme') && loadSavedTheme()
+// by default loads the last theme saved TODO
+//window.localStorage.getItem('customTheme') && loadSavedTheme()
 
 // save button
-modalButtons[0].addEventListener('click', () => {
-  window.localStorage.setItem('customTheme', JSON.stringify(customTheme.colors))
+colorDialogForm.addEventListener('submit', () => {
   dialogChangeColor()
+  Theme.save(customTheme.colors.themeName, customTheme.colors, 0)
+  colorDialog.close()
 })
-
-// load button
-modalButtons[1].addEventListener('click', () => {
-  loadSavedTheme()
-})
-
 // close button
-modalButtons[2].addEventListener('click', () => {
+modalButtons[1].addEventListener('click', () => {
   colorDialog.close()
 })
 
 inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
 
 // Theme list builder
-const themeWrapper = document.querySelector('.theme-wrapper')
-themeWrapper.innerHTML = ''
-Theme.instances.forEach(
-  e => {
-    themeWrapper.innerHTML += `
-      <button class='theme-button' id='${'theme-' + e.name.toLowerCase()}'>
-        ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
-      </button>
-    `
-  }
-)
+
 
 // Theme button list event listeners
-document.querySelectorAll('.theme-button').forEach(
-  (e, i) => {
-    Theme.instances[i].name !== 'Custom' && e.addEventListener(
-      'click', () => {
-        Theme.instances[i].changeTheme()
-      }
-    )
-  }
-)
+
 
 // customThemeButton behaviour
-const customThemeButton = document.querySelector('#theme-custom')
+const customThemeButton = document.querySelector('#theme-custom-button')
 customThemeButton.addEventListener('click', () => colorDialog.showModal())
 
 // Backgrounds

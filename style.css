@@ -24,6 +24,7 @@
   --black:#000001;
   --white:#FFFFFF;
   --button-border-color:#C59400;
+  --border-radius:0rem;
   scrollbar-color: var(--outside-color) var(--white);
 }
 *{
@@ -51,6 +52,10 @@
   font-family: courier;
   font-weight: 200;
 }
+
+.border-radius-effect{
+  border-radius: var(--border-radius);
+}
 html{
   font-size: 18px;
 }
@@ -58,7 +63,7 @@ html{
 /*Color themes*/
 dialog {
   margin:auto auto;
-  padding: 3rem;
+  padding: 2.5rem;
   background-color: var(--inside-color) ;
   border: 2px solid var(--button-and-border-ascent) ;
 }
@@ -76,6 +81,10 @@ dialog {
   margin:auto 0;
   font-family: strife;
   font-size: 1.5rem;
+}
+
+.modal-full-width{
+  grid-column:1/3;
 }
 
 input[type=range]{
@@ -205,15 +214,6 @@ main {
 .centered > p > a{
   font-size: 1.5rem;
 }
-.centeredGo {
-  width: 50%;
-  background-color: var(--inside-color); 
-  background-repeat: no-repeat; 
-  border:2px solid var(--button-and-border-ascent); 
-  font-family: 'Courier'; 
-  font-weight: bold; 
-  padding: 0.5rem;
-}
 
 #connectForm input{
   background: var(--black);
@@ -244,6 +244,7 @@ main {
   display: flex;
   align-items: center;
   gap:1rem;
+  flex-wrap: wrap;
 }
 
 .theme-button{
@@ -252,8 +253,9 @@ main {
   text-justify: center;
   padding:0
 }
+
 #theme-custom{
-  padding:0 1rem
+  display: none;
 }
 button{
   background-color:var(--button-and-border-ascent);
@@ -275,7 +277,6 @@ button:hover{
 }
 
 .tab {
-    background-color:var(--inside-color);
     border:0px;
     height: 5%;
     width: 100%;
@@ -299,7 +300,7 @@ button:hover{
 
 .tab-arrow-container{
   position:absolute;
-  left: 1.1rem;
+  left: 2.1rem;
   background-color: var(--inside-color);
 }
 
@@ -539,7 +540,7 @@ justify-content: end;
 }
 #maintab{
   display: flex;
-  margin-inline-start: 0.5rem;
+  margin-inline-start: 1.5rem;
   width: 97%;
   padding-inline-start: 10rem;
   height: 2.35rem;
