@@ -1563,25 +1563,28 @@ class Theme {
    * */
   static new (colors, image=null) {
     const newInstance = new ColorScheme(colors,image)
-    this.instances.push(newInstance)
+    const instanceRepetitionIndex=this.instances.find(e=>e.colors.name)
+    if (instanceRepetitionIndex>-1) {
+      this.instances[instanceRepetitionIndex]=newInstance
+    } else {
+      this.instances.push(newInstance)
+    }
     return newInstance
   }
 
   /**
    * Saves a Custom theme on the localStorage and updates the html
    * @param {Object} colors a color object 
-   * @param {Number} background background index 
    */
-  static save(colors,background){
+  static save(colors){
+    const newInstance=new ColorScheme(colors)
     const newTheme={}
     newTheme.name=colors.name
     newTheme.colors=colors
-    newTheme.background=background
     this.loadedThemes.themes[`${colors.name}`]=newTheme
     this.loadedThemes.currentTheme=colors.name
     Theme.saveChanges()
   }
-
   /**
    * Cleans the instance count and sets the default themes
    */
@@ -1652,8 +1655,6 @@ class Theme {
   /**Save changes and rebuild json and theme list*/
   static saveChanges(){
     Theme.updateJSON() 
-    Theme.defaultState()
-    Theme.load()
     Theme.buildList()
   }
 }
@@ -1684,7 +1685,7 @@ const dialogChangeColor = () => {
 // color dialog form submit
 colorDialogForm.addEventListener('submit', () => {
   dialogChangeColor()
-  Theme.save(customTheme.colors, 0) //0 is the background id
+  Theme.save(customTheme.colors) 
   colorDialog.close()
 })
 
