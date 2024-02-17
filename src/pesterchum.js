@@ -1465,10 +1465,9 @@ const sanitizeHTML = function (str) {
 // Theming model
 class ColorScheme {
   constructor (
-    name,
-    image,
-    colors) {
-    this.name = name
+    colors,
+    image) {
+    this.name = colors.name
     this.image = image
     this.colors = colors
   }
@@ -1483,10 +1482,11 @@ class ColorScheme {
       document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]]+hexTransparency)
       inputs[i].value = this.colors[propertyNames[i]]
     }
-      document.documentElement.style.setProperty("--border-radius", this.colors[propertyNames[propertyNames.length-1]]+"rem")
+    document.documentElement.style.setProperty("--border-radius", this.colors[propertyNames[propertyNames.length-1]]+"rem")
+    Theme.loadedThemes.currentTheme=Theme.instances.findIndex(e=>e.name===this.name)
+    Theme.saveChanges()
   }
 }
-// Theme factory
 // Themes Color Schemes
 const pesterchumColors = {
   name: 'pesterchum',
@@ -1526,70 +1526,99 @@ const trollianColors = {
   borderRadius:0
 }
 
+// defining the customTheme middleware
 let customTheme;
 
-!window.localStorage.getItem("themes") && window.localStorage.setItem("themes",'{"currentTheme":0,"themes":{}}')
+// Reset the theming system if is an old one, please delete this in some time
+window.localStorage.getItem("customTheme") && window.localStorage.clear()
 
+// Creating the save if it doesnt exist
+!window.localStorage.getItem("themes") && window.localStorage.setItem("themes",'{"currentTheme":"Pesterchum","themes":{}}')
+
+// Theme factory
 class Theme {
   static instances = []
   static loadedThemes= {}
-  /** Creates a new Color Scheme instance and adds it to the instance count
-   *  Args:
-   *  name : String => Color scheme name
-   *  image : String => image source, example: "img/pesterchum_icon.png"
-   *  colors : ColorScheme => example: {
-   *    outsideColor:"#d59700",
-   *    insideColor:"#ffb500",
-   *    buttonAndBorderAscent:"#fff700",
-   *    unselectedColor:"#5f5f5f",
-   *    black:"#000001",
-   *    white:"#ffffff",
-   *    buttonBorderColor:"#c59400",
-   *  }
+  /** Creates a new Color Scheme instance and adds it to the instance count use this only for official colors not custom
+   * @param {Object} colors Colors object
+   * @param {String||null} image Image path or null
+   * @example Theme.new({
+   *    name: 'trollian',
+   *    outsideColor: '#c2c2c2',
+   *    outsideColorOpacity: '1',
+   *    insideColor: '#e30421',
+   *    insideColorOpacity: '1',
+   *    buttonAndBorderAscent: '#ffa5a4',
+   *    buttonAndBorderAscentOpacity: '1',
+   *    unselectedColor: '#5f5f5f',
+   *    unselectedColorOpacity: '1',
+   *    black: '#000001',
+   *    blackOpacity: '1',
+   *    white: '#ffffff',
+   *    whiteOpacity: '1',
+   *    buttonBorderColor: '#b00e14',
+   *    buttonBorderColorOpacity: '1',
+   *    borderRadius:0
+   * },null)
    * */
-  static new (name, image, colors) {
-    const newInstance = new ColorScheme(name, image, colors)
+  static new (colors, image=null) {
+    const newInstance = new ColorScheme(colors,image)
     this.instances.push(newInstance)
     return newInstance
   }
-  static save(name,colors,background){
+
+  /**
+   * Saves a Custom theme on the localStorage and updates the html
+   * @param {Object} colors a color object 
+   * @param {Number} background background index 
+   */
+  static save(colors,background){
     const newTheme={}
-    newTheme.name=name
+    newTheme.name=colors.name
     newTheme.colors=colors
     newTheme.background=background
-    this.loadedThemes.themes[`${name}`]=newTheme
-    Theme.updateJSON() 
-    Theme.defaultState()
-    Theme.load()
-    Theme.buildList()
+    this.loadedThemes.themes[`${colors.name}`]=newTheme
+    this.loadedThemes.currentTheme=colors.name
+    Theme.saveChanges()
   }
+
+  /**
+   * Cleans the instance count and sets the default themes
+   */
   static defaultState(){
     Theme.instances=[]
-    Theme.new('Pesterchum', 'img/pesterchum_icon.png', pesterchumColors)
-    Theme.new('Trollian', 'img/trollian_icon.png', trollianColors)
-    customTheme= Theme.new('Custom',null,pesterchumColors)
-    
+    Theme.new(pesterchumColors, 'img/pesterchum_icon.png')
+    Theme.new(trollianColors, 'img/trollian_icon.png')
+    customTheme= Theme.new(pesterchumColors)
   }
-  static load(){
-    this.instances=this.instances.slice()
-    let themes=window.localStorage.getItem("themes")
+
+  /**
+   * Load custom themes from the json
+   * @param {JSON} [themes=localStorage.getItems("themes")] 
+   */
+  static load(themes=localStorage.getItems("themes")){
     let themeSystem=JSON.parse(themes)
     this.loadedThemes=themeSystem
     if (Object.keys(this.loadedThemes.themes).length) {
       for (let x in this.loadedThemes.themes) {
         let theme=this.loadedThemes.themes[x]
-        Theme.new (theme.name,null,theme.colors)
+        Theme.new(theme.colors)
       }
+      themes.instances.find(e=>e.colors.name===Theme.loadedThemes.currentTheme).changeTheme()
       Theme.buildList()
     }
   }
+
+  /**
+   * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instance state
+   */
   static buildList(){
     const themeWrapper = document.querySelector('.theme-wrapper')
     themeWrapper.innerHTML = ''
     Theme.instances.forEach(
       e => {
         themeWrapper.innerHTML += `
-          <button class='theme-button' id='${'theme-' + e.name.toLowerCase()}'>
+          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase()}'>
             ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
           </button>
       `}
@@ -1599,25 +1628,41 @@ class Theme {
       (e, i) => {
         Theme.instances[i].name !== 'Custom' && e.addEventListener(
           'click', () => {
+            Theme.setCurrentTheme(Theme.instance[i].colors.name)
             Theme.instances[i].changeTheme()
           }
         )
       }
     )
   }
+
+  /** Updates the lodalStorage json with the Themes.loadedThemes current state */
   static updateJSON(){
     window.localStorage.setItem("themes",JSON.stringify(this.loadedThemes))
   }
-  static setCurrentTheme(id){
-    this.loadedThemes.currentTheme=id
+
+  /**
+   * Sets the currentTheme value in the memory and json based on the index at Theme.instances
+   * @param {String} name
+   */
+  static setCurrentTheme(name){
+    this.loadedThemes.currentTheme=name
     Theme.updateList()
   }
+  /**Save changes and rebuild json and theme list*/
+  static saveChanges(){
+    Theme.updateJSON() 
+    Theme.defaultState()
+    Theme.load()
+    Theme.buildList()
+  }
 }
-/// ///// TODO code review
+
 // Default themes
 Theme.defaultState()
 Theme.load()
 Theme.buildList()
+
 // Color dialog elements
 const colorDialog = document.querySelector('#color-dialog')
 const colorDialogForm = document.querySelector('#color-dialog form')
@@ -1625,6 +1670,7 @@ const inputs = document.querySelectorAll('#color-dialog input')
 const modalButtons = document.querySelectorAll('#color-dialog button')
 
 // Color dialog functions
+
 /** Changes current custom theme colors into the Dialog form input values */
 const dialogChangeColor = () => {
   const customColor = {}
@@ -1635,29 +1681,20 @@ const dialogChangeColor = () => {
   customTheme.changeTheme()
 }
 
-/** Loads the theme stored in localStorage "customTheme" key */
-
-// by default loads the last theme saved TODO
-//window.localStorage.getItem('customTheme') && loadSavedTheme()
-
-// save button
+// color dialog form submit
 colorDialogForm.addEventListener('submit', () => {
   dialogChangeColor()
-  Theme.save(customTheme.colors.themeName, customTheme.colors, 0)
+  Theme.save(customTheme.colors, 0) //0 is the background id
   colorDialog.close()
 })
+
 // close button
-modalButtons[1].addEventListener('click', () => {
+modalButtons[1].addEventListener('click', e => {
+  e.preventDefault()
   colorDialog.close()
 })
 
 inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
-
-// Theme list builder
-
-
-// Theme button list event listeners
-
 
 // customThemeButton behaviour
 const customThemeButton = document.querySelector('#theme-custom-button')
