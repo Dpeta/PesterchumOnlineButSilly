@@ -116,6 +116,7 @@ margin-block-start: 1rem;
 }
 
 .background-button{
+  background-color: var(--outside-color);
   padding:0;
   height: 100px;
 }

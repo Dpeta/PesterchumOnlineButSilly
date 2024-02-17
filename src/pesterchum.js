@@ -1600,26 +1600,28 @@ const customThemeButton = document.querySelector('#theme-custom')
 customThemeButton.addEventListener('click', () => colorDialog.showModal())
 
 // Backgrounds
-const backgroundWrapper= document.querySelector(".background-wrapper")
-const backgroundImage=document.querySelectorAll(".background-image")
-const backgroundImageWrapper=document.querySelector("#background-image-wrapper")
-const storedBackground=window.localStorage.getItem("background")
+const backgroundWrapper = document.querySelector('.background-wrapper')
+const backgroundImage = document.querySelectorAll('.background-image')
+const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
+const storedBackground = window.localStorage.getItem('background')
 
 // Theming model
-class BackgroundImage{
+class BackgroundImage {
   constructor (
     name,
     path,
     alt
-    ) {
+  ) {
     this.name = name
     this.path = path
-    this.alt= alt
+    this.alt = alt
   }
 
   /** Changes the current background src into this one */
   changeBackground () {
-    backgroundImage.forEach(e=>e.src=this.path)
+    backgroundImage.forEach(e => {
+      e.src = this.path
+    })
   }
 }
 // Theme factory
@@ -1633,52 +1635,72 @@ class Background {
    *  alt : alt text for screen reader
    * */
   static new (name, path, alt) {
-    const newInstance = new BackgroundImage(name, path,alt)
+    const newInstance = new BackgroundImage(name, path, alt)
     this.instances.push(newInstance)
     return newInstance
   }
 }
 
 // here comes the background instances
-const poolBackground= Background.new("pool","backgrounds/pool_background.png","pool balls")
-const vriskaBackground= Background.new("vriska","backgrounds/vriska_background.png","blood tained 8 balls and vriska scorpio signs")
-const striderBackground= Background.new("strider","backgrounds/strider_background.png","strider vinil icon scratched and whole")
-const lalondeBackground= Background.new("lalonde","backgrounds/lalonde_background.png","both lalonde icons, a squid and a muttant kitten")
-const redJujuBackground= Background.new("red-juju","backgrounds/red_juju_background.png","a red spiral")
-const greenJujuBackground= Background.new("green-juju","backgrounds/green_juju_background.png","a green spiral")
-const signsBackground= Background.new("signs","backgrounds/signs_background.png","main troll zodiac signs")
-const sbahjBackground= Background.new("sbahj","backgrounds/sbahj_background.png","warned you about the stairs meme")
-const egbertBackground= Background.new("egbert","backgrounds/egbert_background.png","jonh egbert pogo icon")
-const squiddlesBackground= Background.new("squiddles","backgrounds/squiddles_background.png","a bunch of squiddles")
+Background.new('beta', 'backgrounds/beta_kids_background.png', 'beta kids icons, artist: paleWreath')
+Background.new('alpha', 'backgrounds/alpha_kids_background.png', 'alpha kids icons, artist: paleWreath')
+Background.new('mixed', 'backgrounds/mix_kids_background.png', 'mixed kids icons, artist: paleWreath')
+Background.new('derse', 'backgrounds/derse_background.png', 'derse buildings themed, artist: paleWreath')
+Background.new('prospit', 'backgrounds/prospit_background.png', 'prospit buildings, artist: paleWreath')
+Background.new('aradia', 'backgrounds/karkat_background.png', 'karkat themed, artist: paleWreath')
+Background.new('aradia', 'backgrounds/karkalicious_background.png', 'karkalicious so delicious, artist: paleWreath')
+Background.new('aradia', 'backgrounds/aradia_background.png', 'aradia themed, artist: paleWreath')
+Background.new('tavros', 'backgrounds/tavros_background.png', 'tavro themed, artist: paleWreath')
+Background.new('sollux', 'backgrounds/sollux_background.png', 'sollux themed, artist: paleWreath')
+Background.new('nepeta', 'backgrounds/nepeta_background.png', 'nepeta themed, artist: paleWreath')
+Background.new('kanaya', 'backgrounds/kanaya_background.png', 'kanaya themed, artist: paleWreath')
+Background.new('terezi', 'backgrounds/terezi_background.png', 'terezi themed, artist: paleWreath')
+Background.new('vriska', 'backgrounds/vriska_background.png', 'vriska themed, artist: paleWreath')
+Background.new('equius', 'backgrounds/equius_background.png', 'equius themed, artist: paleWreath')
+Background.new('gamzee', 'backgrounds/gamzee_background.png', 'gamzee themed, artist: paleWreath')
+Background.new('eridan', 'backgrounds/eridian_background.png', 'eridan themed, artist: paleWreath')
+Background.new('feferi', 'backgrounds/feferi_background.png', 'feferi themed, artist: paleWreath')
+Background.new('red-juju', 'backgrounds/red_juju_background.png', 'a red spiral')
+Background.new('green-juju', 'backgrounds/green_juju_background.png', 'a green spiral')
+Background.new('pool', 'backgrounds/pool_background.png', 'pool balls')
+Background.new('caliborn', 'backgrounds/caliborn_background.png', 'doodles and drawings made by caliborn, artist:')
+Background.new('strider', 'backgrounds/strider_background.png', 'strider vinil icon scratched and whole')
+Background.new('lalonde', 'backgrounds/lalonde_background.png', 'both lalonde icons, a squid and a muttant kitten')
+Background.new('signs', 'backgrounds/signs_rainbow_background.png', 'main troll zodiac signs')
+Background.new('sbahj', 'backgrounds/sbahj_background.png', 'warned you about the stairs meme')
+Background.new('egbert', 'backgrounds/egbert_background.png', 'jonh egbert pogo icon')
+Background.new('squiddles', 'backgrounds/squiddles_background.png', 'a bunch of squiddles')
+Background.new('dirk-brr', 'backgrounds/dirkbrr_background.png', 'a circle of dirk faces, artist: au dave')
+Background.new('dave-brr', 'backgrounds/davebrr_background.png', 'a circle of handrawed dave discs, artist: au dave')
 
 // background buttons
-Background.instances.forEach(e=>{
-  backgroundWrapper.innerHTML+= `
+Background.instances.forEach(e => {
+  backgroundWrapper.innerHTML += `
   <button class="background-button" id="${e.name}">
     <img src="${e.path}" alt="${e.path}"/> 
   </button>
 `
 })
 
-/** Load the background stored on localStorage background*/
-const loadBackground=()=>{
-  const background = window.localStorage.getItem("background") 
+/** Load the background stored on localStorage background */
+const loadBackground = () => {
+  const background = window.localStorage.getItem('background')
   background && Background.instances[background].changeBackground()
 }
-//loads the last background
+// loads the last background
 storedBackground && loadBackground()
 
 // Background buttons actions
-const buttons= document.querySelectorAll(".background-button")
-buttons.forEach((e,i)=>{
-  e.addEventListener('click',()=>{
+const buttons = document.querySelectorAll('.background-button')
+buttons.forEach((e, i) => {
+  e.addEventListener('click', () => {
     Background.instances[i].changeBackground()
-    window.localStorage.setItem("background",i)
-    backgroundImageWrapper.style.display="flex"
+    window.localStorage.setItem('background', i)
+    backgroundImageWrapper.style.display = 'flex'
   })
 })
 
 // Reset background action
-document.querySelector("#reset-background").addEventListener("click",()=>{
-  backgroundImageWrapper.style.display="none"
+document.querySelector('#reset-background').addEventListener('click', () => {
+  backgroundImageWrapper.style.display = 'none'
 })
