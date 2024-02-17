@@ -1258,6 +1258,9 @@ class PesterchumOnlineClient {
                                      '<form id=\'msgform\'>' +
                                      '<input id=\'msg\' class=\'msg inactive\' minlength=\'1\' required disabled>' +
                                      '</form>' +
+                                     '<div class="action-button-wrapper">' +
+                                     '<button>Silence</button>' +
+                                     '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
                                      '</div>' +
@@ -1277,11 +1280,11 @@ class PesterchumOnlineClient {
     document.querySelectorAll('.tab-arrow')[2].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
       console.log(maintabScrollValues.x)
-      if (maintabScrollValues.x > box.scrollLeft + 51) {
+      if (maintabScrollValues.x > box.scrollLeft + 71) {
         maintabScrollValues.x = box.scrollLeft
         box.scrollLeft = maintabScrollValues.x
       } else {
-        maintabScrollValues.x += 50
+        maintabScrollValues.x += 70
         box.scrollLeft = +maintabScrollValues.x
       }
     })
@@ -1292,10 +1295,17 @@ class PesterchumOnlineClient {
         maintabScrollValues.x = 0
         box.scrollLeft = maintabScrollValues.x
       } else {
-        maintabScrollValues.x -= 50
+        maintabScrollValues.x -= 70
         box.scrollLeft = maintabScrollValues.x
       }
     })
+    // action buttons
+    const actionWrapperButtons = document.querySelectorAll('.action-button-wrapper button')
+    const toggleAudioSound = () => {
+      toggleAudio = !toggleAudio
+      actionWrapperButtons[0].innerHTML = toggleAudio ? 'Silence' : 'Unsilence'
+    }
+    actionWrapperButtons[0].addEventListener('click', () => toggleAudioSound())
 
     // Here is where the WIP ends
     //
@@ -1363,24 +1373,27 @@ class PesterchumOnlineClient {
     this.body.innerHTML = ''
   }
 }
+let toggleAudio = true
 
 function audioCheck (isToMemo, msg) {
   /* Check if we should play a goofy silly sound. */
-  if (_honk.test(msg)) {
-    // We were honked!!
-    soundHonk.play()
-  }
-  if (isToMemo) {
-    if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
-      // We were mentioned!!
-      alarmMention.play()
+  if (toggleAudio) {
+    if (_honk.test(msg)) {
+      // We were honked!!
+      soundHonk.play()
     }
-    alarmMemo.play()
-  } else {
-    if (_evilRuleImSoSorry.test(msg)) {
-      soundCease.play()
+    if (isToMemo) {
+      if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
+        // We were mentioned!!
+        alarmMention.play()
+      }
+      alarmMemo.play()
     } else {
-      alarmDm.play()
+      if (_evilRuleImSoSorry.test(msg)) {
+        soundCease.play()
+      } else {
+        alarmDm.play()
+      }
     }
   }
 }

@@ -266,6 +266,9 @@ button:hover{
 
 /*Client*/
 
+.action-button-wrapper{
+  display: flex;
+}
 
 .tab {
     background-color:var(--inside-color);
@@ -332,7 +335,7 @@ button:hover{
   background-color: var(--unselected-color);
   font-family: 'strife';
   font-size:1.3rem;
-  height: 3.5%;
+  height: 2rem;
   width: 50%;
   float: left;
   position: relative;
@@ -392,10 +395,13 @@ width: 95%;
 .manualJoin {
   font-family:strife;
   width: 100%;
-  height: 15%;
+  height: 5rem;
   color: var(--white);
   padding: 1%;
   overflow: auto;
+display: flex;
+flex-direction: column;
+justify-content: end;
 }
 .manualJoin > div{
   color:var(--white);
@@ -462,7 +468,7 @@ width: 95%;
   font-family: 'Courier';
   overflow-x: scroll;
   overflow-y: scroll;
-  height: 83%; /* -4%*/
+  height: calc(100% - 7rem); /* -4%*/
   font-size: 20px;
   width: 100%;
 }
@@ -476,7 +482,7 @@ width: 95%;
   margin-top: 0.5%;
   width:27%;
   order:3;
-  height: 86.5vh;
+  height: 85.2vh;
   margin-block-end: 0.5rem;
 }
 
