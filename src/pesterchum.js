@@ -1299,6 +1299,7 @@ class PesterchumOnlineClient {
         box.scrollLeft = maintabScrollValues.x
       }
     })
+
     // action buttons
     const actionWrapperButtons = document.querySelectorAll('.action-button-wrapper button')
     const toggleAudioSound = () => {
@@ -1462,6 +1463,16 @@ const sanitizeHTML = function (str) {
   }
 }
 
+/*
+  _______ _                              
+ |__   __| |                             
+    | |  | |__   ___ _ __ ___   ___  ___ 
+    | |  | '_ \ / _ \ '_ ` _ \ / _ \/ __|
+    | |  | | | |  __/ | | | | |  __/\__ \
+    |_|  |_| |_|\___|_| |_| |_|\___||___/
+*/
+
+
 // Theming model
 class ColorScheme {
   constructor (
@@ -1487,6 +1498,7 @@ class ColorScheme {
     Theme.saveChanges()
   }
 }
+
 // Themes Color Schemes
 const pesterchumColors = {
   name: 'pesterchum',
@@ -1526,7 +1538,7 @@ const trollianColors = {
   borderRadius:0
 }
 
-// defining the customTheme middleware
+// defining the customTheme variable
 let customTheme;
 
 // Reset the theming system if is an old one, please delete this in some time
@@ -1539,6 +1551,7 @@ window.localStorage.getItem("customTheme") && window.localStorage.clear()
 class Theme {
   static instances = []
   static loadedThemes= {}
+
   /** Creates a new Color Scheme instance and adds it to the instance count use this only for official colors not custom
    * @param {Object} colors Colors object
    * @param {String||null} image Image path or null
@@ -1562,9 +1575,11 @@ class Theme {
    * },null)
    * */
   static new (colors, image=null) {
-    const newInstance = new ColorScheme(colors,image)
-    const instanceRepetitionIndex=this.instances.findIndex(e=>e.colors.name===colors.name)
-    if (instanceRepetitionIndex!==-1) {
+    const newInstance = new ColorScheme(colors,image) // Creates the new color instance
+
+    const instanceRepetitionIndex=this.instances.findIndex(e=>e.colors.name===colors.name) // Finds a theme on the instance list with same name and returns index
+
+    if (instanceRepetitionIndex!==-1) { // if its not found (-1) it adds it to instances, else, if refresh the old one with new values
       this.instances[instanceRepetitionIndex]=newInstance
     } else {
       this.instances.push(newInstance)
@@ -1572,6 +1587,9 @@ class Theme {
     return newInstance
   }
 
+  /**
+   *  Reset all the theming, deleting all the saved data and current state 
+   */
   static reset(){
     window.localStorage.setItem("themes",'{"currentTheme":"Pesterchum","themes":{}}')
     Theme.defaultState()
@@ -1579,6 +1597,7 @@ class Theme {
     Theme.buildList()
     Theme.instances[0].changeTheme()
   }
+
   /**
    * Saves a Custom theme on the localStorage and updates the html
    * @param {Object} colors a color object 
@@ -1592,6 +1611,7 @@ class Theme {
     this.loadedThemes.currentTheme=colors.name
     Theme.saveChanges()
   }
+
   /**
    * Cleans the instance count and sets the default themes
    */
@@ -1611,6 +1631,7 @@ class Theme {
   static load(themes=localStorage.getItem("themes")){
     let themeSystem=JSON.parse(themes)
     this.loadedThemes=themeSystem
+    
     if (Object.keys(this.loadedThemes.themes).length) {
       for (let x in this.loadedThemes.themes) {
         let theme=this.loadedThemes.themes[x]
@@ -1635,11 +1656,10 @@ class Theme {
             ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
           </button>
       `}
-
     )
     document.querySelectorAll('.theme-button').forEach(
       (e, i) => {
-        Theme.instances[i].name !== 'Custom' && e.addEventListener(
+        e.addEventListener(
           'click', () => {
             Theme.setCurrentTheme(Theme.instances[i].colors.name)
             Theme.instances[i].changeTheme()
@@ -1660,8 +1680,10 @@ class Theme {
    */
   static setCurrentTheme(name){
     this.loadedThemes.currentTheme=name
+    document.querySelector("#name").value=name
     Theme.buildList()
   }
+
   /**Save changes and rebuild json and theme list*/
   static saveChanges(){
     Theme.updateJSON() 
@@ -1708,11 +1730,13 @@ modalButtons[1].addEventListener('click', e => {
   colorDialog.close()
 })
 
+// Adds change trigger on dialog inputs
 inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
 
 // customThemeButton behaviour
 const customThemeButton = document.querySelector('#theme-custom-button')
 customThemeButton.addEventListener('click', () => {
+  dialogChangeColor()
   colorDialog.showModal()
 })
 
@@ -1723,7 +1747,18 @@ customResetButton.addEventListener('click', () => {
   deleteThemes && Theme.reset()
 })
 
-// Backgrounds
+
+/*
+  ____             _                                   _     
+ |  _ \           | |                                 | |    
+ | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___ 
+ |  _ < / _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` / __|
+ | |_) | (_| | (__|   < (_| | | | (_) | |_| | | | | (_| \__ \
+ |____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|___/
+                        __/ |                                
+                       |___/  
+*/
+
 const backgroundWrapper = document.querySelector('.background-wrapper')
 const backgroundImage = document.querySelectorAll('.background-image')
 const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
@@ -1811,10 +1846,12 @@ const loadBackground = () => {
   const background = window.localStorage.getItem('background')
   background && Background.instances[background].changeBackground()
 }
+
 // loads the last background
 storedBackground && loadBackground()
 if (document.querySelector(".background-image").src.at(-1)==="#") {
   backgroundImageWrapper.style.display='none'}
+
 // Background buttons actions
 const buttons = document.querySelectorAll('.background-button')
 buttons.forEach((e, i) => {
