@@ -1483,7 +1483,7 @@ class ColorScheme {
       inputs[i].value = this.colors[propertyNames[i]]
     }
     document.documentElement.style.setProperty("--border-radius", this.colors[propertyNames[propertyNames.length-1]]+"rem")
-    Theme.loadedThemes.currentTheme=Theme.instances.findIndex(e=>e.name===this.name)
+    Theme.loadedThemes.currentTheme=this.colors.name
     Theme.saveChanges()
   }
 }
@@ -1563,8 +1563,8 @@ class Theme {
    * */
   static new (colors, image=null) {
     const newInstance = new ColorScheme(colors,image)
-    const instanceRepetitionIndex=this.instances.find(e=>e.colors.name)
-    if (instanceRepetitionIndex>-1) {
+    const instanceRepetitionIndex=this.instances.findIndex(e=>e.colors.name===colors.name)
+    if (instanceRepetitionIndex!==-1) {
       this.instances[instanceRepetitionIndex]=newInstance
     } else {
       this.instances.push(newInstance)
@@ -1572,12 +1572,19 @@ class Theme {
     return newInstance
   }
 
+  static reset(){
+    window.localStorage.setItem("themes",'{"currentTheme":"Pesterchum","themes":{}}')
+    Theme.defaultState()
+    Theme.load()
+    Theme.buildList()
+    Theme.instances[0].changeTheme()
+  }
   /**
    * Saves a Custom theme on the localStorage and updates the html
    * @param {Object} colors a color object 
    */
   static save(colors){
-    const newInstance=new ColorScheme(colors)
+    Theme.new(colors)
     const newTheme={}
     newTheme.name=colors.name
     newTheme.colors=colors
@@ -1592,14 +1599,16 @@ class Theme {
     Theme.instances=[]
     Theme.new(pesterchumColors, 'img/pesterchum_icon.png')
     Theme.new(trollianColors, 'img/trollian_icon.png')
-    customTheme= Theme.new(pesterchumColors)
+    const customValues= {...pesterchumColors}
+    customValues["name"]="custom"
+    customTheme= Theme.new(customValues)
   }
 
   /**
    * Load custom themes from the json
-   * @param {JSON} [themes=localStorage.getItems("themes")] 
+   * @param {JSON} [themes=localStorage.getItem("themes")] 
    */
-  static load(themes=localStorage.getItems("themes")){
+  static load(themes=localStorage.getItem("themes")){
     let themeSystem=JSON.parse(themes)
     this.loadedThemes=themeSystem
     if (Object.keys(this.loadedThemes.themes).length) {
@@ -1607,13 +1616,14 @@ class Theme {
         let theme=this.loadedThemes.themes[x]
         Theme.new(theme.colors)
       }
-      themes.instances.find(e=>e.colors.name===Theme.loadedThemes.currentTheme).changeTheme()
+      let current= Theme.instances.find(e=>e.colors.name===Theme.loadedThemes.currentTheme)
+      current.changeTheme()
       Theme.buildList()
-    }
+    }  
   }
 
   /**
-   * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instance state
+   * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instances state
    */
   static buildList(){
     const themeWrapper = document.querySelector('.theme-wrapper')
@@ -1621,7 +1631,7 @@ class Theme {
     Theme.instances.forEach(
       e => {
         themeWrapper.innerHTML += `
-          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase()}'>
+          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase().replaceAll(" ","")}'>
             ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
           </button>
       `}
@@ -1631,7 +1641,7 @@ class Theme {
       (e, i) => {
         Theme.instances[i].name !== 'Custom' && e.addEventListener(
           'click', () => {
-            Theme.setCurrentTheme(Theme.instance[i].colors.name)
+            Theme.setCurrentTheme(Theme.instances[i].colors.name)
             Theme.instances[i].changeTheme()
           }
         )
@@ -1650,7 +1660,7 @@ class Theme {
    */
   static setCurrentTheme(name){
     this.loadedThemes.currentTheme=name
-    Theme.updateList()
+    Theme.buildList()
   }
   /**Save changes and rebuild json and theme list*/
   static saveChanges(){
@@ -1674,18 +1684,21 @@ const modalButtons = document.querySelectorAll('#color-dialog button')
 
 /** Changes current custom theme colors into the Dialog form input values */
 const dialogChangeColor = () => {
-  const customColor = {}
+  const customColor = customTheme.colors
   for (const x of inputs) {
     customColor[x.id] = x.value
   }
-  customTheme.colors = customColor
+  customColor["name"]="custom"
   customTheme.changeTheme()
 }
 
 // color dialog form submit
 colorDialogForm.addEventListener('submit', () => {
   dialogChangeColor()
-  Theme.save(customTheme.colors) 
+  let dialogColors=structuredClone(customTheme.colors)
+  dialogColors["name"]=document.querySelector("#name").value
+  Theme.save(dialogColors) 
+  Theme.buildList()
   colorDialog.close()
 })
 
@@ -1699,7 +1712,16 @@ inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
 
 // customThemeButton behaviour
 const customThemeButton = document.querySelector('#theme-custom-button')
-customThemeButton.addEventListener('click', () => colorDialog.showModal())
+customThemeButton.addEventListener('click', () => {
+  colorDialog.showModal()
+})
+
+// customResetButton behaviour
+const customResetButton = document.querySelector('#theme-reset-button')
+customResetButton.addEventListener('click', () => {
+  let deleteThemes=confirm("Are you sure you wanna delete all your themes???")
+  deleteThemes && Theme.reset()
+})
 
 // Backgrounds
 const backgroundWrapper = document.querySelector('.background-wrapper')
@@ -1791,7 +1813,8 @@ const loadBackground = () => {
 }
 // loads the last background
 storedBackground && loadBackground()
-
+if (document.querySelector(".background-image").src.at(-1)==="#") {
+  backgroundImageWrapper.style.display='none'}
 // Background buttons actions
 const buttons = document.querySelectorAll('.background-button')
 buttons.forEach((e, i) => {

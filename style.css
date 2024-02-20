@@ -151,7 +151,6 @@ main {
   align-items: center;
   gap: 1rem;
   padding-block: 3vh;
-  background: var(--outside-color)
 }
 
 .title{
