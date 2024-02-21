@@ -1472,6 +1472,12 @@ const sanitizeHTML = function (str) {
     |_|  |_| |_|\___|_| |_| |_|\___||___/
 */
 
+const hexTransparency=(float)=>{
+  return parseInt(255*parseFloat(float)).toString(16)
+}
+const setCssProperty=(name,value)=>{
+    document.documentElement.style.setProperty(name,value)
+}
 
 // Theming model
 class ColorScheme {
@@ -1485,15 +1491,48 @@ class ColorScheme {
 
   /** Changes the current color scheme into this one */
   changeTheme () {
-    const propertyNames = Object.getOwnPropertyNames(this.colors)
-    const propertyCss = propertyNames.map(e => '--' + e.replace(/[A-Z]/g, match => '-' + match).toLowerCase()) // this is not necesary it could save compute time.
     const inputs = document.querySelectorAll('#color-dialog input')
-    for (let i = 1; i < propertyNames.length-1; i+=2) {
-      let hexTransparency=parseInt(255*parseFloat(this.colors[propertyNames[i+1]])).toString(16);
-      document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]]+hexTransparency)
-      inputs[i].value = this.colors[propertyNames[i]]
-    }
-    document.documentElement.style.setProperty("--border-radius", this.colors[propertyNames[propertyNames.length-1]]+"rem")
+    //name does not change bc of shenanigans
+
+    //outsideColor
+    inputs[1].value=this.colors["outsideColor"]
+    inputs[2].value=this.colors["outsideColorOpacity"]
+    setCssProperty("--outside-color",this.colors["outsideColor"]+hexTransparency(this.colors["outsideColorOpacity"]))
+
+    //insideColor
+    inputs[3].value=this.colors["insideColor"]
+    inputs[4].value=this.colors["insideColorOpacity"]
+    setCssProperty("--inside-color",this.colors["insideColor"]+hexTransparency(this.colors["insideColorOpacity"]))
+
+    //buttonAndBorderAscent
+    inputs[5].value=this.colors["buttonAndBorderAscent"]
+    inputs[6].value= this.colors["buttonAndBorderAscentOpacity"]
+    setCssProperty("--button-and-border-ascent",this.colors["buttonAndBorderAscent"]+hexTransparency(this.colors["buttonAndBorderAscentOpacity"]))
+
+    //unselectedColor
+    inputs[7].value=this.colors["unselectedColor"]
+    inputs[8].value= this.colors["unselectedColorOpacity"]
+    setCssProperty("--unselected-color",this.colors["unselectedColor"]+hexTransparency(this.colors["unselectedColorOpacity"]))
+
+    //black
+    inputs[9].value=this.colors["black"]
+    inputs[10].value=this.colors["blackOpacity"]
+    setCssProperty("--black",this.colors["black"]+hexTransparency(this.colors["blackOpacity"]))
+
+    //white
+    inputs[11].value=this.colors["white"]
+    inputs[12].value=this.colors["whiteOpacity"]
+    setCssProperty("--white",this.colors["white"]+hexTransparency(this.colors["whiteOpacity"]))
+
+    //buttonBorderColor
+    inputs[13].value=this.colors["buttonBorderColor"]
+    inputs[14].value=this.colors["buttonBorderColorOpacity"]
+    setCssProperty("--button-border-color",this.colors["buttonBorderColor"]+hexTransparency(this.colors["buttonBorderColorOpacity"]))
+
+    //borderRadius
+    inputs[15].value=this.colors["borderRadius"]
+    setCssProperty("--border-radius",this.colors["borderRadius"]+"rem")
+
     Theme.loadedThemes.currentTheme=this.colors.name
     Theme.saveChanges()
   }
@@ -1736,7 +1775,6 @@ inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
 // customThemeButton behaviour
 const customThemeButton = document.querySelector('#theme-custom-button')
 customThemeButton.addEventListener('click', () => {
-  dialogChangeColor()
   colorDialog.showModal()
 })
 

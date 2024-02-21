@@ -63,8 +63,10 @@
 <div class='centered border-radius-effect'>
 <div id='entry'>
 <form id='connectForm'>
-  <label class="pixelated" for="handle">MYCHUMHANDLE:</label><input class="pixelated" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
-  <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
+  <label class="pixelated" for="handle">MYCHUMHANDLE:</label>
+    <input class="pixelated dark-input" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
+  <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label>
+    <input type="color" name="bloodcaste" id="bloodcaste" class="dark-input" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
   <!--<label for="allowUnsafeTags">Allow unsafe tags </label><input type="checkbox" name="allowUnsafeTags" id="allowUnsafeTags">-->
   <div id='connectButtonDiv'><button id="connectButton" class=" border-radius-effect">CONNECT!</button></div>
 </form>
@@ -72,13 +74,17 @@
   
 </div>
     <div class="centered border-radius-effect">
-      <h3 class="pixelated">TH3M3S! <button id="theme-custom-button">+</button> <button id="theme-reset-button">Reset</button> </h3>
+      <h3 class="pixelated">TH3M3S! 
+          <button id="theme-custom-button" class="menuButton">+</button> 
+          <button id="theme-reset-button" class="menuButton">Reset</button>
+
+      </h3>
       <div class="theme-wrapper">
       </div>
 </div>
-<div class="centered">
-        <h3 class="pixelated">Background!
-        <button id="reset-background">reset</button>
+<div class="centered border-radius-effect">
+  <h3 class="pixelated">Background!
+        <button id="reset-background" class="menuButton">reset</button>
  </h3> 
       <div class="background-wrapper">
       </div>
