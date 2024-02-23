@@ -1462,7 +1462,115 @@ const sanitizeHTML = function (str) {
     return str
   }
 }
+/*
+  ____             _                                   _     
+ |  _ \           | |                                 | |    
+ | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___ 
+ |  _ < / _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` / __|
+ | |_) | (_| | (__|   < (_| | | | (_) | |_| | | | | (_| \__ \
+ |____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|___/
+                        __/ |                                
+                       |___/  
+*/
 
+const backgroundWrapper = document.querySelector('.background-wrapper')
+const backgroundImage = document.querySelectorAll('.background-image')
+const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
+const storedBackground = window.localStorage.getItem('background')
+
+// Theming model
+class BackgroundImage {
+  constructor (
+    name,
+    path,
+    alt
+  ) {
+    this.name = name
+    this.path = path
+    this.alt = alt
+  }
+
+  /** Changes the current background src into this one */
+  changeBackground () {
+    customTheme.colors.background=Background.instances.findIndex(e=>e.name===this.name)
+    backgroundImage.forEach(e => {
+      e.src = this.path
+    })
+    backgroundImageWrapper.style.display = "flex"
+  }
+}
+// Theme factory
+class Background {
+  static instances = []
+
+  /** Creates a new background image instance and adds it to the instance count
+   *  Args:
+   *  name : String => Image name, used for id
+   *  path: String => image source, example: "backgrounds/pesterchum_icon.png"
+   *  alt : alt text for screen reader
+   * */
+  static new (name, path, alt) {
+    const newInstance = new BackgroundImage(name, path, alt)
+    this.instances.push(newInstance)
+    return newInstance
+  }
+}
+
+// here comes the background instances
+Background.new('beta', 'backgrounds/beta_kids_background.webp', 'beta kids icons, artist: paleWreath')
+Background.new('alpha', 'backgrounds/alpha_kids_background.webp', 'alpha kids icons, artist: paleWreath')
+Background.new('mixed', 'backgrounds/mix_kids_background.webp', 'mixed kids icons, artist: paleWreath')
+Background.new('derse', 'backgrounds/derse_background.webp', 'derse buildings themed, artist: paleWreath')
+Background.new('prospit', 'backgrounds/prospit_background.webp', 'prospit buildings, artist: paleWreath')
+Background.new('aradia', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
+Background.new('aradia', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
+Background.new('aradia', 'backgrounds/aradia_background.webp', 'aradia themed, artist: paleWreath')
+Background.new('tavros', 'backgrounds/tavros_background.webp', 'tavro themed, artist: paleWreath')
+Background.new('sollux', 'backgrounds/sollux_background.webp', 'sollux themed, artist: paleWreath')
+Background.new('nepeta', 'backgrounds/nepeta_background.webp', 'nepeta themed, artist: paleWreath')
+Background.new('kanaya', 'backgrounds/kanaya_background.webp', 'kanaya themed, artist: paleWreath')
+Background.new('terezi', 'backgrounds/terezi_background.webp', 'terezi themed, artist: paleWreath')
+Background.new('vriska', 'backgrounds/vriska_background.webp', 'vriska themed, artist: paleWreath')
+Background.new('equius', 'backgrounds/equius_background.webp', 'equius themed, artist: paleWreath')
+Background.new('gamzee', 'backgrounds/gamzee_background.webp', 'gamzee themed, artist: paleWreath')
+Background.new('eridan', 'backgrounds/eridian_background.webp', 'eridan themed, artist: paleWreath')
+Background.new('feferi', 'backgrounds/feferi_background.webp', 'feferi themed, artist: paleWreath')
+Background.new('red-juju', 'backgrounds/red_juju_background.webp', 'a red spiral')
+Background.new('green-juju', 'backgrounds/green_juju_background.webp', 'a green spiral')
+Background.new('pool', 'backgrounds/pool_background.webp', 'pool balls')
+Background.new('caliborn', 'backgrounds/caliborn_background.webp', 'doodles and drawings made by caliborn, artist:')
+Background.new('strider', 'backgrounds/strider_background.webp', 'strider vinil icon scratched and whole')
+Background.new('lalonde', 'backgrounds/lalonde_background.webp', 'both lalonde icons, a squid and a muttant kitten')
+Background.new('signs', 'backgrounds/signs_rainbow_background.webp', 'main troll zodiac signs')
+Background.new('sbahj', 'backgrounds/sbahj_background.webp', 'warned you about the stairs meme')
+Background.new('egbert', 'backgrounds/egbert_background.webp', 'jonh egbert pogo icon')
+Background.new('squiddles', 'backgrounds/squiddles_background.webp', 'a bunch of squiddles')
+Background.new('dirk-brr', 'backgrounds/dirkbrr_background.webp', 'a circle of dirk faces, artist: au dave')
+Background.new('dave-brr', 'backgrounds/davebrr_background.webp', 'a circle of handrawed dave discs, artist: au dave')
+
+// background buttons
+Background.instances.forEach(e => {
+  backgroundWrapper.innerHTML += `
+  <button class="background-button" type="button" id="${e.name}">
+    <img src="${e.path}" alt="${e.path}"/> 
+  </button>
+`
+})
+
+// Background buttons actions
+const buttons = document.querySelectorAll('.background-button')
+buttons.forEach((e, i) => {
+  e.addEventListener('click', () => {
+    Background.instances[i].changeBackground()
+    window.localStorage.setItem('background', i)
+    backgroundImageWrapper.style.display = 'flex'
+  })
+})
+
+// Reset background action
+document.querySelector('#reset-background').addEventListener('click', () => {
+  backgroundImageWrapper.style.display = 'none'
+})
 /*
   _______ _                              
  |__   __| |                             
@@ -1533,6 +1641,11 @@ class ColorScheme {
     inputs[15].value=this.colors["borderRadius"]
     setCssProperty("--border-radius",this.colors["borderRadius"]+"rem")
 
+    //Background
+    this.colors.background!=null 
+      ? Background.instances[this.colors.background].changeBackground() 
+      : backgroundImageWrapper.style.display = 'none'
+
     Theme.loadedThemes.currentTheme=this.colors.name
     Theme.saveChanges()
   }
@@ -1555,7 +1668,8 @@ const pesterchumColors = {
   whiteOpacity: '1',
   buttonBorderColor: '#c59400',
   buttonBorderColorOpacity: '1',
-  borderRadius:0
+  borderRadius:0,
+  background: null
 }
 
 const trollianColors = {
@@ -1574,7 +1688,8 @@ const trollianColors = {
   whiteOpacity: '1',
   buttonBorderColor: '#b00e14',
   buttonBorderColorOpacity: '1',
-  borderRadius:0
+  borderRadius:0,
+  background:null
 }
 
 // defining the customTheme variable
@@ -1765,7 +1880,6 @@ colorDialogForm.addEventListener('submit', () => {
 
 // close button
 modalButtons[1].addEventListener('click', e => {
-  e.preventDefault()
   colorDialog.close()
 })
 
@@ -1786,121 +1900,4 @@ customResetButton.addEventListener('click', () => {
 })
 
 
-/*
-  ____             _                                   _     
- |  _ \           | |                                 | |    
- | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___ 
- |  _ < / _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` / __|
- | |_) | (_| | (__|   < (_| | | | (_) | |_| | | | | (_| \__ \
- |____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|___/
-                        __/ |                                
-                       |___/  
-*/
 
-const backgroundWrapper = document.querySelector('.background-wrapper')
-const backgroundImage = document.querySelectorAll('.background-image')
-const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
-const storedBackground = window.localStorage.getItem('background')
-
-// Theming model
-class BackgroundImage {
-  constructor (
-    name,
-    path,
-    alt
-  ) {
-    this.name = name
-    this.path = path
-    this.alt = alt
-  }
-
-  /** Changes the current background src into this one */
-  changeBackground () {
-    backgroundImage.forEach(e => {
-      e.src = this.path
-    })
-  }
-}
-// Theme factory
-class Background {
-  static instances = []
-
-  /** Creates a new background image instance and adds it to the instance count
-   *  Args:
-   *  name : String => Image name, used for id
-   *  path: String => image source, example: "backgrounds/pesterchum_icon.png"
-   *  alt : alt text for screen reader
-   * */
-  static new (name, path, alt) {
-    const newInstance = new BackgroundImage(name, path, alt)
-    this.instances.push(newInstance)
-    return newInstance
-  }
-}
-
-// here comes the background instances
-Background.new('beta', 'backgrounds/beta_kids_background.webp', 'beta kids icons, artist: paleWreath')
-Background.new('alpha', 'backgrounds/alpha_kids_background.webp', 'alpha kids icons, artist: paleWreath')
-Background.new('mixed', 'backgrounds/mix_kids_background.webp', 'mixed kids icons, artist: paleWreath')
-Background.new('derse', 'backgrounds/derse_background.webp', 'derse buildings themed, artist: paleWreath')
-Background.new('prospit', 'backgrounds/prospit_background.webp', 'prospit buildings, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
-Background.new('aradia', 'backgrounds/aradia_background.webp', 'aradia themed, artist: paleWreath')
-Background.new('tavros', 'backgrounds/tavros_background.webp', 'tavro themed, artist: paleWreath')
-Background.new('sollux', 'backgrounds/sollux_background.webp', 'sollux themed, artist: paleWreath')
-Background.new('nepeta', 'backgrounds/nepeta_background.webp', 'nepeta themed, artist: paleWreath')
-Background.new('kanaya', 'backgrounds/kanaya_background.webp', 'kanaya themed, artist: paleWreath')
-Background.new('terezi', 'backgrounds/terezi_background.webp', 'terezi themed, artist: paleWreath')
-Background.new('vriska', 'backgrounds/vriska_background.webp', 'vriska themed, artist: paleWreath')
-Background.new('equius', 'backgrounds/equius_background.webp', 'equius themed, artist: paleWreath')
-Background.new('gamzee', 'backgrounds/gamzee_background.webp', 'gamzee themed, artist: paleWreath')
-Background.new('eridan', 'backgrounds/eridian_background.webp', 'eridan themed, artist: paleWreath')
-Background.new('feferi', 'backgrounds/feferi_background.webp', 'feferi themed, artist: paleWreath')
-Background.new('red-juju', 'backgrounds/red_juju_background.webp', 'a red spiral')
-Background.new('green-juju', 'backgrounds/green_juju_background.webp', 'a green spiral')
-Background.new('pool', 'backgrounds/pool_background.webp', 'pool balls')
-Background.new('caliborn', 'backgrounds/caliborn_background.webp', 'doodles and drawings made by caliborn, artist:')
-Background.new('strider', 'backgrounds/strider_background.webp', 'strider vinil icon scratched and whole')
-Background.new('lalonde', 'backgrounds/lalonde_background.webp', 'both lalonde icons, a squid and a muttant kitten')
-Background.new('signs', 'backgrounds/signs_rainbow_background.webp', 'main troll zodiac signs')
-Background.new('sbahj', 'backgrounds/sbahj_background.webp', 'warned you about the stairs meme')
-Background.new('egbert', 'backgrounds/egbert_background.webp', 'jonh egbert pogo icon')
-Background.new('squiddles', 'backgrounds/squiddles_background.webp', 'a bunch of squiddles')
-Background.new('dirk-brr', 'backgrounds/dirkbrr_background.webp', 'a circle of dirk faces, artist: au dave')
-Background.new('dave-brr', 'backgrounds/davebrr_background.webp', 'a circle of handrawed dave discs, artist: au dave')
-
-// background buttons
-Background.instances.forEach(e => {
-  backgroundWrapper.innerHTML += `
-  <button class="background-button" id="${e.name}">
-    <img src="${e.path}" alt="${e.path}"/> 
-  </button>
-`
-})
-
-/** Load the background stored on localStorage background */
-const loadBackground = () => {
-  const background = window.localStorage.getItem('background')
-  background && Background.instances[background].changeBackground()
-}
-
-// loads the last background
-storedBackground && loadBackground()
-if (document.querySelector(".background-image").src.at(-1)==="#") {
-  backgroundImageWrapper.style.display='none'}
-
-// Background buttons actions
-const buttons = document.querySelectorAll('.background-button')
-buttons.forEach((e, i) => {
-  e.addEventListener('click', () => {
-    Background.instances[i].changeBackground()
-    window.localStorage.setItem('background', i)
-    backgroundImageWrapper.style.display = 'flex'
-  })
-})
-
-// Reset background action
-document.querySelector('#reset-background').addEventListener('click', () => {
-  backgroundImageWrapper.style.display = 'none'
-})

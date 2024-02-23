@@ -107,10 +107,12 @@ h3{
 
 .background-wrapper{
 margin-block-start: 1rem;
+  margin-inline: auto;
   display: flex;
   flex-wrap: wrap;
   gap:0.2rem;
   justify-content: center;
+  width:600px;
 }
 .menuButton {
   margin-inline-start: 1rem;
