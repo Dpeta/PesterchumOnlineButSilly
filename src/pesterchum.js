@@ -1522,8 +1522,8 @@ Background.new('alpha', 'backgrounds/alpha_kids_background.webp', 'alpha kids ic
 Background.new('mixed', 'backgrounds/mix_kids_background.webp', 'mixed kids icons, artist: paleWreath')
 Background.new('derse', 'backgrounds/derse_background.webp', 'derse buildings themed, artist: paleWreath')
 Background.new('prospit', 'backgrounds/prospit_background.webp', 'prospit buildings, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
+Background.new('karkat', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
+Background.new('karkalicious', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
 Background.new('aradia', 'backgrounds/aradia_background.webp', 'aradia themed, artist: paleWreath')
 Background.new('tavros', 'backgrounds/tavros_background.webp', 'tavro themed, artist: paleWreath')
 Background.new('sollux', 'backgrounds/sollux_background.webp', 'sollux themed, artist: paleWreath')
@@ -1562,7 +1562,6 @@ const buttons = document.querySelectorAll('.background-button')
 buttons.forEach((e, i) => {
   e.addEventListener('click', () => {
     Background.instances[i].changeBackground()
-    window.localStorage.setItem('background', i)
     backgroundImageWrapper.style.display = 'flex'
   })
 })
@@ -1642,9 +1641,12 @@ class ColorScheme {
     setCssProperty("--border-radius",this.colors["borderRadius"]+"rem")
 
     //Background
-    this.colors.background!=null 
-      ? Background.instances[this.colors.background].changeBackground() 
-      : backgroundImageWrapper.style.display = 'none'
+    if (this.colors.background!=null){
+      Background.instances[this.colors.background].changeBackground() 
+    } else {
+      customTheme.colors.background=null
+      backgroundImageWrapper.style.display = 'none'
+    } 
 
     Theme.loadedThemes.currentTheme=this.colors.name
     Theme.saveChanges()
