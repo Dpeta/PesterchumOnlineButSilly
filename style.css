@@ -64,9 +64,16 @@ html{
 /*Color themes*/
 dialog {
   margin:auto auto;
-  padding: 2.5rem;
   background-color: var(--inside-color) ;
   border: 2px solid var(--button-and-border-ascent) ;
+}
+
+.dialog-element-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: min(2.5rem, 4vw);
 }
 
 #color-dialog form{
@@ -112,7 +119,7 @@ margin-block-start: 1rem;
   flex-wrap: wrap;
   gap:0.2rem;
   justify-content: center;
-  width:600px;
+  width:min(600px,80vw);
 }
 .menuButton {
   margin-inline-start: 1rem;
@@ -261,6 +268,7 @@ main {
   display: none;
 }
 button{
+  cursor: pointer;
   background-color:var(--button-and-border-ascent);
   border: 3px solid var(--button-border-color);
   padding: 0.2rem 1rem;
