@@ -45,7 +45,7 @@
     <img src="#" class="background-image"/>
     </div>
       <main>
-<div class="centered">
+<div class="centered border-radius-effect">
     <h1 class='no-centertxt no-pixelated'>
       <div class="title">
           <img src="smilies/perky_big.gif"/>
@@ -61,34 +61,34 @@
 <footer class='centertxt'>Last update: 2023-02-07</footer>
 <div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
-<div class='centeredGo'>
+<div class='centered border-radius-effect'>
 <div id='entry'>
 <form id='connectForm'>
-  <label class="pixelated" for="handle">MYCHUMHANDLE:</label><input class="pixelated" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
-  <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
+  <label class="pixelated" for="handle">MYCHUMHANDLE:</label>
+    <input class="pixelated dark-input" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
+  <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label>
+    <input type="color" name="bloodcaste" id="bloodcaste" class="dark-input" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
   <!--<label for="allowUnsafeTags">Allow unsafe tags </label><input type="checkbox" name="allowUnsafeTags" id="allowUnsafeTags">-->
-  <div id='connectButtonDiv'><button id="connectButton">CONNECT!</button></div>
+  <div id='connectButtonDiv'><button id="connectButton" class=" border-radius-effect">CONNECT!</button></div>
 </form>
 </div>
   
 </div>
-    <div class="centered">
-      <h3 class="pixelated">TH3M3S!</h3>
+    <div class="centered border-radius-effect">
+      <h3 class="pixelated">TH3M3S! 
+          <button id="theme-custom-button" class="menu-button">+</button> 
+          <button id="theme-reset-button" class="menu-button">Reset</button>
+
+      </h3>
       <div class="theme-wrapper">
       </div>
 </div>
-<div class="centered">
-        <h3 class="pixelated">Background!
-        <button id="reset-background">reset</button>
- </h3> 
-      <div class="background-wrapper">
-      </div>
-</div>
-
     </main>
-       <dialog id="color-dialog">
-        <p class="pixelated">Select colors:</p>
-          <form method="dialog">
+       <dialog id="color-dialog" class=" border-radius-effect">
+        <div class="dialog-element-wrapper">
+          <form>
+          <label for="name" class="modal-full-width">Theme Name</label>
+          <input type="text"  class="modal-full-width pixelated dark-input" name="name" id="name" value="custom Theme" />
           <label for="outsideColor">outside color</label>
           <input type="color" name="outsideColor" id="outsideColor" value="#d59700"/>
           <input type="range" name="outsideColorOpacity" id="outsideColorOpacity" value=1 min=0 max=1 step=0.1 />
@@ -116,10 +116,19 @@
           <label for="buttonBorderColor">buttons border's color</label>
           <input type="color" name="buttonBorderColor" id="buttonBorderColor" value="#c59400"/>
           <input type="range" name="buttonBorderColorOpacity" id="buttonBorderColorOpacity" value=1 min=0 max=1 step=0.1 />
-          <label for="buttonBorderColorOpacity">opacity</label>          <button>SAVE</button>
-          <button>LOAD LAST</button>
-          <button>CLOSE</button>
+          <label for="buttonBorderColorOpacity">opacity</label>
+          <label for="borderRadius" class="modal-full-width">buttons radius</label>
+          <input type="range" class="modal-full-width" name="borderRadius" id="borderRadius" value=1 min=0 max=1 step=0.1 />
+          <button type="submit" class="modal-full-width border-radius-effect" >SAVE</button>
+          <button class="modal-full-width border-radius-effect" type="button">CLOSE</button>
+          <h3 class="pixelated">Background!
+           <button id="reset-background" type="button" class="menu-button modal-full-width">reset</button>
+          </h3> 
+          <div class="background-wrapper modal-full-width">
+
+          </div>
           </form>
+        </div>
       </dialog>   
 </body>
 </html>
