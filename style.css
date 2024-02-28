@@ -121,7 +121,7 @@ margin-block-start: 1rem;
   justify-content: center;
   width:min(600px,80vw);
 }
-.menuButton {
+.menu-button {
   margin-inline-start: 1rem;
   font-size: 1rem;
   padding:0.3rem;
@@ -510,12 +510,13 @@ justify-content: end;
   background-color: var(--black);
 }
 #msg {
+  font-size: 0.9rem;
+  padding-inline-start: 0.5rem;
   touch-action: none;
   color: var(--black); 
   border:2px solid var(--button-and-border-ascent);
   margin-top:0.25%; 
   margin-left:0.5%; 
-  font-size: 12px;
   margin-bottom:0.5%;
   width: 100%; 
   height: 3vh;
@@ -528,7 +529,12 @@ justify-content: end;
   margin-inline-start: 0.5rem;
 }
 
+.action-button-wrapper button{
+
+}
+
 #textarea { 
+  padding: 0.3rem;
   font-size: 18px;
   font-weight: bold; 
   border:2px solid var(--button-and-border-ascent);

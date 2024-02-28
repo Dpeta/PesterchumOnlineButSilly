@@ -1259,7 +1259,8 @@ class PesterchumOnlineClient {
                                      '<input id=\'msg\' class=\'msg inactive border-radius-effect\' minlength=\'1\' required disabled>' +
                                      '</form>' +
                                      '<div class="action-button-wrapper">' +
-                                     '<button>Silence</button>' +
+                                     '<button class="menu-button">Silence</button>' +
+                                     '<button class="menu-button">Edit theme</button>' +
                                      '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
@@ -1307,6 +1308,7 @@ class PesterchumOnlineClient {
       actionWrapperButtons[0].innerHTML = toggleAudio ? 'Silence' : 'Unsilence'
     }
     actionWrapperButtons[0].addEventListener('click', () => toggleAudioSound())
+    actionWrapperButtons[1].addEventListener('click', () => document.querySelector("#color-dialog").showModal())
 
     // Here is where the WIP ends
     //
@@ -1803,6 +1805,7 @@ class Theme {
    * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instances state
    */
   static buildList(){
+    try {
     const themeWrapper = document.querySelector('.theme-wrapper')
     themeWrapper.innerHTML = ''
     Theme.instances.forEach(
@@ -1823,6 +1826,9 @@ class Theme {
         )
       }
     )
+    } catch(e){ //this is for client editor
+    }
+    
   }
 
   /** Updates the lodalStorage json with the Themes.loadedThemes current state */
