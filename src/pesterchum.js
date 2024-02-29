@@ -1256,10 +1256,10 @@ class PesterchumOnlineClient {
                                      '<div id=\'textAndInputBox\'>' +
                                      '<div id=\'textarea\' class=\'textarea inactive border-radius-effect\'></div>' +
                                      '<form id=\'msgform\'>' +
-                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' minlength=\'1\' required disabled>' +
+                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' autocomplete="off" minlength=\'1\' required disabled>' +
                                      '</form>' +
                                      '<div class="action-button-wrapper">' +
-                                     '<button class="menu-button">Silence</button>' +
+                                     '<button class="menu-button">Audio</button>' +
                                      '<button class="menu-button">Edit theme</button>' +
                                      '</div>' +
                                      '</div>' +
@@ -1280,7 +1280,6 @@ class PesterchumOnlineClient {
     }
     document.querySelectorAll('.tab-arrow')[2].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x > box.scrollLeft + 71) {
         maintabScrollValues.x = box.scrollLeft
         box.scrollLeft = maintabScrollValues.x
@@ -1291,7 +1290,6 @@ class PesterchumOnlineClient {
     })
     document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x < 0) {
         maintabScrollValues.x = 0
         box.scrollLeft = maintabScrollValues.x
@@ -1300,14 +1298,53 @@ class PesterchumOnlineClient {
         box.scrollLeft = maintabScrollValues.x
       }
     })
+    /*
+ let honkAudio= true
+let mentionAudio= true
+let memoAudio=true
+let dmAudio=true
 
+ *
+ * */
     // action buttons
+    // Audio
     const actionWrapperButtons = document.querySelectorAll('.action-button-wrapper button')
+
+    const audioDialog = document.querySelector('.audio-dialog')
+    const audioDialogButtons = document.querySelectorAll('.audio-dialog button')
+
     const toggleAudioSound = () => {
-      toggleAudio = !toggleAudio
-      actionWrapperButtons[0].innerHTML = toggleAudio ? 'Silence' : 'Unsilence'
+      honkAudio = false
+      mentionAudio = false
+      memoAudio = false
+      dmAudio = false
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
     }
-    actionWrapperButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[1].addEventListener('click', () => {
+      memoAudio = !memoAudio
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[2].addEventListener('click', () => {
+      mentionAudio = !mentionAudio
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[3].addEventListener('click', () => {
+      dmAudio = !dmAudio
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[4].addEventListener('click', () => {
+      honkAudio ? alert('MoThErFuCkInG MiraClEs :O(') : alert('MoThErFuCkInG MiraClEs!!! :O)')
+      honkAudio = !honkAudio
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[5].addEventListener('click', () => audioDialog.close())
+    actionWrapperButtons[0].addEventListener('click', () => audioDialog.showModal())
+
+    // Editor
     actionWrapperButtons[1].addEventListener('click', () => document.querySelector('#color-dialog').showModal())
 
     // Here is where the WIP ends
@@ -1376,27 +1413,27 @@ class PesterchumOnlineClient {
     this.body.innerHTML = ''
   }
 }
-let toggleAudio = true
-
+let honkAudio = true
+let mentionAudio = true
+let memoAudio = true
+let dmAudio = true
 function audioCheck (isToMemo, msg) {
   /* Check if we should play a goofy silly sound. */
-  if (toggleAudio) {
-    if (_honk.test(msg)) {
-      // We were honked!!
-      soundHonk.play()
+  if (_honk.test(msg)) {
+    // We were honked!!
+    honkAudio && soundHonk.play()
+  }
+  if (isToMemo) {
+    if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
+      // We were mentioned!!
+      mentionAudio && alarmMention.play()
     }
-    if (isToMemo) {
-      if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
-        // We were mentioned!!
-        alarmMention.play()
-      }
-      alarmMemo.play()
+    memoAudio && alarmMemo.play()
+  } else {
+    if (_evilRuleImSoSorry.test(msg)) {
+      dmAudio && soundCease.play()
     } else {
-      if (_evilRuleImSoSorry.test(msg)) {
-        soundCease.play()
-      } else {
-        alarmDm.play()
-      }
+      dmAudio && alarmDm.play()
     }
   }
 }

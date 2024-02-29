@@ -67,6 +67,17 @@ dialog {
   background-color: var(--inside-color) ;
   border: 2px solid var(--button-and-border-ascent) ;
 }
+.audio-dialog form{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.audio-dialog form label{
+  font-size: 2rem;
+  font-family: strife;
+}
 
 .dialog-element-wrapper{
   display: flex;
