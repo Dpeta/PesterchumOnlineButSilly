@@ -64,9 +64,27 @@ html{
 /*Color themes*/
 dialog {
   margin:auto auto;
-  padding: 2.5rem;
   background-color: var(--inside-color) ;
   border: 2px solid var(--button-and-border-ascent) ;
+}
+.audio-dialog form{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.audio-dialog form label{
+  font-size: 2rem;
+  font-family: strife;
+}
+
+.dialog-element-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: min(2.5rem, 4vw);
 }
 
 #color-dialog form{
@@ -112,9 +130,9 @@ margin-block-start: 1rem;
   flex-wrap: wrap;
   gap:0.2rem;
   justify-content: center;
-  width:600px;
+  width:min(600px,80vw);
 }
-.menuButton {
+.menu-button {
   margin-inline-start: 1rem;
   font-size: 1rem;
   padding:0.3rem;
@@ -261,6 +279,7 @@ main {
   display: none;
 }
 button{
+  cursor: pointer;
   background-color:var(--button-and-border-ascent);
   border: 3px solid var(--button-border-color);
   padding: 0.2rem 1rem;
@@ -502,12 +521,13 @@ justify-content: end;
   background-color: var(--black);
 }
 #msg {
+  font-size: 0.9rem;
+  padding-inline-start: 0.5rem;
   touch-action: none;
   color: var(--black); 
   border:2px solid var(--button-and-border-ascent);
   margin-top:0.25%; 
   margin-left:0.5%; 
-  font-size: 12px;
   margin-bottom:0.5%;
   width: 100%; 
   height: 3vh;
@@ -521,6 +541,7 @@ justify-content: end;
 }
 
 #textarea { 
+  padding: 0.3rem;
   font-size: 18px;
   font-weight: bold; 
   border:2px solid var(--button-and-border-ascent);

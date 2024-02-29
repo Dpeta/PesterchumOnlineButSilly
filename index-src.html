@@ -75,8 +75,8 @@
 </div>
     <div class="centered border-radius-effect">
       <h3 class="pixelated">TH3M3S! 
-          <button id="theme-custom-button" class="menuButton">+</button> 
-          <button id="theme-reset-button" class="menuButton">Reset</button>
+          <button id="theme-custom-button" class="menu-button">+</button> 
+          <button id="theme-reset-button" class="menu-button">Reset</button>
 
       </h3>
       <div class="theme-wrapper">
@@ -84,9 +84,10 @@
 </div>
     </main>
        <dialog id="color-dialog" class=" border-radius-effect">
+        <div class="dialog-element-wrapper">
           <form>
           <label for="name" class="modal-full-width">Theme Name</label>
-          <input type="text"  class="modal-full-width pixelated" name="name" id="name" value="custom Theme" />
+          <input type="text"  class="modal-full-width pixelated dark-input" name="name" id="name" value="custom Theme" />
           <label for="outsideColor">outside color</label>
           <input type="color" name="outsideColor" id="outsideColor" value="#d59700"/>
           <input type="range" name="outsideColorOpacity" id="outsideColorOpacity" value=1 min=0 max=1 step=0.1 />
@@ -120,13 +121,31 @@
           <button type="submit" class="modal-full-width border-radius-effect" >SAVE</button>
           <button class="modal-full-width border-radius-effect" type="button">CLOSE</button>
           <h3 class="pixelated">Background!
-           <button id="reset-background" type="button" class="menuButton modal-full-width">reset</button>
+           <button id="reset-background" type="button" class="menu-button modal-full-width">reset</button>
           </h3> 
           <div class="background-wrapper modal-full-width">
 
           </div>
           </form>
+        </div>
       </dialog>   
+      <dialog class="audio-dialog">
+      <div class="dialog-element-wrapper">
+        <form>
+        <label for="audioMute">Mute all sound</label>
+        <button id="muteAllButton">Mute all sound</button>
+        <label for="audioMuteMemo">Mute memos</label>
+        <button id="muteMemoButton">Mute</button>
+        <label for="audioMuteMention">Mute mentions</label>
+        <button id="muteMentionButton">Mute</button>
+        <label for="audioMuteDM">Mute DMs</label>
+        <button id="muteDMButton">Mute</button>
+        <label for="audioMuteHoNk">MoThErFuCkInG mUtE hOnKs!</label>
+        <button id="muteHonkButton">Mute</button>
+        <button type="button" class="modal-full-width">CLOSE</button>
+        </form>
+      </div>
+      </dialog>
 </body>
 </html>
 <!-- You are reading our html! have a wonderful day! by: laaledesiempre--->

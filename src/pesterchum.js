@@ -1256,10 +1256,11 @@ class PesterchumOnlineClient {
                                      '<div id=\'textAndInputBox\'>' +
                                      '<div id=\'textarea\' class=\'textarea inactive border-radius-effect\'></div>' +
                                      '<form id=\'msgform\'>' +
-                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' minlength=\'1\' required disabled>' +
+                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' autocomplete="off" minlength=\'1\' required disabled>' +
                                      '</form>' +
                                      '<div class="action-button-wrapper">' +
-                                     '<button>Silence</button>' +
+                                     '<button class="menu-button">Audio</button>' +
+                                     '<button class="menu-button">Edit theme</button>' +
                                      '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
@@ -1279,7 +1280,6 @@ class PesterchumOnlineClient {
     }
     document.querySelectorAll('.tab-arrow')[2].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x > box.scrollLeft + 71) {
         maintabScrollValues.x = box.scrollLeft
         box.scrollLeft = maintabScrollValues.x
@@ -1290,7 +1290,6 @@ class PesterchumOnlineClient {
     })
     document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x < 0) {
         maintabScrollValues.x = 0
         box.scrollLeft = maintabScrollValues.x
@@ -1299,14 +1298,54 @@ class PesterchumOnlineClient {
         box.scrollLeft = maintabScrollValues.x
       }
     })
+    /*
+ let honkAudio= true
+let mentionAudio= true
+let memoAudio=true
+let dmAudio=true
 
+ *
+ * */
     // action buttons
+    // Audio
     const actionWrapperButtons = document.querySelectorAll('.action-button-wrapper button')
+
+    const audioDialog = document.querySelector('.audio-dialog')
+    const audioDialogButtons = document.querySelectorAll('.audio-dialog button')
+
     const toggleAudioSound = () => {
-      toggleAudio = !toggleAudio
-      actionWrapperButtons[0].innerHTML = toggleAudio ? 'Silence' : 'Unsilence'
+      honkAudio = false
+      mentionAudio = false
+      memoAudio = false
+      dmAudio = false
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
     }
-    actionWrapperButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[1].addEventListener('click', () => {
+      memoAudio = !memoAudio
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[2].addEventListener('click', () => {
+      mentionAudio = !mentionAudio
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[3].addEventListener('click', () => {
+      dmAudio = !dmAudio
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[4].addEventListener('click', () => {
+      honkAudio ? alert('MoThErFuCkInG MiraClEs :O(') : alert('MoThErFuCkInG MiraClEs!!! :O)')
+      honkAudio = !honkAudio
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[5].addEventListener('click', () => audioDialog.close())
+    actionWrapperButtons[0].addEventListener('click', () => audioDialog.showModal())
+
+    // Editor
+    actionWrapperButtons[1].addEventListener('click', () => document.querySelector('#color-dialog').showModal())
 
     // Here is where the WIP ends
     //
@@ -1374,27 +1413,27 @@ class PesterchumOnlineClient {
     this.body.innerHTML = ''
   }
 }
-let toggleAudio = true
-
+let honkAudio = true
+let mentionAudio = true
+let memoAudio = true
+let dmAudio = true
 function audioCheck (isToMemo, msg) {
   /* Check if we should play a goofy silly sound. */
-  if (toggleAudio) {
-    if (_honk.test(msg)) {
-      // We were honked!!
-      soundHonk.play()
+  if (_honk.test(msg)) {
+    // We were honked!!
+    honkAudio && soundHonk.play()
+  }
+  if (isToMemo) {
+    if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
+      // We were mentioned!!
+      mentionAudio && alarmMention.play()
     }
-    if (isToMemo) {
-      if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
-        // We were mentioned!!
-        alarmMention.play()
-      }
-      alarmMemo.play()
+    memoAudio && alarmMemo.play()
+  } else {
+    if (_evilRuleImSoSorry.test(msg)) {
+      dmAudio && soundCease.play()
     } else {
-      if (_evilRuleImSoSorry.test(msg)) {
-        soundCease.play()
-      } else {
-        alarmDm.play()
-      }
+      dmAudio && alarmDm.play()
     }
   }
 }
@@ -1463,20 +1502,19 @@ const sanitizeHTML = function (str) {
   }
 }
 /*
-  ____             _                                   _     
- |  _ \           | |                                 | |    
- | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___ 
+  ____             _                                   _
+ |  _ \           | |                                 | |
+ | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___
  |  _ < / _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` / __|
  | |_) | (_| | (__|   < (_| | | | (_) | |_| | | | | (_| \__ \
  |____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|___/
-                        __/ |                                
-                       |___/  
+                        __/ |
+                       |___/
 */
 
 const backgroundWrapper = document.querySelector('.background-wrapper')
 const backgroundImage = document.querySelectorAll('.background-image')
 const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
-const storedBackground = window.localStorage.getItem('background')
 
 // Theming model
 class BackgroundImage {
@@ -1492,11 +1530,11 @@ class BackgroundImage {
 
   /** Changes the current background src into this one */
   changeBackground () {
-    customTheme.colors.background=Background.instances.findIndex(e=>e.name===this.name)
+    customTheme.colors.background = Background.instances.findIndex(e => e.name === this.name)
     backgroundImage.forEach(e => {
       e.src = this.path
     })
-    backgroundImageWrapper.style.display = "flex"
+    backgroundImageWrapper.style.display = 'flex'
   }
 }
 // Theme factory
@@ -1522,8 +1560,8 @@ Background.new('alpha', 'backgrounds/alpha_kids_background.webp', 'alpha kids ic
 Background.new('mixed', 'backgrounds/mix_kids_background.webp', 'mixed kids icons, artist: paleWreath')
 Background.new('derse', 'backgrounds/derse_background.webp', 'derse buildings themed, artist: paleWreath')
 Background.new('prospit', 'backgrounds/prospit_background.webp', 'prospit buildings, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
+Background.new('karkat', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
+Background.new('karkalicious', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
 Background.new('aradia', 'backgrounds/aradia_background.webp', 'aradia themed, artist: paleWreath')
 Background.new('tavros', 'backgrounds/tavros_background.webp', 'tavro themed, artist: paleWreath')
 Background.new('sollux', 'backgrounds/sollux_background.webp', 'sollux themed, artist: paleWreath')
@@ -1562,7 +1600,6 @@ const buttons = document.querySelectorAll('.background-button')
 buttons.forEach((e, i) => {
   e.addEventListener('click', () => {
     Background.instances[i].changeBackground()
-    window.localStorage.setItem('background', i)
     backgroundImageWrapper.style.display = 'flex'
   })
 })
@@ -1572,19 +1609,19 @@ document.querySelector('#reset-background').addEventListener('click', () => {
   backgroundImageWrapper.style.display = 'none'
 })
 /*
-  _______ _                              
- |__   __| |                             
-    | |  | |__   ___ _ __ ___   ___  ___ 
+  _______ _
+ |__   __| |
+    | |  | |__   ___ _ __ ___   ___  ___
     | |  | '_ \ / _ \ '_ ` _ \ / _ \/ __|
     | |  | | | |  __/ | | | | |  __/\__ \
     |_|  |_| |_|\___|_| |_| |_|\___||___/
 */
 
-const hexTransparency=(float)=>{
-  return parseInt(255*parseFloat(float)).toString(16)
+const hexTransparency = (float) => {
+  return parseInt(255 * parseFloat(float)).toString(16)
 }
-const setCssProperty=(name,value)=>{
-    document.documentElement.style.setProperty(name,value)
+const setCssProperty = (name, value) => {
+  document.documentElement.style.setProperty(name, value)
 }
 
 // Theming model
@@ -1600,53 +1637,56 @@ class ColorScheme {
   /** Changes the current color scheme into this one */
   changeTheme () {
     const inputs = document.querySelectorAll('#color-dialog input')
-    //name does not change bc of shenanigans
+    // name does not change bc of shenanigans
 
-    //outsideColor
-    inputs[1].value=this.colors["outsideColor"]
-    inputs[2].value=this.colors["outsideColorOpacity"]
-    setCssProperty("--outside-color",this.colors["outsideColor"]+hexTransparency(this.colors["outsideColorOpacity"]))
+    // outsideColor
+    inputs[1].value = this.colors.outsideColor
+    inputs[2].value = this.colors.outsideColorOpacity
+    setCssProperty('--outside-color', this.colors.outsideColor + hexTransparency(this.colors.outsideColorOpacity))
 
-    //insideColor
-    inputs[3].value=this.colors["insideColor"]
-    inputs[4].value=this.colors["insideColorOpacity"]
-    setCssProperty("--inside-color",this.colors["insideColor"]+hexTransparency(this.colors["insideColorOpacity"]))
+    // insideColor
+    inputs[3].value = this.colors.insideColor
+    inputs[4].value = this.colors.insideColorOpacity
+    setCssProperty('--inside-color', this.colors.insideColor + hexTransparency(this.colors.insideColorOpacity))
 
-    //buttonAndBorderAscent
-    inputs[5].value=this.colors["buttonAndBorderAscent"]
-    inputs[6].value= this.colors["buttonAndBorderAscentOpacity"]
-    setCssProperty("--button-and-border-ascent",this.colors["buttonAndBorderAscent"]+hexTransparency(this.colors["buttonAndBorderAscentOpacity"]))
+    // buttonAndBorderAscent
+    inputs[5].value = this.colors.buttonAndBorderAscent
+    inputs[6].value = this.colors.buttonAndBorderAscentOpacity
+    setCssProperty('--button-and-border-ascent', this.colors.buttonAndBorderAscent + hexTransparency(this.colors.buttonAndBorderAscentOpacity))
 
-    //unselectedColor
-    inputs[7].value=this.colors["unselectedColor"]
-    inputs[8].value= this.colors["unselectedColorOpacity"]
-    setCssProperty("--unselected-color",this.colors["unselectedColor"]+hexTransparency(this.colors["unselectedColorOpacity"]))
+    // unselectedColor
+    inputs[7].value = this.colors.unselectedColor
+    inputs[8].value = this.colors.unselectedColorOpacity
+    setCssProperty('--unselected-color', this.colors.unselectedColor + hexTransparency(this.colors.unselectedColorOpacity))
 
-    //black
-    inputs[9].value=this.colors["black"]
-    inputs[10].value=this.colors["blackOpacity"]
-    setCssProperty("--black",this.colors["black"]+hexTransparency(this.colors["blackOpacity"]))
+    // black
+    inputs[9].value = this.colors.black
+    inputs[10].value = this.colors.blackOpacity
+    setCssProperty('--black', this.colors.black + hexTransparency(this.colors.blackOpacity))
 
-    //white
-    inputs[11].value=this.colors["white"]
-    inputs[12].value=this.colors["whiteOpacity"]
-    setCssProperty("--white",this.colors["white"]+hexTransparency(this.colors["whiteOpacity"]))
+    // white
+    inputs[11].value = this.colors.white
+    inputs[12].value = this.colors.whiteOpacity
+    setCssProperty('--white', this.colors.white + hexTransparency(this.colors.whiteOpacity))
 
-    //buttonBorderColor
-    inputs[13].value=this.colors["buttonBorderColor"]
-    inputs[14].value=this.colors["buttonBorderColorOpacity"]
-    setCssProperty("--button-border-color",this.colors["buttonBorderColor"]+hexTransparency(this.colors["buttonBorderColorOpacity"]))
+    // buttonBorderColor
+    inputs[13].value = this.colors.buttonBorderColor
+    inputs[14].value = this.colors.buttonBorderColorOpacity
+    setCssProperty('--button-border-color', this.colors.buttonBorderColor + hexTransparency(this.colors.buttonBorderColorOpacity))
 
-    //borderRadius
-    inputs[15].value=this.colors["borderRadius"]
-    setCssProperty("--border-radius",this.colors["borderRadius"]+"rem")
+    // borderRadius
+    inputs[15].value = this.colors.borderRadius
+    setCssProperty('--border-radius', this.colors.borderRadius + 'rem')
 
-    //Background
-    this.colors.background!=null 
-      ? Background.instances[this.colors.background].changeBackground() 
-      : backgroundImageWrapper.style.display = 'none'
+    // Background
+    if (this.colors.background != null) {
+      Background.instances[this.colors.background].changeBackground()
+    } else {
+      customTheme.colors.background = null
+      backgroundImageWrapper.style.display = 'none'
+    }
 
-    Theme.loadedThemes.currentTheme=this.colors.name
+    Theme.loadedThemes.currentTheme = this.colors.name
     Theme.saveChanges()
   }
 }
@@ -1668,7 +1708,7 @@ const pesterchumColors = {
   whiteOpacity: '1',
   buttonBorderColor: '#c59400',
   buttonBorderColorOpacity: '1',
-  borderRadius:0,
+  borderRadius: 0,
   background: null
 }
 
@@ -1688,23 +1728,23 @@ const trollianColors = {
   whiteOpacity: '1',
   buttonBorderColor: '#b00e14',
   buttonBorderColorOpacity: '1',
-  borderRadius:0,
-  background:null
+  borderRadius: 0,
+  background: null
 }
 
 // defining the customTheme variable
-let customTheme;
+let customTheme
 
 // Reset the theming system if is an old one, please delete this in some time
-window.localStorage.getItem("customTheme") && window.localStorage.clear()
+window.localStorage.getItem('customTheme') && window.localStorage.clear()
 
 // Creating the save if it doesnt exist
-!window.localStorage.getItem("themes") && window.localStorage.setItem("themes",'{"currentTheme":"Pesterchum","themes":{}}')
+!window.localStorage.getItem('themes') && window.localStorage.setItem('themes', '{"currentTheme":"Pesterchum","themes":{}}')
 
 // Theme factory
 class Theme {
   static instances = []
-  static loadedThemes= {}
+  static loadedThemes = {}
 
   /** Creates a new Color Scheme instance and adds it to the instance count use this only for official colors not custom
    * @param {Object} colors Colors object
@@ -1728,13 +1768,13 @@ class Theme {
    *    borderRadius:0
    * },null)
    * */
-  static new (colors, image=null) {
-    const newInstance = new ColorScheme(colors,image) // Creates the new color instance
+  static new (colors, image = null) {
+    const newInstance = new ColorScheme(colors, image) // Creates the new color instance
 
-    const instanceRepetitionIndex=this.instances.findIndex(e=>e.colors.name===colors.name) // Finds a theme on the instance list with same name and returns index
+    const instanceRepetitionIndex = this.instances.findIndex(e => e.colors.name === colors.name) // Finds a theme on the instance list with same name and returns index
 
-    if (instanceRepetitionIndex!==-1) { // if its not found (-1) it adds it to instances, else, if refresh the old one with new values
-      this.instances[instanceRepetitionIndex]=newInstance
+    if (instanceRepetitionIndex !== -1) { // if its not found (-1) it adds it to instances, else, if refresh the old one with new values
+      this.instances[instanceRepetitionIndex] = newInstance
     } else {
       this.instances.push(newInstance)
     }
@@ -1742,10 +1782,10 @@ class Theme {
   }
 
   /**
-   *  Reset all the theming, deleting all the saved data and current state 
+   *  Reset all the theming, deleting all the saved data and current state
    */
-  static reset(){
-    window.localStorage.setItem("themes",'{"currentTheme":"Pesterchum","themes":{}}')
+  static reset () {
+    window.localStorage.setItem('themes', '{"currentTheme":"Pesterchum","themes":{}}')
     Theme.defaultState()
     Theme.load()
     Theme.buildList()
@@ -1754,93 +1794,97 @@ class Theme {
 
   /**
    * Saves a Custom theme on the localStorage and updates the html
-   * @param {Object} colors a color object 
+   * @param {Object} colors a color object
    */
-  static save(colors){
+  static save (colors) {
     Theme.new(colors)
-    const newTheme={}
-    newTheme.name=colors.name
-    newTheme.colors=colors
-    this.loadedThemes.themes[`${colors.name}`]=newTheme
-    this.loadedThemes.currentTheme=colors.name
+    const newTheme = {}
+    newTheme.name = colors.name
+    newTheme.colors = colors
+    this.loadedThemes.themes[`${colors.name}`] = newTheme
+    this.loadedThemes.currentTheme = colors.name
     Theme.saveChanges()
   }
 
   /**
    * Cleans the instance count and sets the default themes
    */
-  static defaultState(){
-    Theme.instances=[]
+  static defaultState () {
+    Theme.instances = []
     Theme.new(pesterchumColors, 'img/pesterchum_icon.png')
     Theme.new(trollianColors, 'img/trollian_icon.png')
-    const customValues= {...pesterchumColors}
-    customValues["name"]="custom"
-    customTheme= Theme.new(customValues)
+    const customValues = { ...pesterchumColors }
+    customValues.name = 'custom'
+    customTheme = Theme.new(customValues)
   }
 
   /**
    * Load custom themes from the json
-   * @param {JSON} [themes=localStorage.getItem("themes")] 
+   * @param {JSON} [themes=localStorage.getItem("themes")]
    */
-  static load(themes=localStorage.getItem("themes")){
-    let themeSystem=JSON.parse(themes)
-    this.loadedThemes=themeSystem
-    
+  static load (themes = localStorage.getItem('themes')) {
+    const themeSystem = JSON.parse(themes)
+    this.loadedThemes = themeSystem
+
     if (Object.keys(this.loadedThemes.themes).length) {
-      for (let x in this.loadedThemes.themes) {
-        let theme=this.loadedThemes.themes[x]
+      for (const x in this.loadedThemes.themes) {
+        const theme = this.loadedThemes.themes[x]
         Theme.new(theme.colors)
       }
-      let current= Theme.instances.find(e=>e.colors.name===Theme.loadedThemes.currentTheme)
+      const current = Theme.instances.find(e => e.colors.name === Theme.loadedThemes.currentTheme)
       current.changeTheme()
       Theme.buildList()
-    }  
+    }
   }
 
   /**
    * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instances state
    */
-  static buildList(){
-    const themeWrapper = document.querySelector('.theme-wrapper')
-    themeWrapper.innerHTML = ''
-    Theme.instances.forEach(
-      e => {
-        themeWrapper.innerHTML += `
-          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase().replaceAll(" ","")}'>
+  static buildList () {
+    try {
+      const themeWrapper = document.querySelector('.theme-wrapper')
+      themeWrapper.innerHTML = ''
+      Theme.instances.forEach(
+        e => {
+          themeWrapper.innerHTML += `
+          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase().replaceAll(' ', '')}'>
             ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
           </button>
-      `}
-    )
-    document.querySelectorAll('.theme-button').forEach(
-      (e, i) => {
-        e.addEventListener(
-          'click', () => {
-            Theme.setCurrentTheme(Theme.instances[i].colors.name)
-            Theme.instances[i].changeTheme()
-          }
-        )
-      }
-    )
+      `
+        }
+      )
+      document.querySelectorAll('.theme-button').forEach(
+        (e, i) => {
+          e.addEventListener(
+            'click', () => {
+              Theme.setCurrentTheme(Theme.instances[i].colors.name)
+              Theme.instances[i].changeTheme()
+            }
+          )
+        }
+      )
+    } catch (e) { // this is for client editor
+    }
   }
 
   /** Updates the lodalStorage json with the Themes.loadedThemes current state */
-  static updateJSON(){
-    window.localStorage.setItem("themes",JSON.stringify(this.loadedThemes))
+  static updateJSON () {
+    window.localStorage.setItem('themes', JSON.stringify(this.loadedThemes))
   }
 
   /**
    * Sets the currentTheme value in the memory and json based on the index at Theme.instances
    * @param {String} name
    */
-  static setCurrentTheme(name){
-    this.loadedThemes.currentTheme=name
-    document.querySelector("#name").value=name
+  static setCurrentTheme (name) {
+    this.loadedThemes.currentTheme = name
+    document.querySelector('#name').value = name
     Theme.buildList()
   }
 
-  /**Save changes and rebuild json and theme list*/
-  static saveChanges(){
-    Theme.updateJSON() 
+  /** Save changes and rebuild json and theme list */
+  static saveChanges () {
+    Theme.updateJSON()
     Theme.buildList()
   }
 }
@@ -1864,16 +1908,16 @@ const dialogChangeColor = () => {
   for (const x of inputs) {
     customColor[x.id] = x.value
   }
-  customColor["name"]="custom"
+  customColor.name = 'custom'
   customTheme.changeTheme()
 }
 
 // color dialog form submit
 colorDialogForm.addEventListener('submit', () => {
   dialogChangeColor()
-  let dialogColors=structuredClone(customTheme.colors)
-  dialogColors["name"]=document.querySelector("#name").value
-  Theme.save(dialogColors) 
+  const dialogColors = structuredClone(customTheme.colors)
+  dialogColors.name = document.querySelector('#name').value
+  Theme.save(dialogColors)
   Theme.buildList()
   colorDialog.close()
 })
@@ -1895,9 +1939,6 @@ customThemeButton.addEventListener('click', () => {
 // customResetButton behaviour
 const customResetButton = document.querySelector('#theme-reset-button')
 customResetButton.addEventListener('click', () => {
-  let deleteThemes=confirm("Are you sure you wanna delete all your themes???")
+  const deleteThemes = confirm('Are you sure you wanna delete all your themes???')
   deleteThemes && Theme.reset()
 })
-
-
-
