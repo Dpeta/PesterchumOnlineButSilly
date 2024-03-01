@@ -11,7 +11,9 @@
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "lint": "eslint --fix ./src/pesterchum.js"
+    "lint": "eslint --fix ./src/pesterchum.js",
+    "browserify":"browserify src/pesterchum.js -o dist/pesterchum.js -t babelify",
+    "updateChecksums":"node ./update_checksums.js"
   },
   "dependencies": {
     "@babel/cli": "^7.23.0",
