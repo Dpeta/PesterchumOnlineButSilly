@@ -8,9 +8,9 @@ const babeljsRegex=/<link rel="preload" href="style\.css" integrity="sha256-[^"]
 const babelCssRegex=/<link rel="preload" href="dist\/pesterchum\.js" integrity="sha256-[^"]*" as="script">/gm
 
 const hashFile=(path)=>{
-  const buff = fs.readFileSync(path);
-  const hash = createHash("sha256").update(buff).digest("hex");
-  base64= Buffer.from(hash).toString('base64')
+  const buff = fs.readFileSync(path,"utf8");
+  const hash = createHash("sha256").update(buff).digest("binary");
+  base64= Buffer.from(hash,"binary").toString('base64')
   return base64 
 }
 // here we have finally the hashes
