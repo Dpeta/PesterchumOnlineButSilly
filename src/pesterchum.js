@@ -1918,7 +1918,8 @@ const dialogChangeColor = () => {
 }
 
 // color dialog form submit
-colorDialogForm.addEventListener('submit', () => {
+colorDialogForm.addEventListener('submit', (e) => {
+  e.preventDefault()
   dialogChangeColor()
   const dialogColors = structuredClone(customTheme.colors)
   dialogColors.name = document.querySelector('#name').value
