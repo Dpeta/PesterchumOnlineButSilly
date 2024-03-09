@@ -1534,7 +1534,11 @@ class BackgroundImage {
     backgroundImage.forEach(e => {
       e.src = this.path
     })
-    backgroundImageWrapper.style.display = 'flex'
+    if (customTheme.colors.background) {
+      backgroundImageWrapper.style.display = 'flex'
+    } else {
+      backgroundImageWrapper.style.display = 'none'
+    }
   }
 }
 // Theme factory
@@ -1683,6 +1687,7 @@ class ColorScheme {
       Background.instances[this.colors.background].changeBackground()
     } else {
       customTheme.colors.background = null
+      document.querySelector('#background-image-wrapper').style.display = 'none'
       backgroundImageWrapper.style.display = 'none'
     }
 
