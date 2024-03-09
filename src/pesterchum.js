@@ -1831,10 +1831,10 @@ class Theme {
         const theme = this.loadedThemes.themes[x]
         Theme.new(theme.colors)
       }
-      const current = Theme.instances.find(e => e.colors.name === Theme.loadedThemes.currentTheme)
-      current.changeTheme()
       Theme.buildList()
     }
+    const current = Theme.instances.find(e => e.colors.name === Theme.loadedThemes.currentTheme)
+    current.changeTheme()
   }
 
   /**
