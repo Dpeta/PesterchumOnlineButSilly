@@ -55,6 +55,7 @@ html{
   font-size: 18px;
 }
 
+/*Color themes*/
 dialog {
   margin:auto auto;
   padding: 3rem;
@@ -82,7 +83,54 @@ dialog::backdrop{
   opacity: 0.5;
 }
 
+/*Background styles*/
+
+h3{
+  display: flex;
+  align-items: center;
+}
+
+.background-wrapper{
+margin-block-start: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap:0.2rem;
+  justify-content: center;
+}
+#reset-background{
+  font-size: 1rem;
+  padding:0.3rem;
+}
+
+#background-image-wrapper {
+  position: fixed;
+  z-index: -1;
+  margin:auto auto;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+}
+
+.background-image{
+  height:100vh ;
+}
+
+.background-button{
+  background-color: var(--outside-color);
+  padding:0;
+  height: 100px;
+}
+.background-button img{
+  width: 9.5rem;
+}
+
+/*General styles*/
 body {
+  width: 100vw;
+  background: var(--outside-color);
+}
+
+main {
   overflow-x: hidden;
   width: 100vw;
   display: flex;
@@ -90,8 +138,9 @@ body {
   align-items: center;
   gap: 1rem;
   padding-block: 3vh;
-  background: var(--outside-color);
+
 }
+
 .title{
   display:grid;
   grid-template-columns:1fr 2fr 1fr ;
@@ -104,7 +153,7 @@ body {
   font-size: max(5.5vw,3rem);
   font-family: Strife;
   text-align: center;
-  color:var(--white);
+  color:var(--black);
 }
 
 .title > *:nth-child(2){
@@ -217,6 +266,9 @@ button:hover{
 
 /*Client*/
 
+.action-button-wrapper{
+  display: flex;
+}
 
 .tab {
     background-color:var(--inside-color);
@@ -283,7 +335,7 @@ button:hover{
   background-color: var(--unselected-color);
   font-family: 'strife';
   font-size:1.3rem;
-  height: 3.5%;
+  height: 2rem;
   width: 50%;
   float: left;
   position: relative;
@@ -343,10 +395,13 @@ width: 95%;
 .manualJoin {
   font-family:strife;
   width: 100%;
-  height: 15%;
+  height: 5rem;
   color: var(--white);
   padding: 1%;
   overflow: auto;
+display: flex;
+flex-direction: column;
+justify-content: end;
 }
 .manualJoin > div{
   color:var(--white);
@@ -413,7 +468,7 @@ width: 95%;
   font-family: 'Courier';
   overflow-x: scroll;
   overflow-y: scroll;
-  height: 83%; /* -4%*/
+  height: calc(100% - 7rem); /* -4%*/
   font-size: 20px;
   width: 100%;
 }
@@ -427,7 +482,7 @@ width: 95%;
   margin-top: 0.5%;
   width:27%;
   order:3;
-  height: 86.5vh;
+  height: 85.2vh;
   margin-block-end: 0.5rem;
 }
 
@@ -483,7 +538,7 @@ width: 95%;
   margin-inline-start: 0.5rem;
   width: 97%;
   padding-inline-start: 10rem;
-  height: 2.4rem;
+  height: 2.35rem;
 }
 #tabContainer {
   width: 56%;
