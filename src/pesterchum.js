@@ -1693,7 +1693,7 @@ class ColorScheme {
 
 // Themes Color Schemes
 const pesterchumColors = {
-  name: 'pesterchum',
+  name: 'Pesterchum',
   outsideColor: '#d59700',
   outsideColorOpacity: '1',
   insideColor: '#ffb500',
@@ -1713,7 +1713,7 @@ const pesterchumColors = {
 }
 
 const trollianColors = {
-  name: 'trollian',
+  name: 'Trollian',
   outsideColor: '#c2c2c2',
   outsideColorOpacity: '1',
   insideColor: '#e30421',
