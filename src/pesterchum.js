@@ -476,10 +476,12 @@ function parseIRC (data) {
         for (let n = 0; n < pcoClient.tabs.length; n++) {
           if (pcoClient.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
             // pcoClient.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
+            pcoClient.tabs[n].textfield.insertAdjacentHTML('beforeend', `<div><span style='color: grey;'>${msg}</span></div>`)
           } else if ((pcoClient.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
             // Services messages
             if (((msg.indexOf('Unknown command') !== -1) && (msg.indexOf('PESTERCHUM:BEGIN') !== -1)) === false) {
               // pcoClient.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
+              pcoClient.tabs[n].textfield.insertAdjacentHTML('beforeend', `<div><span style='color: black;'>${msg}</span></div>`)
             }
           }
         }
