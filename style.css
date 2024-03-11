@@ -221,6 +221,37 @@ main {
   transform: translateY(-10%);
   padding:0.2rem 1rem;
 }
+#advancedForm input{
+  background: var(--black);
+  border-color: var(--button-and-border-ascent);
+  border-style: solid;
+  #width: 100%;
+  color: var(--white);
+  font-size: 1.2rem;
+  padding:0.2rem 1rem;
+}
+#userInputArea {
+  width: 0%;
+  display: none;
+}
+
+.centeredGoAdvanced {
+  //width: 50%;
+  background-color: var(--inside-color);
+  background-repeat: no-repeat;
+  //border:2px solid var(--button-and-border-ascent);
+  font-family: 'Courier';
+  font-weight: bold;
+  padding: 0.5rem;
+
+  margin: auto;
+  width: 50%;
+}
+
+#advancedText {
+
+}
+
 #notice {
   text-align: right;
 }

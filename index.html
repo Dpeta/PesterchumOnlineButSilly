@@ -28,13 +28,13 @@
 -->
         <!-- When hosting on an actual web server the CSP should be more restrictive. (hash for script-src) -->
 
-<link rel="preload" href="style.css" integrity="sha256-lquor5MF+4k8qotqm2e3N1WkTnwOvvHGwzUkonIRQ9E=" as="style">
-<link rel="preload" href="dist/pesterchum.js" integrity="sha256-MMpiPAeWhoDiQPu7NElz6OIhptl1w+1mOggLcs3RLQI=" as="script"> <!-- integrity hash with babel :3 -->
+<link rel="preload" href="style.css" integrity="sha256-7hXxvN4X25jJfl8I5oh38wqX2uuFVTm5c2QQJy7MExA=" as="style">
+<link rel="preload" href="dist/pesterchum.js" integrity="sha256-UsaiIw4mvMyjganr+vsO0JNTtct2uZharAFNjGY1wKc=" as="script"> <!-- integrity hash with babel :3 -->
 
 <link rel="icon" href="favicon.ico">
 <link rel="canonical" href="https://pesterchum.online">
-<link rel="stylesheet" integrity="sha256-lquor5MF+4k8qotqm2e3N1WkTnwOvvHGwzUkonIRQ9E=" href="style.css">
-<script src="dist/pesterchum.js" integrity="sha256-MMpiPAeWhoDiQPu7NElz6OIhptl1w+1mOggLcs3RLQI=" defer></script>
+<link rel="stylesheet" integrity="sha256-7hXxvN4X25jJfl8I5oh38wqX2uuFVTm5c2QQJy7MExA=" href="style.css">
+<script src="dist/pesterchum.js" integrity="sha256-UsaiIw4mvMyjganr+vsO0JNTtct2uZharAFNjGY1wKc=" defer></script>
 
 <title>Pesterchum Online</title>
 </head>
@@ -57,7 +57,7 @@
   <p>An online Pesterchum client! Not to be confused with the previous pco(s) which shut down. This isn't a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
       <p>Now up on <a href="https://github.com/Dpeta/PesterchumOnlineButSilly">GitHub</a> and under the <a href="agpl-3.0-standalone.html">AGPL</a>,</p>
       <p class="pixelated"> woo yeah woo yeah <img src="smilies/3_big.gif"> </p>
-<footer class='centertxt'>Last update: 2023-03-09</footer>
+<footer class='centertxt'>Last update: 2023-03-11</footer>
 <div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
 <div class='centeredGo'>
@@ -67,9 +67,24 @@
   <label class="pixelated" for="bloodcaste">PICK A SCRUNKLY COLOR!! </label><input type="color" name="bloodcaste" id="bloodcaste" value="#416600"> (<a href="https://balentay.tumblr.com/homestuckcolors">Reference</a>)<br>
   <!--<label for="allowUnsafeTags">Allow unsafe tags </label><input type="checkbox" name="allowUnsafeTags" id="allowUnsafeTags">-->
   <div id='connectButtonDiv'><button id="connectButton">CONNECT!</button></div>
+
 </form>
 </div>
-  
+
+<br>
+
+<form id="advancedForm">
+<div class='centeredGoAdvanced'>
+<div id="advancedText">Advanced mode <input type="checkbox" id="advancedCheck"></div>
+<div id="userInputArea">
+<label class="pixelated">USERNAME (SASL)</label>
+<input id="username">
+<label class="pixelated">PASSWORD (SASL)</label>
+<input id="password">
+</div>
+</div>
+</form>
+
 </div>
     <div class="centered">
       <h3 class="pixelated">TH3M3S!</h3>
