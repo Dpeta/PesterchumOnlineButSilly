@@ -53,11 +53,10 @@
           <img src="smilies/perky_big.gif"/>
       </div>
     </h1>
-  <p>My attempt at making an online Pesterchum client since the previous ones either shut down after the server switch or ended up unfinished. This isn't meant to be a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
+  <p>An online Pesterchum client! Not to be confused with the previous pco(s) which shut down. This isn't a fully-fledged replacement for <a href="https://github.com/Dpeta/pesterchum-alt-servers/releases">the desktop client</a>, mostly just to be an alternate way to still chat with people on it :3</p>
       <p>Now up on <a href="https://github.com/Dpeta/PesterchumOnlineButSilly">GitHub</a> and under the <a href="agpl-3.0-standalone.html">AGPL</a>,</p>
       <p class="pixelated"> woo yeah woo yeah <img src="smilies/3_big.gif"> </p>
-  <p>This is a WIP!!! It only has pretty basic features rn :"3</p>
-<footer class='centertxt'>Last update: 2023-02-07</footer>
+<footer class='centertxt'>Last update: 2023-03-11</footer>
 <div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
 <div class='centered border-radius-effect'>
@@ -71,7 +70,21 @@
   <div id='connectButtonDiv'><button id="connectButton" class=" border-radius-effect">CONNECT!</button></div>
 </form>
 </div>
-  
+
+<br>
+
+<form id="advancedForm">
+<div class='centeredGoAdvanced'>
+<div id="advancedText">Advanced mode <input type="checkbox" id="advancedCheck"></div>
+<div id="userInputArea">
+<label class="pixelated">USERNAME (SASL)</label>
+<input class="dark-input" id="username">
+<label class="pixelated">PASSWORD (SASL)</label>
+<input class="dark-input" id="password">
+</div>
+</div>
+</form>
+
 </div>
     <div class="centered border-radius-effect">
       <h3 class="pixelated">TH3M3S! 
@@ -134,7 +147,7 @@
         <form>
         <label for="audioMute">Mute all sound</label>
         <button id="muteAllButton" type="button">Mute all sound</button>
-        <label for="audioMuteMemo">Mute memos</label>
+        <label for="audioMuteMemo" >Mute memos</label>
         <button id="muteMemoButton" type="button">Mute</button>
         <label for="audioMuteMention">Mute mentions</label>
         <button id="muteMentionButton" type="button">Mute</button>

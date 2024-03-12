@@ -249,6 +249,22 @@ main {
   padding:0.2rem 1rem;
 }
 
+
+
+.centeredGoAdvanced {
+  display:flex;
+  flex-direction:column;  
+  background-color: var(--inside-color);
+  background-repeat: no-repeat;
+  //border:2px solid var(--button-and-border-ascent);
+  font-family: 'Courier';
+  font-weight: bold;
+  padding: 0.5rem;
+
+  margin: auto;
+  width: 100%;
+}
+
 #notice {
   text-align: right;
 }

@@ -66,12 +66,20 @@ let alarmMention
 let soundCease
 let soundHonk
 
+// login
+let nick
+let pass
+let advancedCheckboxValue
+let saslEnabled
+
 // The important!!
 let ircClient
 let pcoClient
 
 function init () {
   const connectButton = document.getElementById('connectButton')
+  const advancedCheckbox = document.getElementById('advancedCheck')
+  const advancedInput = document.getElementById('userInputArea')
   // const handleInput = document.getElementById('handle')
   const connectForm = document.getElementById('connectForm')
 
@@ -93,6 +101,19 @@ function init () {
   if (tagCheck !== null) {
     tagCheck.checked = false
   }
+
+  if (advancedCheckbox.checked) {
+    advancedInput.style.display = 'inline'
+  } else {
+    advancedInput.style.display = 'none'
+  }
+  advancedCheckbox.addEventListener('change', () => {
+    if (advancedCheckbox.checked) {
+      advancedInput.style.display = 'inline'
+    } else {
+      advancedInput.style.display = 'none'
+    }
+  })
 }
 
 function runCheck () {
@@ -116,6 +137,11 @@ function run () {
   const handleInput = document.getElementById('handle')
   const handle = handleInput.value
 
+  // Get user/pass/checkstatus
+  nick = document.getElementById('username').value
+  pass = document.getElementById('password').value
+  advancedCheckboxValue = document.getElementById('advancedCheck').checked
+
   // Get escape-allowed setting
   const tagCheck = document.getElementById('allowUnsafeTags')
   if (tagCheck !== null) {
@@ -126,9 +152,18 @@ function run () {
   ircClient = new IrcClient(handle)
   ircClient.connect()
 
+  // Check SASL??
+  saslEnabled = advancedCheckboxValue && nick && pass
+
   // Connection opened
   ircClient.socket.addEventListener('open', function (event) {
-    ircClient.register()
+    if (saslEnabled) {
+      // this is ok rn since there's only sasl
+      ircClient.caps()
+    } else {
+      // Register later if using SASL!
+      ircClient.register()
+    }
   })
 
   // Data incoming
@@ -441,10 +476,12 @@ function parseIRC (data) {
         for (let n = 0; n < pcoClient.tabs.length; n++) {
           if (pcoClient.tabs[n].label.toLowerCase() === channel.toLowerCase()) {
             // pcoClient.tabs[n].tabcontent += `<div><span style='color: grey;'>${msg}</span></div>`
+            pcoClient.tabs[n].textfield.insertAdjacentHTML('beforeend', `<div><span style='color: grey;'>${msg}</span></div>`)
           } else if ((pcoClient.tabs[n].label.toLowerCase() === sourcenick.toLowerCase()) && (ServicesBots.indexOf(sourcenick.toUpperCase()) !== -1)) {
             // Services messages
             if (((msg.indexOf('Unknown command') !== -1) && (msg.indexOf('PESTERCHUM:BEGIN') !== -1)) === false) {
               // pcoClient.tabs[n].tabcontent += `<div><span style='color: black;'>${msg}</span></div>`
+              pcoClient.tabs[n].textfield.insertAdjacentHTML('beforeend', `<div><span style='color: black;'>${msg}</span></div>`)
             }
           }
         }
@@ -520,6 +557,32 @@ function parseIRC (data) {
         updateQue[i].userlist = []
         ircClient.names(updateQue[i].label)
       }
+      break
+    case 'CAP':
+      // CAPS!
+      console.log(params)
+      if ((params[0] === '*') && (params[1] === 'ACK') && (params[2] === ':sasl')) {
+        // SASL?!? ?!SLALSL!?!?! SALSLSA!?!?!? ?!
+        console.log('SASL REAL')
+        ircClient.sasl()
+      } else if ((params[0] === '*') && (params[1] === 'ACK') && (params[2] === ':sasl')) {
+        // NONE SALSL???
+        console.log('SASL FAKE')
+        ircClient.capNegEnd()
+        ircClient.register()
+      }
+      break
+    case 'AUTHENTICATE':
+      // It's authentication time!!
+      if (params[0] === '+') {
+        // Legal license to be silly acquired
+        ircClient.saslAuth()
+      } else {
+        // It is now ILLEGAL to be silly!!!
+        ircClient.capNegEnd()
+        ircClient.register()
+      }
+
       break
       // Numerical replies
     case '001':
@@ -603,6 +666,32 @@ function parseIRC (data) {
       break
     case '433':
       alert('TH4T H4NDL3 1S T4K3N 4LR34DY >:[')
+      break
+    case '451':
+      alert(`SASL auth failed? ${data}`)
+      ircClient.capNegEnd()
+      ircClient.register()
+      break
+    case '902':
+      alert(`SASL auth failed? ${data}`)
+      ircClient.capNegEnd()
+      ircClient.register()
+      break
+    case '903':
+      // We did it chat!! we SASLed!!
+      ircClient.capNegEnd()
+      ircClient.register()
+      break
+    case '904':
+      alert(`SASL auth failed? ${data}`)
+      ircClient.capNegEnd()
+      ircClient.register()
+      break
+    case '905':
+      alert(`SASL auth failed? ${data}`)
+      ircClient.capNegEnd()
+      ircClient.register()
+      break
   }
 }
 
@@ -1443,10 +1532,31 @@ class IrcClient {
     this.handle = handle
   }
 
+  // welcome to the underground
+  caps () {
+    console.log(`nick is ${nick} and pass is ${pass} and advancedCheckboxValue is ${advancedCheckboxValue} :3`)
+    this.send('CAP REQ SASL')
+  }
+
+  capNegEnd () {
+    this.send('CAP END')
+  }
+
+  sasl () {
+    this.send('AUTHENTICATE PLAIN')
+  }
+
+  saslAuth () {
+    const authstr = `${nick}\x00${nick}\x00${pass}`
+    // we gotta base64 !!
+    const authBINGLE = btoa(authstr)
+    this.send(`AUTHENTICATE ${authBINGLE}`)
+  }
+
   // Register to server
   register () {
-    this.socket.send('NICK ' + this.handle)
-    this.socket.send('USER pco 0 * :pco')
+    this.send('NICK ' + this.handle)
+    this.send('USER pco 0 * :pco')
   }
 
   connect () {
@@ -1456,36 +1566,36 @@ class IrcClient {
 
   send (data) {
     // Send raw data
-    // console.log('Send message to server ', data);
+    console.log('Send message to server ', data)
     this.socket.send(data)
   }
 
   msg (target, message) {
     // Shorthand for PRIVMSG
     // <target>{,<target>} <text to be sent>
-    this.socket.send('PRIVMSG ' + target + ' :' + message)
+    this.send('PRIVMSG ' + target + ' :' + message)
   }
 
   join (channel) {
     // Join a channel
     // <channel>{,<channel>} [<key>{,<key>}]
-    this.socket.send('JOIN ' + channel)
+    this.send('JOIN ' + channel)
   }
 
   part (channel) {
     // Leave a channel
     // <channel>{,<channel>}
-    this.socket.send('PART ' + channel)
+    this.send('PART ' + channel)
   }
 
   names (channel) {
     // Get channel users
-    this.socket.send('NAMES ' + channel)
+    this.send('NAMES ' + channel)
   }
 
   list () {
     // Get channels
-    this.socket.send('LIST')
+    this.send('LIST')
   }
 }
 
