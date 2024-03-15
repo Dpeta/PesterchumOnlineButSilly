@@ -1320,7 +1320,7 @@ class PesterchumOnlineClient {
 
   tabify () {
     this.body.insertAdjacentHTML('beforeend',
-      '<div id=\'chonkers\'>' +
+      '<div id=\'chonkers\' class=\'border-radius-effect\'>' +
                                      '<div id=\'chumrollContainer\'>' +
                                      '<button id=\'memolistButton\' class=\'MemosChumsTabs active\'>MEMOS</button>' +
                                      '<button id=\'userlistButton\' class=\'MemosChumsTabs\'>CHUMS</button>' +
@@ -1343,18 +1343,19 @@ class PesterchumOnlineClient {
                                      '</div>' +
                                      '</div>' +
                                      '<div id=\'textAndInputBox\'>' +
-                                     '<div id=\'textarea\' class=\'textarea inactive\'></div>' +
+                                     '<div id=\'textarea\' class=\'textarea inactive border-radius-effect\'></div>' +
                                      '<form id=\'msgform\'>' +
-                                     '<input id=\'msg\' class=\'msg inactive\' minlength=\'1\' required disabled>' +
+                                     '<input id=\'msg\' class=\'msg inactive border-radius-effect\' autocomplete="off" minlength=\'1\' required disabled>' +
                                      '</form>' +
                                      '<div class="action-button-wrapper">' +
-                                     '<button>Silence</button>' +
+                                     '<button class="menu-button">Audio</button>' +
+                                     '<button class="menu-button">Edit theme</button>' +
                                      '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
                                      '</div>' +
                                      '</div>' +
-                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive\'></div>')
+                                     '<div id=\'memoUserlist\' class=\'memoUserlist inactive border-radius-effect\'></div>')
     this.maintab = document.getElementById('maintab')
     this.textarea = document.getElementById('textarea')
 
@@ -1368,7 +1369,6 @@ class PesterchumOnlineClient {
     }
     document.querySelectorAll('.tab-arrow')[2].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x > box.scrollLeft + 71) {
         maintabScrollValues.x = box.scrollLeft
         box.scrollLeft = maintabScrollValues.x
@@ -1379,7 +1379,6 @@ class PesterchumOnlineClient {
     })
     document.querySelectorAll('.tab-arrow')[1].addEventListener('click', () => {
       const box = document.querySelector('#maintab')
-      console.log(maintabScrollValues.x)
       if (maintabScrollValues.x < 0) {
         maintabScrollValues.x = 0
         box.scrollLeft = maintabScrollValues.x
@@ -1388,13 +1387,54 @@ class PesterchumOnlineClient {
         box.scrollLeft = maintabScrollValues.x
       }
     })
+    /*
+ let honkAudio= true
+let mentionAudio= true
+let memoAudio=true
+let dmAudio=true
+
+ *
+ * */
     // action buttons
+    // Audio
     const actionWrapperButtons = document.querySelectorAll('.action-button-wrapper button')
+
+    const audioDialog = document.querySelector('.audio-dialog')
+    const audioDialogButtons = document.querySelectorAll('.audio-dialog button')
+
     const toggleAudioSound = () => {
-      toggleAudio = !toggleAudio
-      actionWrapperButtons[0].innerHTML = toggleAudio ? 'Silence' : 'Unsilence'
+      honkAudio = false
+      mentionAudio = false
+      memoAudio = false
+      dmAudio = false
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
     }
-    actionWrapperButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[0].addEventListener('click', () => toggleAudioSound())
+    audioDialogButtons[1].addEventListener('click', () => {
+      memoAudio = !memoAudio
+      audioDialogButtons[1].innerHTML = memoAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[2].addEventListener('click', () => {
+      mentionAudio = !mentionAudio
+      audioDialogButtons[2].innerHTML = mentionAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[3].addEventListener('click', () => {
+      dmAudio = !dmAudio
+      audioDialogButtons[3].innerHTML = dmAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[4].addEventListener('click', () => {
+      honkAudio ? alert('MoThErFuCkInG MiraClEs :O(') : alert('MoThErFuCkInG MiraClEs!!! :O)')
+      honkAudio = !honkAudio
+      audioDialogButtons[4].innerHTML = honkAudio ? 'Mute' : 'Unmute'
+    })
+    audioDialogButtons[5].addEventListener('click', () => audioDialog.close())
+    actionWrapperButtons[0].addEventListener('click', () => audioDialog.showModal())
+
+    // Editor
+    actionWrapperButtons[1].addEventListener('click', () => document.querySelector('#color-dialog').showModal())
 
     // Here is where the WIP ends
     //
@@ -1462,27 +1502,27 @@ class PesterchumOnlineClient {
     this.body.innerHTML = ''
   }
 }
-let toggleAudio = true
-
+let honkAudio = true
+let mentionAudio = true
+let memoAudio = true
+let dmAudio = true
 function audioCheck (isToMemo, msg) {
   /* Check if we should play a goofy silly sound. */
-  if (toggleAudio) {
-    if (_honk.test(msg)) {
-      // We were honked!!
-      soundHonk.play()
+  if (_honk.test(msg)) {
+    // We were honked!!
+    honkAudio && soundHonk.play()
+  }
+  if (isToMemo) {
+    if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
+      // We were mentioned!!
+      mentionAudio && alarmMention.play()
     }
-    if (isToMemo) {
-      if ((msg.indexOf(ircClient.handle) !== -1) || (msg.indexOf(getInitials(ircClient.handle)) !== -1)) {
-        // We were mentioned!!
-        alarmMention.play()
-      }
-      alarmMemo.play()
+    memoAudio && alarmMemo.play()
+  } else {
+    if (_evilRuleImSoSorry.test(msg)) {
+      dmAudio && soundCease.play()
     } else {
-      if (_evilRuleImSoSorry.test(msg)) {
-        soundCease.play()
-      } else {
-        alarmDm.play()
-      }
+      dmAudio && alarmDm.play()
     }
   }
 }
@@ -1571,162 +1611,20 @@ const sanitizeHTML = function (str) {
     return str
   }
 }
+/*
+  ____             _                                   _
+ |  _ \           | |                                 | |
+ | |_) | __ _  ___| | ____ _ _ __ ___  _   _ _ __   __| |___
+ |  _ < / _` |/ __| |/ / _` | '__/ _ \| | | | '_ \ / _` / __|
+ | |_) | (_| | (__|   < (_| | | | (_) | |_| | | | | (_| \__ \
+ |____/ \__,_|\___|_|\_\__, |_|  \___/ \__,_|_| |_|\__,_|___/
+                        __/ |
+                       |___/
+*/
 
-// Theming model
-class ColorScheme {
-  constructor (
-    name,
-    image,
-    colors) {
-    this.name = name
-    this.image = image
-    this.colors = colors
-  }
-
-  /** Changes the current color scheme into this one */
-  changeTheme () {
-    const propertyNames = Object.getOwnPropertyNames(this.colors)
-    const propertyCss = propertyNames.map(e => '--' + e.replace(/[A-Z]/g, match => '-' + match).toLowerCase()) // this is not necesary it could save compute time.
-    const inputs = document.querySelectorAll('#color-dialog input')
-    for (let i = 0; i < propertyNames.length; i++) {
-      document.documentElement.style.setProperty(propertyCss[i], this.colors[propertyNames[i]])
-      inputs[i].value = this.colors[propertyNames[i]]
-    }
-  }
-}
-// Theme factory
-class Theme {
-  static instances = []
-
-  /** Creates a new Color Scheme instance and adds it to the instance count
-   *  Args:
-   *  name : String => Color scheme name
-   *  image : String => image source, example: "img/pesterchum_icon.png"
-   *  colors : ColorScheme => example: {
-   *    outsideColor:"#d59700",
-   *    insideColor:"#ffb500",
-   *    buttonAndBorderAscent:"#fff700",
-   *    unselectedColor:"#5f5f5f",
-   *    black:"#000001",
-   *    white:"#ffffff",
-   *    buttonBorderColor:"#c59400",
-   *  }
-   * */
-  static new (name, image, colors) {
-    const newInstance = new ColorScheme(name, image, colors)
-    this.instances.push(newInstance)
-    return newInstance
-  }
-}
-
-// Themes Color Schemes
-const pesterchumColors = {
-  outsideColor: '#d59700',
-  insideColor: '#ffb500',
-  buttonAndBorderAscent: '#fff700',
-  unselectedColor: '#5f5f5f',
-  black: '#000001',
-  white: '#ffffff',
-  buttonBorderColor: '#c59400'
-}
-
-const trollianColors = {
-  outsideColor: '#c2c2c2',
-  insideColor: '#e30421',
-  buttonAndBorderAscent: '#ffa5a4',
-  unselectedColor: '#5f5f5f',
-  black: '#000001',
-  white: '#ffffff',
-  buttonBorderColor: '#b00e14'
-}
-
-/// ///// TODO code review
-// Default themes
-Theme.new('Pesterchum', 'img/pesterchum_icon.png', pesterchumColors)
-Theme.new('Trollian', 'img/trollian_icon.png', trollianColors)
-const customTheme = Theme.new('Custom', '', pesterchumColors)
-
-// Color dialog elements
-const colorDialog = document.querySelector('#color-dialog')
-const inputs = document.querySelectorAll('#color-dialog input')
-const modalButtons = document.querySelectorAll('#color-dialog button')
-
-// Color dialog functions
-/** Changes current custom theme colors into the Dialog form input values */
-const dialogChangeColor = () => {
-  const customColor = {}
-  for (const x of inputs) {
-    customColor[x.id] = x.value
-  }
-  customTheme.colors = customColor
-  customTheme.changeTheme()
-}
-
-/** Loads the theme stored in localStorage "customTheme" key */
-const loadSavedTheme = () => {
-  const savedTheme = window.localStorage.getItem('customTheme')
-  if (savedTheme) {
-    customTheme.colors = JSON.parse(savedTheme)
-    customTheme.changeTheme()
-  } else {
-    alert('NO CUSTOM TH3M3 Y3T!')
-  }
-}
-
-// by default loads the last theme saved
-window.localStorage.getItem('customTheme') && loadSavedTheme()
-
-// save button
-modalButtons[0].addEventListener('click', () => {
-  window.localStorage.setItem('customTheme', JSON.stringify(customTheme.colors))
-  dialogChangeColor()
-})
-
-// load button
-modalButtons[1].addEventListener('click', () => {
-  loadSavedTheme()
-})
-
-// close button
-modalButtons[2].addEventListener('click', () => {
-  colorDialog.close()
-})
-
-inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
-
-// Theme list builder
-const themeWrapper = document.querySelector('.theme-wrapper')
-themeWrapper.innerHTML = ''
-Theme.instances.forEach(
-  e => {
-    themeWrapper.innerHTML += `
-      <button class='theme-button' id='${'theme-' + e.name.toLowerCase()}'>
-        ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
-      </button>
-    `
-  }
-)
-
-// Theme button list event listeners
-document.querySelectorAll('.theme-button').forEach(
-  (e, i) => {
-    Theme.instances[i].name !== 'Custom' && e.addEventListener(
-      'click', () => {
-        Theme.instances[i].changeTheme()
-      }
-    )
-  }
-)
-
-// customThemeButton behaviour
-const customThemeButton = document.querySelector('#theme-custom')
-customThemeButton.addEventListener('click', () => colorDialog.showModal())
-
-// Backgrounds
 const backgroundWrapper = document.querySelector('.background-wrapper')
 const backgroundImage = document.querySelectorAll('.background-image')
 const backgroundImageWrapper = document.querySelector('#background-image-wrapper')
-const storedBackground = window.localStorage.getItem('background')
 
 // Theming model
 class BackgroundImage {
@@ -1742,9 +1640,15 @@ class BackgroundImage {
 
   /** Changes the current background src into this one */
   changeBackground () {
+    customTheme.colors.background = Background.instances.findIndex(e => e.name === this.name)
     backgroundImage.forEach(e => {
       e.src = this.path
     })
+    if (customTheme.colors.background) {
+      backgroundImageWrapper.style.display = 'flex'
+    } else {
+      backgroundImageWrapper.style.display = 'none'
+    }
   }
 }
 // Theme factory
@@ -1770,8 +1674,8 @@ Background.new('alpha', 'backgrounds/alpha_kids_background.webp', 'alpha kids ic
 Background.new('mixed', 'backgrounds/mix_kids_background.webp', 'mixed kids icons, artist: paleWreath')
 Background.new('derse', 'backgrounds/derse_background.webp', 'derse buildings themed, artist: paleWreath')
 Background.new('prospit', 'backgrounds/prospit_background.webp', 'prospit buildings, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
-Background.new('aradia', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
+Background.new('karkat', 'backgrounds/karkat_background.webp', 'karkat themed, artist: paleWreath')
+Background.new('karkalicious', 'backgrounds/karkalicious_background.webp', 'karkalicious so delicious, artist: paleWreath')
 Background.new('aradia', 'backgrounds/aradia_background.webp', 'aradia themed, artist: paleWreath')
 Background.new('tavros', 'backgrounds/tavros_background.webp', 'tavro themed, artist: paleWreath')
 Background.new('sollux', 'backgrounds/sollux_background.webp', 'sollux themed, artist: paleWreath')
@@ -1799,26 +1703,17 @@ Background.new('dave-brr', 'backgrounds/davebrr_background.webp', 'a circle of h
 // background buttons
 Background.instances.forEach(e => {
   backgroundWrapper.innerHTML += `
-  <button class="background-button" id="${e.name}">
+  <button class="background-button" type="button" id="${e.name}">
     <img src="${e.path}" alt="${e.path}"/> 
   </button>
 `
 })
-
-/** Load the background stored on localStorage background */
-const loadBackground = () => {
-  const background = window.localStorage.getItem('background')
-  background && Background.instances[background].changeBackground()
-}
-// loads the last background
-storedBackground && loadBackground()
 
 // Background buttons actions
 const buttons = document.querySelectorAll('.background-button')
 buttons.forEach((e, i) => {
   e.addEventListener('click', () => {
     Background.instances[i].changeBackground()
-    window.localStorage.setItem('background', i)
     backgroundImageWrapper.style.display = 'flex'
   })
 })
@@ -1826,4 +1721,340 @@ buttons.forEach((e, i) => {
 // Reset background action
 document.querySelector('#reset-background').addEventListener('click', () => {
   backgroundImageWrapper.style.display = 'none'
+})
+/*
+  _______ _
+ |__   __| |
+    | |  | |__   ___ _ __ ___   ___  ___
+    | |  | '_ \ / _ \ '_ ` _ \ / _ \/ __|
+    | |  | | | |  __/ | | | | |  __/\__ \
+    |_|  |_| |_|\___|_| |_| |_|\___||___/
+*/
+
+const hexTransparency = (float) => {
+  return parseInt(255 * parseFloat(float)).toString(16)
+}
+const setCssProperty = (name, value) => {
+  document.documentElement.style.setProperty(name, value)
+}
+
+// Theming model
+class ColorScheme {
+  constructor (
+    colors,
+    image) {
+    this.name = colors.name
+    this.image = image
+    this.colors = colors
+  }
+
+  /** Changes the current color scheme into this one */
+  changeTheme () {
+    const inputs = document.querySelectorAll('#color-dialog input')
+    // name does not change bc of shenanigans
+
+    // outsideColor
+    inputs[1].value = this.colors.outsideColor
+    inputs[2].value = this.colors.outsideColorOpacity
+    setCssProperty('--outside-color', this.colors.outsideColor + hexTransparency(this.colors.outsideColorOpacity))
+
+    // insideColor
+    inputs[3].value = this.colors.insideColor
+    inputs[4].value = this.colors.insideColorOpacity
+    setCssProperty('--inside-color', this.colors.insideColor + hexTransparency(this.colors.insideColorOpacity))
+
+    // buttonAndBorderAscent
+    inputs[5].value = this.colors.buttonAndBorderAscent
+    inputs[6].value = this.colors.buttonAndBorderAscentOpacity
+    setCssProperty('--button-and-border-ascent', this.colors.buttonAndBorderAscent + hexTransparency(this.colors.buttonAndBorderAscentOpacity))
+
+    // unselectedColor
+    inputs[7].value = this.colors.unselectedColor
+    inputs[8].value = this.colors.unselectedColorOpacity
+    setCssProperty('--unselected-color', this.colors.unselectedColor + hexTransparency(this.colors.unselectedColorOpacity))
+
+    // black
+    inputs[9].value = this.colors.black
+    inputs[10].value = this.colors.blackOpacity
+    setCssProperty('--black', this.colors.black + hexTransparency(this.colors.blackOpacity))
+
+    // white
+    inputs[11].value = this.colors.white
+    inputs[12].value = this.colors.whiteOpacity
+    setCssProperty('--white', this.colors.white + hexTransparency(this.colors.whiteOpacity))
+
+    // buttonBorderColor
+    inputs[13].value = this.colors.buttonBorderColor
+    inputs[14].value = this.colors.buttonBorderColorOpacity
+    setCssProperty('--button-border-color', this.colors.buttonBorderColor + hexTransparency(this.colors.buttonBorderColorOpacity))
+
+    // borderRadius
+    inputs[15].value = this.colors.borderRadius
+    setCssProperty('--border-radius', this.colors.borderRadius + 'rem')
+
+    // Background
+    if (this.colors.background != null) {
+      Background.instances[this.colors.background].changeBackground()
+    } else {
+      customTheme.colors.background = null
+      document.querySelector('#background-image-wrapper').style.display = 'none'
+      backgroundImageWrapper.style.display = 'none'
+    }
+
+    Theme.loadedThemes.currentTheme = this.colors.name
+    Theme.saveChanges()
+  }
+}
+
+// Themes Color Schemes
+const pesterchumColors = {
+  name: 'Pesterchum',
+  outsideColor: '#d59700',
+  outsideColorOpacity: '1',
+  insideColor: '#ffb500',
+  insideColorOpacity: '1',
+  buttonAndBorderAscent: '#fff700',
+  buttonAndBorderAscentOpacity: '1',
+  unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
+  black: '#000001',
+  blackOpacity: '1',
+  white: '#ffffff',
+  whiteOpacity: '1',
+  buttonBorderColor: '#c59400',
+  buttonBorderColorOpacity: '1',
+  borderRadius: 0,
+  background: null
+}
+
+const trollianColors = {
+  name: 'Trollian',
+  outsideColor: '#c2c2c2',
+  outsideColorOpacity: '1',
+  insideColor: '#e30421',
+  insideColorOpacity: '1',
+  buttonAndBorderAscent: '#ffa5a4',
+  buttonAndBorderAscentOpacity: '1',
+  unselectedColor: '#5f5f5f',
+  unselectedColorOpacity: '1',
+  black: '#000001',
+  blackOpacity: '1',
+  white: '#ffffff',
+  whiteOpacity: '1',
+  buttonBorderColor: '#b00e14',
+  buttonBorderColorOpacity: '1',
+  borderRadius: 0,
+  background: null
+}
+
+// defining the customTheme variable
+let customTheme
+
+// Reset the theming system if is an old one, please delete this in some time
+window.localStorage.getItem('customTheme') && window.localStorage.clear()
+
+// Creating the save if it doesnt exist
+!window.localStorage.getItem('themes') && window.localStorage.setItem('themes', '{"currentTheme":"Pesterchum","themes":{}}')
+
+// Theme factory
+class Theme {
+  static instances = []
+  static loadedThemes = {}
+
+  /** Creates a new Color Scheme instance and adds it to the instance count use this only for official colors not custom
+   * @param {Object} colors Colors object
+   * @param {String||null} image Image path or null
+   * @example Theme.new({
+   *    name: 'trollian',
+   *    outsideColor: '#c2c2c2',
+   *    outsideColorOpacity: '1',
+   *    insideColor: '#e30421',
+   *    insideColorOpacity: '1',
+   *    buttonAndBorderAscent: '#ffa5a4',
+   *    buttonAndBorderAscentOpacity: '1',
+   *    unselectedColor: '#5f5f5f',
+   *    unselectedColorOpacity: '1',
+   *    black: '#000001',
+   *    blackOpacity: '1',
+   *    white: '#ffffff',
+   *    whiteOpacity: '1',
+   *    buttonBorderColor: '#b00e14',
+   *    buttonBorderColorOpacity: '1',
+   *    borderRadius:0
+   * },null)
+   * */
+  static new (colors, image = null) {
+    const newInstance = new ColorScheme(colors, image) // Creates the new color instance
+
+    const instanceRepetitionIndex = this.instances.findIndex(e => e.colors.name === colors.name) // Finds a theme on the instance list with same name and returns index
+
+    if (instanceRepetitionIndex !== -1) { // if its not found (-1) it adds it to instances, else, if refresh the old one with new values
+      this.instances[instanceRepetitionIndex] = newInstance
+    } else {
+      this.instances.push(newInstance)
+    }
+    return newInstance
+  }
+
+  /**
+   *  Reset all the theming, deleting all the saved data and current state
+   */
+  static reset () {
+    window.localStorage.setItem('themes', '{"currentTheme":"Pesterchum","themes":{}}')
+    Theme.defaultState()
+    Theme.load()
+    Theme.buildList()
+    Theme.instances[0].changeTheme()
+  }
+
+  /**
+   * Saves a Custom theme on the localStorage and updates the html
+   * @param {Object} colors a color object
+   */
+  static save (colors) {
+    Theme.new(colors)
+    const newTheme = {}
+    newTheme.name = colors.name
+    newTheme.colors = colors
+    this.loadedThemes.themes[`${colors.name}`] = newTheme
+    this.loadedThemes.currentTheme = colors.name
+    Theme.saveChanges()
+  }
+
+  /**
+   * Cleans the instance count and sets the default themes
+   */
+  static defaultState () {
+    Theme.instances = []
+    Theme.new(pesterchumColors, 'img/pesterchum_icon.png')
+    Theme.new(trollianColors, 'img/trollian_icon.png')
+    const customValues = { ...pesterchumColors }
+    customValues.name = 'custom'
+    customTheme = Theme.new(customValues)
+  }
+
+  /**
+   * Load custom themes from the json
+   * @param {JSON} [themes=localStorage.getItem("themes")]
+   */
+  static load (themes = localStorage.getItem('themes')) {
+    const themeSystem = JSON.parse(themes)
+    this.loadedThemes = themeSystem
+
+    if (Object.keys(this.loadedThemes.themes).length) {
+      for (const x in this.loadedThemes.themes) {
+        const theme = this.loadedThemes.themes[x]
+        Theme.new(theme.colors)
+      }
+      Theme.buildList()
+    }
+    const current = Theme.instances.find(e => e.colors.name === Theme.loadedThemes.currentTheme)
+    current.changeTheme()
+  }
+
+  /**
+   * Builds the list of themes you can find in '.theme-wrapper' based on the current Theme.instances state
+   */
+  static buildList () {
+    try {
+      const themeWrapper = document.querySelector('.theme-wrapper')
+      themeWrapper.innerHTML = ''
+      Theme.instances.forEach(
+        e => {
+          themeWrapper.innerHTML += `
+          <button class='theme-button' id='${'theme-' + e.colors.name.toLowerCase().replaceAll(' ', '')}'>
+            ${e.image ? `<img src=${e.image} width="50rem"/>` : e.name}
+          </button>
+      `
+        }
+      )
+      document.querySelectorAll('.theme-button').forEach(
+        (e, i) => {
+          e.addEventListener(
+            'click', () => {
+              Theme.setCurrentTheme(Theme.instances[i].colors.name)
+              Theme.instances[i].changeTheme()
+            }
+          )
+        }
+      )
+    } catch (e) { // this is for client editor
+    }
+  }
+
+  /** Updates the lodalStorage json with the Themes.loadedThemes current state */
+  static updateJSON () {
+    window.localStorage.setItem('themes', JSON.stringify(this.loadedThemes))
+  }
+
+  /**
+   * Sets the currentTheme value in the memory and json based on the index at Theme.instances
+   * @param {String} name
+   */
+  static setCurrentTheme (name) {
+    this.loadedThemes.currentTheme = name
+    document.querySelector('#name').value = name
+    Theme.buildList()
+  }
+
+  /** Save changes and rebuild json and theme list */
+  static saveChanges () {
+    Theme.updateJSON()
+    Theme.buildList()
+  }
+}
+
+// Default themes
+Theme.defaultState()
+Theme.load()
+Theme.buildList()
+
+// Color dialog elements
+const colorDialog = document.querySelector('#color-dialog')
+const colorDialogForm = document.querySelector('#color-dialog form')
+const inputs = document.querySelectorAll('#color-dialog input')
+const modalButtons = document.querySelectorAll('#color-dialog button')
+
+// Color dialog functions
+
+/** Changes current custom theme colors into the Dialog form input values */
+const dialogChangeColor = () => {
+  const customColor = customTheme.colors
+  for (const x of inputs) {
+    customColor[x.id] = x.value
+  }
+  customColor.name = 'custom'
+  customTheme.changeTheme()
+}
+
+// color dialog form submit
+colorDialogForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+  dialogChangeColor()
+  const dialogColors = structuredClone(customTheme.colors)
+  dialogColors.name = document.querySelector('#name').value
+  Theme.save(dialogColors)
+  Theme.buildList()
+  colorDialog.close()
+})
+
+// close button
+modalButtons[1].addEventListener('click', e => {
+  colorDialog.close()
+})
+
+// Adds change trigger on dialog inputs
+inputs.forEach(e => e.addEventListener('change', () => dialogChangeColor()))
+
+// customThemeButton behaviour
+const customThemeButton = document.querySelector('#theme-custom-button')
+customThemeButton.addEventListener('click', () => {
+  colorDialog.showModal()
+})
+
+// customResetButton behaviour
+const customResetButton = document.querySelector('#theme-reset-button')
+customResetButton.addEventListener('click', () => {
+  const deleteThemes = confirm('Are you sure you wanna delete all your themes???')
+  deleteThemes && Theme.reset()
 })
