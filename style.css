@@ -220,7 +220,7 @@ main {
 .centertxt {
   text-align: center;
 }
-#entry {  
+.entry {  
   width: min(30rem,100%);
   margin: auto;
 }
@@ -240,6 +240,8 @@ main {
   font-size: 1.5rem;
 }
 .dark-input{
+  font-family: Strife;
+  font-size: 2rem;
   background: var(--black);
   border-color: var(--button-and-border-ascent);
   border-style: solid;
@@ -248,8 +250,10 @@ main {
   transform: translateY(-10%);
   padding:0.2rem 1rem;
 }
-
-
+input[type=checkbox]{
+  background-color: var(--black);
+  transform: scale(1.5) translateY(-2px);
+}
 
 .centeredGoAdvanced {
   display:flex;

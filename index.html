@@ -28,12 +28,12 @@
 -->
         <!-- When hosting on an actual web server the CSP should be more restrictive. (hash for script-src) -->
 
-<link rel="preload" href="style.css" integrity="sha256-EJrOl5fuvfDUZCqugkOMK8dJtnJhW6Pn0pGvJlww244=" as="style">
+<link rel="preload" href="style.css" integrity="sha256-qehLlPun8FG9cknWHqfv24JjPoIYNrzMnI8Tx0M1nEs=" as="style">
 <link rel="preload" href="dist/pesterchum.js" integrity="sha256-zhrraJFTviB+739upDWmim2y14E4/sb1gQPblIE5CdA=" as="script"> <!-- integrity hash with babel :3 -->
 
 <link rel="icon" href="favicon.ico">
 <link rel="canonical" href="https://pesterchum.online">
-<link rel="stylesheet" integrity="sha256-EJrOl5fuvfDUZCqugkOMK8dJtnJhW6Pn0pGvJlww244=" href="style.css">
+<link rel="stylesheet" integrity="sha256-qehLlPun8FG9cknWHqfv24JjPoIYNrzMnI8Tx0M1nEs=" href="style.css">
 <script src="dist/pesterchum.js" integrity="sha256-zhrraJFTviB+739upDWmim2y14E4/sb1gQPblIE5CdA=" defer></script>
 
 <title>Pesterchum Online</title>
@@ -61,7 +61,7 @@
 <div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
 <div class='centered border-radius-effect'>
-<div id='entry'>
+<div id='entry' class="entry">
 <form id='connectForm'>
   <label class="pixelated" for="handle">MYCHUMHANDLE:</label>
     <input class="pixelated dark-input" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
@@ -75,15 +75,19 @@
 <br>
 
 <form id="advancedForm">
-<div class='centeredGoAdvanced'>
-<div id="advancedText">Advanced mode <input type="checkbox" id="advancedCheck"></div>
-<div id="userInputArea">
-<label class="pixelated">USERNAME (SASL)</label>
-<input id="username">
-<label class="pixelated">PASSWORD (SASL)</label>
-<input id="password">
-</div>
-</div>
+  <div class='centeredGoAdvanced'>
+    <div id="advancedText">
+              <label class="pixelated" for="advancedCheck">Advanced mode</label> 
+                <input type="checkbox" id="advancedCheck" name="advancedCheck">
+
+    </div>
+    <div id="userInputArea" class="entry">
+      <label class="pixelated">USERNAME (SASL)</label>
+      <input class="dark-input" id="username">
+      <label class="pixelated">PASSWORD (SASL)</label>
+      <input class="dark-input" id="password">
+    </div>
+  </div>
 </form>
 
 </div>
