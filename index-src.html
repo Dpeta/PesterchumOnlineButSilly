@@ -60,7 +60,7 @@
 <div id="notice"><!--<a href="javascript.html" rel="jslicense">JavaScript license information</a> --><img src="img/agplv3-155x51.png"></div>
 </div>
 <div class='centered border-radius-effect'>
-<div id='entry'>
+<div id='entry' class="entry">
 <form id='connectForm'>
   <label class="pixelated" for="handle">MYCHUMHANDLE:</label>
     <input class="pixelated dark-input" type="text" id="handle" name="handle" requiredminlength="2" maxlength="32" size="10"><br>
@@ -74,15 +74,19 @@
 <br>
 
 <form id="advancedForm">
-<div class='centeredGoAdvanced'>
-<div id="advancedText">Advanced mode <input type="checkbox" id="advancedCheck"></div>
-<div id="userInputArea">
-<label class="pixelated">USERNAME (SASL)</label>
-<input class="dark-input" id="username">
-<label class="pixelated">PASSWORD (SASL)</label>
-<input class="dark-input" id="password">
-</div>
-</div>
+  <div class='centeredGoAdvanced'>
+    <div id="advancedText">
+              <label class="pixelated" for="advancedCheck">Advanced mode</label> 
+                <input type="checkbox" id="advancedCheck" name="advancedCheck">
+
+    </div>
+    <div id="userInputArea" class="entry">
+      <label class="pixelated" for="username">USERNAME (SASL)</label>
+      <input class="dark-input" name="username" id="username">
+      <label class="pixelated" for="password">PASSWORD (SASL)</label>
+      <input class="dark-input" name="password" id="password">
+    </div>
+  </div>
 </form>
 
 </div>
