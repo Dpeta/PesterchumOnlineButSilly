@@ -46,6 +46,7 @@ const _ctagBegin = /(<|&#60;)c=(.*?)(>|&#62;)/g
 const _ctagRgb = /(\d+,\d+,\d+)/g
 const _ctagHex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
 const _ctagRgbHex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
+const _ctagEvilGodot = /(<|&#60;)c=#FF([a-fA-F0-9]{6})(>|&#62;)/g // Godot sends ARGB instead of RGB, so we strip the FF at the start later.
 const _colorMsg = /^COLOR (>|&#62;)(\d+,\d+,\d+)$/
 const _colorMsgRgb = /\d+,\d+,\d+/
 const _memoMsgStart = /^((<|&#60;)c=((\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})))(>|&#62;)[A-Z]*[A-Z]*:\s)/g
@@ -975,6 +976,11 @@ function parsePesterchumSyntax (source, target, msg) {
       }
     }
   }
+  // Strip first two "FF" to fix godot colors
+  output = output.replace(_ctagEvilGodot, '<c=#$2>')
+  // console.log(_ctagEvilGodot.test(output), output)
+
+  // Get color tags / smilies
   const ctags = output.match(_ctagBegin)
   const smilies = output.match(_smilies)
   if (ctags !== null) {

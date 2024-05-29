@@ -5,7 +5,7 @@ import hashlib
 import base64
 
 re_script = re.compile(
-    r'<script src="dist/pesterchum\.js" integrity="sha256-.+?"></script>'
+    r'<script src="dist/pesterchum\.js" integrity="sha256-.+?" defer></script>'
 )
 re_style = re.compile(
     r'<link rel="stylesheet" integrity="sha256-.+?" href="style\.css">'
@@ -34,7 +34,7 @@ with open("style.css", "rb") as stylecss:
 style_hash = base64.b64encode(style_hash.digest()).decode()
 print(f"style.css hash: {style_hash}")
 
-script = f'<script src="dist/pesterchum.js" integrity="sha256-{pchumjs_hash}"></script>'
+script = f'<script src="dist/pesterchum.js" integrity="sha256-{pchumjs_hash}" defer></script>'
 style = f'<link rel="stylesheet" integrity="sha256-{style_hash}" href="style.css">'
 script_preload = (
     '<link rel="preload" href="dist/pesterchum.js" '
