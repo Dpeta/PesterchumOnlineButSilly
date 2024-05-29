@@ -60,6 +60,9 @@ const _userPrefix = /^(@|&#38;|~|&|\+)+/
 const _honk = /honk/gi
 const _smilies = /:rancorous:|:apple:|:bathearst:|:cathearst:|:woeful:|:sorrow:|:pleasant:|:blueghost:|:slimer:|:candycorn:|:cheer:|:duhjohn:|:datrump:|:facepalm:|:bonk:|:mspa:|:gun:|:cal:|:amazedfirman:|:amazed:|:chummy:|:cool:|:smooth:|:distraughtfirman|:distraught:|:insolent:|:bemused:|:3:|:mystified:|:pranky:|:tense:|:record:|:squiddle:|:tab:|:beetip:|:flipout:|:befuddled:|:pumpkin:|:trollcool:|:jadecry:|:ecstatic:|:relaxed:|:discontent:|:devious:|:sleek:|:detestful:|:mirthful:|:manipulative:|:vigorous:|:perky:|:acceptant:|:olliesouty:|:billiards:|:billiardslarge:|:whatdidyoudo:|:brocool:|:trollbro:|:playagame:|:trollc00l:|:suckers:|:scorpio:|:shades:|:honk:/g
 
+// other stuff..?
+let autoscroll = true
+
 // Audio
 let alarmMemo
 let alarmDm
@@ -1228,7 +1231,9 @@ class PesterchumOnlineClient {
         this.tabs[n].textfield.hidden = true
       }
     }
-    this.textarea.scrollTop = this.textarea.scrollHeight // Scroll to bottom
+    if (autoscroll) {
+      this.textarea.scrollTop = this.textarea.scrollHeight // Scroll to bottom
+    }
   }
 
   addText (source, target, msg) {
@@ -1356,6 +1361,7 @@ class PesterchumOnlineClient {
                                      '<div class="action-button-wrapper">' +
                                      '<button class="menu-button">Audio</button>' +
                                      '<button class="menu-button">Edit theme</button>' +
+                                     '<button class="menu-button" id="autoscroll_button">Disable autoscroll</button>' +
                                      '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
@@ -1499,6 +1505,20 @@ let dmAudio=true
             tabContainer.style.width = '75%'
             break
         }
+      }
+    }
+    )
+
+    // Gently puts my silly button event here...
+    // idk where anything goes anymore LOL
+    const autoscrollButton = document.getElementById('autoscroll_button')
+    autoscrollButton.addEventListener('click', function (event) {
+      if (event.currentTarget.innerHTML === 'Disable autoscroll') {
+        event.currentTarget.innerHTML = 'Enable autoscroll'
+        autoscroll = false
+      } else {
+        event.currentTarget.innerHTML = 'Disable autoscroll'
+        autoscroll = true
       }
     }
     )
