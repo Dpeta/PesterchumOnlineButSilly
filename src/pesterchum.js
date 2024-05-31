@@ -45,10 +45,11 @@ const _ctagBegin = /(<|&#60;)c=(.*?)(>|&#62;)/g
 // const _ctagEnd = /(<|&#60;)\/c(>|&#62;)/g
 const _ctagRgb = /(\d+,\d+,\d+)/g
 const _ctagHex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
+const _ctagHexSingle = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/ // This contains the bogwitch
 const _ctagRgbHex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
 const _ctagEvilGodot = /(<|&#60;)c=#FF([a-fA-F0-9]{6})(>|&#62;)/g // Godot sends ARGB instead of RGB, so we strip the FF at the start later.
 const _colorMsg = /^COLOR (>|&#62;)(\d+,\d+,\d+)$/
-const _colorMsgRgb = /\d+,\d+,\d+/
+// const _colorMsgRgb = /\d+,\d+,\d+/
 const _memoMsgStart = /^((<|&#60;)c=((\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})))(>|&#62;)[A-Z]*[A-Z]*:\s)/g
 const _memoPrefix = /^(&|#)/
 const _initials = /[A-Z]*[A-Z]*:\s/
@@ -388,6 +389,10 @@ function parseIRC (data) {
   let targetInitials = ''
   let updateQue = []
   const memoStartMsg = msg.match(_memoMsgStart)
+  // metadata
+  let key = ''
+  // let visibility = ''
+  let value = ''
 
   switch (command) {
     // Commands
@@ -442,10 +447,9 @@ function parseIRC (data) {
         }
         msg = `<c=100,100,100>-- CURRENT ${sourcenick}'s ${srcInitials} ${msg.slice(6)} --</c>`
       } else if (_colorMsg.test(msg)) {
-        // let cMatch = msg.match(_ctagRgb)
-        const color = msg.match(_colorMsgRgb)
-        console.log('color: ' + color)
-        pcoClient.chums.setColor(sourcenick, color)
+        // const color = msg.match(_colorMsgRgb)
+        // console.log('color: ' + color)
+        // pcoClient.chums.setColor(sourcenick, color)
         return
       } else if (msg.indexOf('PESTERCHUM:') !== -1) {
         return
@@ -588,6 +592,44 @@ function parseIRC (data) {
       }
 
       break
+    case 'METADATA':
+      // Draft spec metadata
+      // https://gist.github.com/k4bek4be/92c2937cefd49990fbebd001faf2b237
+      // We can get color from metadata if we're silly enough!
+      // console.log(params)
+      target = params[0]
+      key = params[1]
+      // visibility = params[2]  // always * so doesn't matter
+      value = params[3]
+      // console.log(_ctagHex.test(value))
+      /* console.log(`time for ${target} to get colored`,
+                  key.toLowerCase() === 'color',
+                  _ctagHex.test(value),
+                  (key.toLowerCase() === 'color') && _ctagHex.test(value),
+                  key.toLowerCase() === 'color' && _ctagHex.test(value) === true)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`)
+      console.log(`hex is ${_ctagHexButcooler.test(value)}`) */
+      // why does this need to be === true at the end there im going ins a ne
+      // why does the exact same line of code return false/true seemingly at random a line later??
+      /* const keymatch = key.toLowerCase() === 'color'
+      const hextest = _ctagHexSingle.test(value)
+      const bogwitch = keymatch && hextest */
+
+      // this code contains the curse do not change it
+      if ((key.toLowerCase() === 'color') && _ctagHexSingle.test(value)) {
+        // value is a valid hex color
+        // console.log(`set color of ${target} to ${value.match(_ctagRgbHex)[0]}`)
+        pcoClient.chums.setColor(target, value.match(_ctagRgbHex)[0])
+      }
+      break
       // Numerical replies
     case '001':
       // RPL_WELCOME
@@ -599,8 +641,10 @@ function parseIRC (data) {
       // ircClient.join("#TestingZone3");
       ircClient.join('#pesterchum')
       ircClient.list()
-      ircClient.send('METADATA * set mood 0')
-      ircClient.send('METADATA * set color ' + pcoClient.color)
+      // Metadata
+      ircClient.metadata('*', 'set', 'mood 0')
+      ircClient.metadata('*', 'set', `color ${pcoClient.color}`)
+      ircClient.metadata('*', 'sub', 'color')
       break
     case '322':
       // RPL_LIST
@@ -1291,7 +1335,14 @@ class PesterchumOnlineClient {
       if ((_memoPrefix.test(target[0])) && (target === this.tabs[i].target) && (this.tabs[i].announced.indexOf(source) === -1)) {
         this.tabs[i].announced.push(source)
         // this.tabs[i].tabcontent += `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`
-        this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>CURRENT ${source} [C${getInitials(source)}] RIGHT NOW responded to memo.</div>`)
+        const color = this.chums.getColor(source)
+        if (color.match(_ctagHex)) {
+          // hex
+          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>CURRENT ${source} <span style="color: ${color};">[C${getInitials(source)}]</span> RIGHT NOW responded to memo.</div>`)
+        } else if (color.match(_ctagRgb)) {
+          // rgb?
+          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div>CURRENT ${source} <span style="color: rgb(${color});">[C${getInitials(source)}]</span> RIGHT NOW responded to memo.</div>`)
+        }
       }
 
       // Add text
@@ -1310,9 +1361,15 @@ class PesterchumOnlineClient {
         if ((source === this.tabs[i].label) && (!this.tabs[i].memo)) {
           // console.log('Add to tab (convo) ', source, msg);
           msg = parsePesterchumSyntax(source, target, msg)
-          // this.tabs[i].tabcontent += msg + '<br>'
-          // this.tabs[i].tabcontent += `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`
-          this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div><span style="color: rgb(${this.chums.getColor(source)});">${msg}</span></div>`)
+          const color = this.chums.getColor(source)
+          // console.log(`color is ${color} ${typeof color}`)
+          if (color.match(_ctagHex)) {
+            // hex
+            this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div><span style="color: ${color};">${msg}</span></div>`)
+          } else if (color.match(_ctagRgb)) {
+            // rgb?
+            this.tabs[i].textfield.insertAdjacentHTML('beforeend', `<div><span style="color: rgb(${color});">${msg}</span></div>`)
+          }
           audioCheck(false, msg)
         }
       } else if (source === this.nick) {
@@ -1562,6 +1619,7 @@ class IrcClient {
   caps () {
     console.log(`nick is ${nick} and pass is ${pass} and advancedCheckboxValue is ${advancedCheckboxValue} :3`)
     this.send('CAP REQ SASL')
+    this.send('CAP REQ draft/metadata-notify-2')
   }
 
   capNegEnd () {
@@ -1622,6 +1680,10 @@ class IrcClient {
   list () {
     // Get channels
     this.send('LIST')
+  }
+
+  metadata (target, subcommand, params) {
+    this.send(`METADATA ${target} ${subcommand} ${params}`)
   }
 }
 
