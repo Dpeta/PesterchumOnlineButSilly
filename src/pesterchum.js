@@ -47,7 +47,7 @@ const _ctagRgb = /(\d+,\d+,\d+)/g
 const _ctagHex = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/g
 const _ctagHexSingle = /#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})/ // This contains the bogwitch
 const _ctagRgbHex = /(\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3}))/g
-const _ctagEvilGodot = /(<|&#60;)c=#[a-zA-Z]{2}([a-fA-F0-9]{6})(>|&#62;)/g // Godot sends ARGB instead of RGB, so we strip the FF at the start later.
+const _ctagEvilGodot = /(<|&#60;)c=#[a-fA-F0-9]{2}([a-fA-F0-9]{6})(>|&#62;)/g // Godot sends ARGB instead of RGB, so we strip the FF at the start later.
 const _colorMsg = /^COLOR (>|&#62;)(\d+,\d+,\d+)$/
 // const _colorMsgRgb = /\d+,\d+,\d+/
 const _memoMsgStart = /^((<|&#60;)c=((\d+,\d+,\d+)|(#([a-fA-F0-9]{6})|(#[a-fA-F0-9]{3})))(>|&#62;)[A-Z]*[A-Z]*:\s)/g
