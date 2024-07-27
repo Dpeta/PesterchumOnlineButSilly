@@ -887,12 +887,7 @@ function connectButtonEvents () {
       for (let n = 0; n < pcoClient.tabs.length; n++) {
         // console.log("pcoClient.tabs[n].label === buttontext", pcoClient.tabs[n].label, buttontext)
         if (pcoClient.tabs[n].label === buttontext) {
-          /*
-          while (pcoClient.textarea.firstChild) {
-            pcoClient.textarea.removeChild(pcoClient.textarea.firstChild)
-          }
-          //pcoClient.textarea.insertAdjacentHTML('beforeend', pcoClient.tabs[n].tabcontent)
-          */
+          pcoClient.tabs[n].active = true
           for (let n = 0; n < pcoClient.tabs.length; n++) {
             if (pcoClient.tabs[n].active) {
               pcoClient.tabs[n].textfield.hidden = false
@@ -915,7 +910,6 @@ function connectButtonEvents () {
             // memoUserList.innerHTML += usrStr;
             memoUserList.insertAdjacentHTML('beforeend', usrStr)
           }
-          pcoClient.tabs[n].active = true
         } else {
           pcoClient.tabs[n].active = false
         }
