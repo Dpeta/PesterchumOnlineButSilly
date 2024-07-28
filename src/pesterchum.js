@@ -888,11 +888,11 @@ function connectButtonEvents () {
         // console.log("pcoClient.tabs[n].label === buttontext", pcoClient.tabs[n].label, buttontext)
         if (pcoClient.tabs[n].label === buttontext) {
           pcoClient.tabs[n].active = true
-          for (let n = 0; n < pcoClient.tabs.length; n++) {
-            if (pcoClient.tabs[n].active) {
-              pcoClient.tabs[n].textfield.hidden = false
+          for (let x = 0; x < pcoClient.tabs.length; x++) {
+            if (pcoClient.tabs[x].active) {
+              pcoClient.tabs[x].textfield.hidden = false
             } else {
-              pcoClient.tabs[n].textfield.hidden = true
+              pcoClient.tabs[x].textfield.hidden = true
             }
           }
           const memoUserList = document.getElementById('memoUserlist')
