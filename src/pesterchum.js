@@ -1381,15 +1381,15 @@ class PesterchumOnlineClient {
   }
 
   startLogDownload (event) {
-      for (let n = 0; n < this.tabs.length; n++) {
-        // console.log(this.tabs[n])
-        if (this.tabs[n].active) {
-          const filename = this.tabs[n].label
-          const tabTextElem = document.getElementById(`text_${this.tabs[n].label}`)
-          console.log('wawa')
-          downloadHelper(filename, tabTextElem)
-        }
+    for (let n = 0; n < this.tabs.length; n++) {
+      // console.log(this.tabs[n])
+      if (this.tabs[n].active) {
+        const filename = this.tabs[n].label
+        const tabTextElem = document.getElementById(`text_${this.tabs[n].label}`)
+        console.log('wawa')
+        downloadHelper(filename, tabTextElem)
       }
+    }
   }
 
   tabify () {
@@ -1589,7 +1589,6 @@ let dmAudio=true
     const saveButton = document.getElementById('export_log_button')
     saveButton.addEventListener('click', () => this.startLogDownload(event)
     )
-
   }
 
   clear () {
@@ -2160,10 +2159,10 @@ customResetButton.addEventListener('click', () => {
 
 function downloadHelper (filename, tabobj) {
   // https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
-  if (filename[0] == '#') {
+  if (filename[0] === '#') {
     filename = filename.substring(1)
   }
-  const date = new Date();
+  const date = new Date()
   const time = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}_${date.getHours()}${date.getMinutes()}.html`
   filename = `${filename}_${time}`
   const elem = document.createElement('a')
