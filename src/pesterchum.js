@@ -1380,6 +1380,18 @@ class PesterchumOnlineClient {
     // console.log("found is ", found);
   }
 
+  startLogDownload (event) {
+      for (let n = 0; n < this.tabs.length; n++) {
+        // console.log(this.tabs[n])
+        if (this.tabs[n].active) {
+          const filename = this.tabs[n].label
+          const tabTextElem = document.getElementById(`text_${this.tabs[n].label}`)
+          console.log('wawa')
+          downloadHelper(filename, tabTextElem)
+        }
+      }
+  }
+
   tabify () {
     this.body.insertAdjacentHTML('beforeend',
       '<div id=\'chonkers\' class=\'border-radius-effect\'>' +
@@ -1413,6 +1425,7 @@ class PesterchumOnlineClient {
                                      '<button class="menu-button">Audio</button>' +
                                      '<button class="menu-button">Edit theme</button>' +
                                      '<button class="menu-button" id="autoscroll_button">Disable autoscroll</button>' +
+                                     '<button class="menu-button" id="export_log_button">Export log</button>' +
                                      '</div>' +
                                      '</div>' +
                                      '<button class=\'hidebutton\' id=\'hideMemoUsers\'>&#8594;</button>' + // -->
@@ -1573,6 +1586,10 @@ let dmAudio=true
       }
     }
     )
+    const saveButton = document.getElementById('export_log_button')
+    saveButton.addEventListener('click', () => this.startLogDownload(event)
+    )
+
   }
 
   clear () {
@@ -2140,3 +2157,46 @@ customResetButton.addEventListener('click', () => {
   const deleteThemes = confirm('Are you sure you wanna delete all your themes???')
   deleteThemes && Theme.reset()
 })
+
+function downloadHelper (filename, tabobj) {
+  // https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+  if (filename[0] == '#') {
+    filename = filename.substring(1)
+  }
+  const date = new Date();
+  const time = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}_${date.getHours()}${date.getMinutes()}.html`
+  filename = `${filename}_${time}`
+  const elem = document.createElement('a')
+
+  const htmlObj = (
+    `<!DOCTYPE html><html lang="en"><head>
+    <style>
+    .textarea {
+      background-color: white; padding: 0.3rem;
+      font-size: 18px;
+      font-weight: bold;
+      border:2px solid var(--button-and-border-ascent);
+      margin-left:0.5%;
+      font-family: 'Courier';
+      overflow-x: visible;
+      overflow-wrap: break-word;
+      overflow-y: auto;
+      width: 100%;
+      float: left;
+      margin-block-start: -0.8rem;
+      position: relative;
+      z-index: 1;
+    }</style>
+    <meta http-equiv="Content-Security-Policy"
+    content=""></head>
+    <body><div class='textarea'>${tabobj.innerHTML}</div></body>
+    </html>`
+  )
+
+  elem.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlObj))
+  elem.setAttribute('download', filename)
+  elem.className = 'downloader'
+  document.body.appendChild(elem)
+  elem.click()
+  document.body.removeChild(elem)
+}
